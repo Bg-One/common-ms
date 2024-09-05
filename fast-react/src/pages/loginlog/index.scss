@@ -1,0 +1,18 @@
+#login-log {
+  .btn-area {
+    margin: 1vh 0;
+    display: flex;
+    justify-content: space-between;
+    width: 15vw;
+  }
+
+  .search-form {
+    .ant-select-selector {
+      width: 5vw;
+    }
+  }
+
+  .ant-table-cell {
+    text-align: center;
+  }
+}

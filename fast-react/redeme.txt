@@ -1,0 +1,31 @@
+版本说明：
+    v18版本的React，由于官方推荐的路由跳转方式为useNavigate()，并仅限在函数式组件中使用，加之删掉了路由的props，因此决定此项目demo使用函数式组件。
+    v18版本中，18.3版本时，antd组件库中使用了将删除的一些方法，并默认开启了严格模式，因此，此项目demo使用v18.2版本。
+
+文件结构说明：
+    根目录中，config.js为全局配置文件，不参与编译，方便运维配置变量。
+
+接口配置说明：
+    为方便接口处理和接口复用问题，统一放置于src/common/api文件夹内，根据接口模块名字建立文件夹。
+
+枚举定义说明：
+    src/common/enum.js中，定义枚举变量。
+
+公共方法说明：
+    src/common/function.js中，定义枚举变量。
+
+公共工具类说明：
+    src/common/utils文件夹中，存放一些工具类。
+
+静态依赖说明：
+    根目录中，libraries为静态依赖包，不参与编译，（不建议使用静态的依赖包资源，会导致包体积过大）。
+
+css说明：
+    每个组件赋予一个单独的className，放在最外层形成作用域。
+    字体统一用rem。
+    盒子单位宽用vw，高用vh。
+
+
+
+antd组件库地址：
+    https://ant-design.antgroup.com/components/overview-cn/

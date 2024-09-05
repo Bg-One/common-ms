@@ -1,0 +1,13 @@
+#page-home {
+  word-break: break-all;
+
+  .ant-layout {
+    height: 100vh;
+
+    .page-home-content {
+      padding: 3vh;
+      height: 92vh;
+      overflow: auto;
+    }
+  }
+}

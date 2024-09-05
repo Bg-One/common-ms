@@ -1,0 +1,30 @@
+#sys-dep {
+  display: flex;
+  justify-content: space-between;
+
+  .search-area {
+    background-color: #ffffff;
+    width: 40vw;
+    padding: 1vh;
+    border-radius: 0.5vw;
+    .btn-area {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1vh;
+    }
+  }
+
+  .sys-dep-info {
+    width: 40vw;
+    height: 86vh;
+    background: #ffffff;
+    padding: 1vh;
+    border-radius: 0.5vw;
+  }
+
+
+}
+
+.dept-add-modal {
+  width: 40vw !important;
+}

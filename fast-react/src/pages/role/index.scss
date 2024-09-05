@@ -1,0 +1,48 @@
+#sys-role {
+  .btn-area {
+    margin: 1vh 0;
+    width: 20vw;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .ant-table-cell {
+    text-align: center;
+  }
+
+
+}
+
+.user-role-bind-drawer {
+  .ant-form-item {
+    margin: 0 0 1vh 0;
+
+  }
+
+  .ant-table {
+    .ant-table-cell {
+      text-align: center;
+    }
+  }
+
+
+}
+
+.user-role-drawer {
+  .tree-area {
+    display: flex;
+  }
+
+  .title {
+    margin: 0 0.5vw;
+  }
+
+  .tree-area-item {
+    //margin-left: 1vw;
+    width: 21vw;
+    border: 1px solid #d9d9d9;
+    border-radius: 0.3vw;
+    margin-bottom: 3vh;
+    padding: 1vh;
+  }
+}
