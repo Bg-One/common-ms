@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    dynamic:
+      datasource:
+        sys:
+          url: jdbc:mysql://localhost:3306/sys_common?serverTimezone=Asia/Shanghai&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&useUnicode=true
+          username: root
+          password: root
+          driver-class-name: com.mysql.cj.jdbc.Driver

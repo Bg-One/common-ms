@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.fastboot.server.sys.mapper.SysRoleMapper">
+    <resultMap type="com.example.fastboot.server.sys.model.SysRole" id="SysRoleResult">
+        <id property="roleGuid" column="role_guid"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleKey" column="role_key"/>
+        <result property="roleSort" column="role_sort"/>
+        <result property="dataScope" column="data_scope"/>
+        <result property="menuCheckStrictly" column="menu_check_strictly"/>
+        <result property="deptCheckStrictly" column="dept_check_strictly"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <sql id="selectRoleVo">
+        select distinct r.role_guid,
+                        r.role_name,
+                        r.role_key,
+                        r.role_sort,
+                        r.data_scope,
+                        r.menu_check_strictly,
+                        r.dept_check_strictly,
+                        r.status,
+                        r.del_flag,
+                        r.create_time,
+                        r.remark
+        from sys_role r
+                 left join sys_user_role ur on ur.role_guid = r.role_guid
+                 left join sys_user u on u.user_guid = ur.user_guid
+                 left join sys_dept d on u.dept_guid = d.dept_guid
+    </sql>
+    <insert id="batchUserRole">
+        insert into sys_user_role(user_guid, role_guid) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.userGuid},#{item.roleGuid})
+        </foreach>
+    </insert>
+    <insert id="insertRole">
+        insert into sys_role(
+        <if test="roleGuid != null and roleGuid != ''">role_Guid,</if>
+        <if test="roleName != null and roleName != ''">role_name,</if>
+        <if test="roleKey != null and roleKey != ''">role_key,</if>
+        <if test="roleSort != null">role_sort,</if>
+        <if test="dataScope != null and dataScope != ''">data_scope,</if>
+        <if test="menuCheckStrictly != null">menu_check_strictly,</if>
+        <if test="deptCheckStrictly != null">dept_check_strictly,</if>
+        <if test="status != null and status != ''">status,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        create_time
+        )values(
+        <if test="roleGuid != null and roleGuid != ''">#{roleGuid},</if>
+        <if test="roleName != null and roleName != ''">#{roleName},</if>
+        <if test="roleKey != null and roleKey != ''">#{roleKey},</if>
+        <if test="roleSort != null">#{roleSort},</if>
+        <if test="dataScope != null and dataScope != ''">#{dataScope},</if>
+        <if test="menuCheckStrictly != null">#{menuCheckStrictly},</if>
+        <if test="deptCheckStrictly != null">#{deptCheckStrictly},</if>
+        <if test="status != null and status != ''">#{status},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        sysdate()
+        )
+    </insert>
+    <insert id="batchRoleMenu">
+        insert into sys_role_menu(role_guid, menu_guid) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.roleGuid},#{item.menuGuid})
+        </foreach>
+    </insert>
+    <insert id="batchUserPost">
+        insert into sys_user_post(user_guid, post_guid) values
+        <foreach item="item" index="index" collection="sysUserPostList" separator=",">
+            (#{item.userGuid},#{item.postGuid})
+        </foreach>
+    </insert>
+    <update id="updateRole">
+        update sys_role
+        <set>
+            <if test="roleName != null and roleName != ''">role_name = #{roleName},</if>
+            <if test="roleKey != null and roleKey != ''">role_key = #{roleKey},</if>
+            <if test="roleSort != null">role_sort = #{roleSort},</if>
+            <if test="dataScope != null and dataScope != ''">data_scope = #{dataScope},</if>
+            <if test="menuCheckStrictly != null">menu_check_strictly = #{menuCheckStrictly},</if>
+            <if test="deptCheckStrictly != null">dept_check_strictly = #{deptCheckStrictly},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where role_guid = #{roleGuid}
+    </update>
+    <delete id="deleteUserRole">
+        delete
+        from sys_user_role
+        where user_guid = #{userGuid}
+    </delete>
+    <delete id="deleteRoleByRoleGuid">
+        update sys_role
+        set del_flag = '2'
+        where role_guid = #{roleGuid}
+    </delete>
+    <delete id="deleteRoleMenu">
+        delete
+        from sys_role_menu
+        where role_Guid = #{roleGuid}
+    </delete>
+    <delete id="deleteUserRoleInfos">
+        delete from sys_user_role where role_Guid=#{roleGuid} and user_Guid in
+        <foreach collection="userGuids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <delete id="deleteRoleMenuByRoleGuid">
+        delete
+        from sys_role_menu
+        where role_guid = #{roleGuid}
+    </delete>
+    <select id="selectRolePermissionByUserId" resultType="com.example.fastboot.server.sys.model.SysRole">
+        <include refid="selectRoleVo"/>
+        WHERE r.del_flag = '0' and ur.user_guid = #{userGuid}
+    </select>
+    <select id="selectRoleList" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+        where r.del_flag = '0'
+        <if test="roleGuid != null and roleGuid != ''">
+            AND r.role_guid = #{roleGuid}
+        </if>
+        <if test="roleName != null and roleName != ''">
+            AND r.role_name like concat('%', #{roleName}, '%')
+        </if>
+        <if test="status != null and status != ''">
+            AND r.status = #{status}
+        </if>
+        <if test="roleKey != null and roleKey != ''">
+            AND r.role_key like concat('%', #{roleKey}, '%')
+        </if>
+        order by r.create_time
+    </select>
+    <select id="countUserRoleByRoleGuid" resultType="java.lang.Integer">
+        select count(*)
+        from sys_role_menu
+        where role_guid = #{roleGuid}
+    </select>
+    <select id="checkRoleNameUnique" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+        where r.role_name=#{roleName} and r.del_flag = '0' and r.role_guid != #{roleGuid} limit 1
+    </select>
+    <select id="checkRoleKeyUnique" resultType="com.example.fastboot.server.sys.model.SysRole"
+            resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+        where r.role_key=#{roleKey} and r.del_flag = '0'and r.role_guid != #{roleGuid} limit 1
+    </select>
+    <select id="selectRoleGuid" resultType="com.example.fastboot.server.sys.model.SysRole">
+        <include refid="selectRoleVo"/>
+        where r.role_guid = #{roleGuid}
+    </select>
+</mapper>
