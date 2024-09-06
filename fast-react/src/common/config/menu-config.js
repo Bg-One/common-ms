@@ -8,7 +8,7 @@ export const componentMap = {
     PageMain: React.lazy(() => import('../../pages/main')),
     Dep: React.lazy(() => import('../../pages/dep')),
     User: React.lazy(() => import('../../pages/user')),
-    Post:React.lazy(() => import('../../pages/post')),
+    Post: React.lazy(() => import('../../pages/post')),
     Role: React.lazy(() => import('../../pages/role')),
     Authority: React.lazy(() => import('../../pages/authority')),
     LoginLog: React.lazy(() => import('../../pages/loginlog')),
@@ -40,7 +40,7 @@ export const menuConfig = [{
         key: '/sys/post',
         label: '岗位管理',
         component: 'Post',
-        icon: <MyIcon type={'icon-renyuan'}/>,
+        icon: <MyIcon type={'icon-gangwei'}/>,
     }, {
         key: '/sys/role',
         label: '角色管理',

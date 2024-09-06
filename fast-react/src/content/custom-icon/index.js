@@ -1,10 +1,8 @@
 import React from 'react';
-import {createFromIconfontCN} from '@ant-design/icons';
-import ReactDOM from 'react-dom/client';
+import '../../static/icons/iconfont.css'
 
-const MyIcon = createFromIconfontCN({
-    scriptUrl: scriptUrl
-});
+const MyIcon = ({type}) => {
+    return <span className={`iconfont ${type}`}></span>
+}
 
-// ReactDOM.createRoot(mountNode).render(<MyIcon type="icon-example"/>);
 export default MyIcon;
