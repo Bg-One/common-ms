@@ -10,10 +10,10 @@ import {
     cancelCuthUserApi,
     deleteRoleApi,
     addRoleApi, editRoleApi
-} from "../../common/api/role-api";
+} from "../../common/api/sys/role-api";
 import RoleInfoDrawer from "../../content/role/role-info-drawer";
 import UserRoleBindDrawer from "../../content/user/user-role-bind-drawer";
-import {listMenuApi, roleMenuTreeselectApi} from "../../common/api/menu-api";
+import {listMenuApi, roleMenuTreeselectApi} from "../../common/api/sys/menu-api";
 import {handleTree} from "../../utils/tree-data";
 
 

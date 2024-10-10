@@ -1,4 +1,4 @@
-import http from "../../utils/http"
+import http from "../../../utils/http"
 
 export let loginApi = (obj = {}) => {
     return http.post('sys/login', obj)

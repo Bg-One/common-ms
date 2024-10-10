@@ -4,7 +4,7 @@ import {UserOutlined} from '@ant-design/icons';
 import {useNavigate} from "react-router-dom";
 import {Avatar, Badge, message} from "antd";
 import {useDispatch} from "react-redux";
-import {logoutApi} from "../../common/api/sys-api";
+import {logoutApi} from "../../common/api/sys/sys-api";
 import {setAuthentication, setLoading, setMenuConfig, setRouters, setUserInfo} from "../../redux/user/user-slice";
 import {removeToken} from "../../utils/auth";
 import Websocket from "react-websocket";

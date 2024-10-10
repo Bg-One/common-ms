@@ -1,4 +1,4 @@
-import http from "../../utils/http"
+import http from "../../../utils/http"
 
 export let listDeptApi = (obj = {}) => {
     return http.post('dept/listDept', obj)

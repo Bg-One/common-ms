@@ -4,6 +4,7 @@ package com.example.fastboot.common.exception;
 import com.example.fastboot.common.enums.CommonResultEnum;
 import com.example.fastboot.common.response.CommonFun;
 import com.example.fastboot.common.response.CommonResult;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -31,17 +32,30 @@ import java.util.stream.Collectors;
  */
 @ControllerAdvice
 @ResponseBody
+@Slf4j
 public class GlobalExceptionHandler {
 
+    /**
+     * 处理运行时异常
+     * @param request
+     * @param e
+     * @return
+     */
     @ExceptionHandler(RuntimeException.class)
     public Object exceptionHandler(HttpServletRequest request, Exception e) {
-        CommonFun.getExceptionTraceInfo(e);
+        CommonFun.outputException(e, log);
         return new CommonResult(CommonResultEnum.FAILED, e.getMessage());
     }
 
+    /**
+     * 处理认证异常
+     * @param request
+     * @param e
+     * @return
+     */
     @ExceptionHandler(AccessDeniedException.class)
     public Object accessDeniedExceptionHandler(HttpServletRequest request, Exception e) {
-        CommonFun.getExceptionTraceInfo(e);
+        CommonFun.outputException(e, log);
         e.printStackTrace();
         return new CommonResult(CommonResultEnum.AUTH_ERROR);
     }
@@ -58,6 +72,7 @@ public class GlobalExceptionHandler {
         List<String> collect = fieldErrors.stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
+        CommonFun.outputException(e, log);
         return new CommonResult(CommonResultEnum.FAILED, collect);
     }
 
@@ -74,6 +89,7 @@ public class GlobalExceptionHandler {
         List<String> collect = fieldErrors.stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
+        CommonFun.outputException(e, log);
         return new CommonResult(CommonResultEnum.FAILED, collect);
 
 
@@ -91,6 +107,7 @@ public class GlobalExceptionHandler {
         List<String> collect = constraintViolations.stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.toList());
+        CommonFun.outputException(e, log);
         return new CommonResult(CommonResultEnum.FAILED, collect);
     }
 
@@ -104,7 +121,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = ServiceException.class)
     public CommonResult CustomExceptionHandler(HttpServletRequest req, ServiceException e) {
-        CommonFun.getExceptionTraceInfo(e);
+        CommonFun.outputException(e, log);
         return new CommonResult(e.getCommonResultEnum(), e.getErrorMsg());
     }
 }

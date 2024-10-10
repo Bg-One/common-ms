@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Button, Form, message, Modal} from 'antd';
 import {PlusOutlined, UploadOutlined, DownloadOutlined, DeleteOutlined} from '@ant-design/icons';
 
-import {addDeptApi, deleteDeptApi, listDeptApi, updateDeptApi} from "../../common/api/deptinfo-api";
+import {addDeptApi, deleteDeptApi, listDeptApi, updateDeptApi} from "../../common/api/sys/deptinfo-api";
 
 import './index.scss'
 import DeptInfoForm from "../../content/dept/dept-info";

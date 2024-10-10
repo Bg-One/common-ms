@@ -4,7 +4,7 @@ import {Form} from "antd/lib";
 import {DownloadOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, UploadOutlined} from "@ant-design/icons";
 import {useForm} from "antd/es/form/Form";
 import './index.scss'
-import {addMenuApi, deleteSysMenuApi, editMenuApi, listMenuApi} from "../../common/api/menu-api";
+import {addMenuApi, deleteSysMenuApi, editMenuApi, listMenuApi} from "../../common/api/sys/menu-api";
 import {handleTree} from "../../utils/tree-data";
 import MenuDrawer from "../../content/menu/menu-drawer";
 import MyIcon from "../../content/custom-icon";

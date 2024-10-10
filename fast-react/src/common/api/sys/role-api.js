@@ -1,4 +1,4 @@
-import http from "../../utils/http"
+import http from "../../../utils/http"
 
 export let listRoleApi = (obj = {}) => {
     return http.post('role/listRole', obj)

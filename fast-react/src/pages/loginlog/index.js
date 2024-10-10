@@ -2,7 +2,7 @@ import {Button, DatePicker, Form, Input, message, Select, Space, Table} from "an
 import {ReloadOutlined, SearchOutlined} from "@ant-design/icons";
 import React, {useEffect, useState} from "react";
 import {useForm} from "antd/es/form/Form";
-import {cleanLoginLogApi, listSysLogininforApi, removeLoginLogByGuidsApi} from "../../common/api/log-api";
+import {cleanLoginLogApi, listSysLogininforApi, removeLoginLogByGuidsApi} from "../../common/api/sys/log-api";
 import './index.scss'
 import {loginStatusEnum} from "../../common/enmus/login-status-enum";
 

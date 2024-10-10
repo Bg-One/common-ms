@@ -5,7 +5,7 @@ import React, {useEffect, useState} from "react";
 import {useForm} from "antd/es/form/Form";
 import './index.scss'
 
-import {addPostApi, delPostApi, editPostApi, listPostApi} from "../../common/api/post-api";
+import {addPostApi, delPostApi, editPostApi, listPostApi} from "../../common/api/sys/post-api";
 import PostInfoDrawer from "../../content/post/post-info-drawer";
 
 const Post = (props) => {

@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {getRoutersApi, getUserInfoApi} from "../../common/api/sys-api";
+import {getRoutersApi, getUserInfoApi} from "../../common/api/sys/sys-api";
 import Cookies from "js-cookie";
 import MyIcon from "../../content/custom-icon";
 import {menuTypeEnum} from "../../common/enmus/menu-type-enum";

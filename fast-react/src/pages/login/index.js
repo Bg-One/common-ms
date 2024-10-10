@@ -1,7 +1,7 @@
 import {Button, Checkbox, Form, Image, Input, message} from 'antd';
 import {useEffect, useState} from 'react';
 import {sm3} from "sm-crypto";
-import {loginApi, captchaImageApi} from '../../common/api/sys-api';
+import {loginApi, captchaImageApi} from '../../common/api/sys/sys-api';
 import loginTitle from '../../static/images/login-title.png'
 import './index.scss'
 import {useNavigate} from "react-router-dom";

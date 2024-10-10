@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 
-import {listDeptApi} from "../../common/api/deptinfo-api";
+import {listDeptApi} from "../../common/api/sys/deptinfo-api";
 
 import DeptTreeData from "../../content/dept/dept-tree-data";
 import {handleTree} from "../../utils/tree-data";
@@ -12,15 +12,15 @@ import {
     insertUserApi,
     listUserApi,
     resetPwdApi
-} from '../../common/api/use-api'
+} from '../../common/api/sys/use-api'
 import {DownloadOutlined, PlusOutlined, UploadOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
 import UserInfoDrawer from "../../content/user/user-info-drawer";
 import './index.scss'
 import {sexEnum} from "../../common/enmus/sex-enum";
 import {useForm} from "antd/es/form/Form";
 import {sm3} from "sm-crypto";
-import {listRoleApi} from "../../common/api/role-api";
-import {listPostApi} from "../../common/api/post-api";
+import {listRoleApi} from "../../common/api/sys/role-api";
+import {listPostApi} from "../../common/api/sys/post-api";
 
 const User = () => {
         const [searchForm] = useForm();//查询表单
@@ -104,7 +104,7 @@ const User = () => {
         const addUser = (values) => {
             insertUserApi({...values, password: sm3(values.password)}).then(res => {
                 setOpen(false)
-                userInfoform.resetFields
+                userInfoform.resetFields()
                 message.success('新增成功')
                 listUser({})
             })
@@ -114,7 +114,7 @@ const User = () => {
             editUserApi({
                 ...values,
                 userGuid: selectUser.userGuid,
-                roleGuids: values.roleGuids.join(",")
+                roleGuids:  values.roleGuids?values.roleGuids.join(","):''
             }).then(res => {
                 message.success('编辑成功')
                 closeUserInfoDrawer()

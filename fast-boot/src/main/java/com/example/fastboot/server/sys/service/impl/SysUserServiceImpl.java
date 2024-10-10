@@ -42,6 +42,9 @@ public class SysUserServiceImpl implements ISysUserService {
         if (sysUsers != null && sysUsers.size() > 0) {
             for (SysUser sysUser : sysUsers) {
                 List<SysRole> roles = sysUser.getRoles();
+                if (roles.size() == 0) {
+                    continue;
+                }
                 String[] roleGuids = new String[roles.size()];
                 for (int i = 0; i < roles.size(); i++) {
                     SysRole role = roles.get(i);

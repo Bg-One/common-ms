@@ -13,6 +13,8 @@ export const componentMap = {
     Authority: React.lazy(() => import('../../pages/authority')),
     LoginLog: React.lazy(() => import('../../pages/loginlog')),
     OperateLog: React.lazy(() => import('../../pages/operalog')),
+    Flowable: React.lazy(() => import('../../pages/flowable')),
+    FormDesign: React.lazy(() => import('../../pages/form')),
 
     // 更多组件...
 };
@@ -61,5 +63,20 @@ export const menuConfig = [{
         label: '登录日志',
         component: 'LoginLog',
         icon: <MyIcon type={'icon-xitonggongju-denglurizhi'}/>,
+    }]
+}, {
+    key: '/flowable',
+    label: '流程管理',
+    icon: <MyIcon type={'icon-flowable'}/>,
+    children: [{
+        key: '/flowable/design',
+        label: '流程设计',
+        component: 'Flowable',
+        icon: <MyIcon type={'icon-danwei'}/>,
+    },{
+        key: '/flowable/form-design',
+        label: '表单设计',
+        component: 'FormDesign',
+        icon: <MyIcon type={'icon-danwei'}/>,
     }]
 }]

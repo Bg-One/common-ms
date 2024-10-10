@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 28082
   servlet:
     context-path: /
   tomcat:
@@ -87,3 +87,9 @@ fast-common:
     secret: abcdefghijklmnopqrstuvwxyz
     # 令牌有效期（默认30分钟）
     expireTime: 30
+# flowable相关表
+flowable:
+  # true 会对数据库中所有表进行更新操作。如果表不存在，则自动创建(建议开发时使用)
+  database-schema-update: false
+  # 关闭定时任务JOB
+  async-executor-activate: false

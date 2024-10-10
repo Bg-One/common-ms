@@ -1,4 +1,4 @@
-import http from "../../utils/http"
+import http from "../../../utils/http"
 
 export let listMenuApi = (obj = {}) => {
     return http.post('menu/listMenu', obj)

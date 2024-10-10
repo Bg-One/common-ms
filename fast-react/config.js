@@ -9,5 +9,5 @@ document.head.insertAdjacentHTML('beforeend', '<style>html { font-size: 80%; } b
  */
 let httpType = 'http'           //http or https
 let ip = '127.0.0.1'
-let port = '8081'
+let port = '28082'
 let entryName = ''   //接口的项目名

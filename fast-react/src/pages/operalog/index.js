@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react";
 import {useForm} from "antd/es/form/Form";
 import {
     cleanOperLogApi, listOperLogApi, removeOperLogByGuidsApi
-} from "../../common/api/log-api";
+} from "../../common/api/sys/log-api";
 import './index.scss'
 import {businessTypeEnum} from "../../common/enmus/business-type-enum";
 import {opreStatusEnum} from "../../common/enmus/oper-status-enum";
