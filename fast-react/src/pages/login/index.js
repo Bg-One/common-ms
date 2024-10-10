@@ -12,6 +12,7 @@ import {setToken} from "../../utils/auth";
 const Login = (props) => {
     let navigate = useNavigate();
     let dispatch = useDispatch();
+    const [loading, setLoadings] = useState(false);
     useEffect(() => {
         getCaptchaImage()
     }, [])
@@ -29,12 +30,15 @@ const Login = (props) => {
 
     // 登录
     let onFinish = (values) => {
+        setLoadings(true)
         loginApi({...values, uuid, password: sm3(values.password)}).then(res => {
             setToken(res.data.access_token)
+            setLoadings(false)
             dispatch(setAuthentication(true))
             navigate('/home/index')
         }).catch(() => {
             getCaptchaImage()
+            setLoadings(false)
         });
 
     }
@@ -86,7 +90,7 @@ const Login = (props) => {
             </Form.Item>
             <img src={captchaImage} onClick={getCaptchaImage}/>
             <Form.Item>
-                <Button htmlType="submit" className={'login-btn'}>
+                <Button htmlType="submit" className={'login-btn'} loading={loading}>
                     登录
                 </Button>
             </Form.Item>
