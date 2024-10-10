@@ -1,11 +1,12 @@
-import {message} from 'antd'
 import axios from 'axios'
 import qs from 'qs'
 import {getToken} from "./auth";
+import {Modal} from 'antd';
 
+const {confirm} = Modal;
 let Allow_Origin = httpType + '://' + ip + port
 let baseURL = httpType + '://' + ip + ':' + port + '/' + entryName
-console.log(baseURL)
+
 //创建自定义实例
 const http = axios.create({
     // timeout: 10000,
@@ -37,11 +38,7 @@ http.interceptors.request.use(
             config.headers['Authorization'] = 'Bearer ' + accessToken // 让每个请求携带自定义token 请根据实际情况自行修改
         }
         // 在发送请求之前做某件事
-        if (
-            config.method === "post" ||
-            config.method === "put" ||
-            config.method === "delete"
-        ) {
+        if (config.method === "post" || config.method === "put" || config.method === "delete") {
             // 序列化
             if (Object.prototype.toString.call(config.data) !== '[object FormData]') {
                 config.data = qs.stringify(config.data)
@@ -56,36 +53,52 @@ http.interceptors.request.use(
 // 添加响应拦截器   对响应数据做点什么(可以处理响应状态码)
 http.interceptors.response.use((response) => {
 
-    // 独立处理某些接口
-    if (['userinfo/userAuthByCode1'].some(item => new RegExp(item + '$').test(response.config.url))) {
-        console.log(response)
-        return response
-    }
+    // 未设置状态码则默认成功状态
+    const code = response.data.code || 200;
+    // 获取错误信息
+    const msg = response.data.msg
 
     //返回 blob 文件时
     if (Object.prototype.toString.call(response.data) === '[object Blob]') {
         return response.data
     }
 
-    // 返回数据不对时，打断流程
-    if (response.data.code !== 1) {
-        message.error(response.data.message)
-        return Promise.reject(response.data.message)
-    }
+    if (code === 1008) {
+        confirm({
+            title: '会话提醒',
+            content: '无效的会话，或者会话已过期，请重新登录。',
+            cancelButtonProps: {
+                disabled: true
+            },
+            onOk() {
+                return new Promise((resolve, reject) => {
+                    //跳到首页
+                    location.href = '/#/login';
+                    resolve()
+                }).catch(() => isRelogin.show = false);
+            },
+            onCancel() {
+            },
+        });
 
-    // // 正常接口处理
-    // try {
-    //     // 当 response.data.data 为json时 返回转化后的值
-    //     response.data = JSON.parse(response.data.data)//解json
-    // } catch (e) {
-    //     // 当 response.data 不为json 时不处理
-    //     console.log('注:' + response.config.url + ' 接口返回值不是json，请联系后端更改')
-    //     console.log('返回值是', response.data)
-    //     return response.data
-    // }
-    return response.data
+        return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
+    } else if (code !== 1) {
+        Notification.error({title: msg})
+        return Promise.reject('error')
+    } else {
+        return response.data
+    }
 }, (error) => {
-    // 对响应错误做点什么
+    console.log('err' + error)
+    let {message} = error;
+    if (message === "Network Error") {
+        message = "后端接口连接异常";
+    } else if (message.includes("timeout")) {
+        message = "系统接口请求超时";
+    } else if (message.includes("Request failed with status code")) {
+        message = "系统接口" + message.substr(message.length - 3) + "异常";
+    }
+    message.error({message: message, type: 'error', duration: 5 * 1000})
     return Promise.reject(error)
 })
 
