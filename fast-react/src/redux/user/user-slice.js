@@ -100,6 +100,7 @@ const createMenuConfigByMenu = (routers) => {
             key: '/home' + menu.key,
             icon: menu.icon,
             label: menu.label,
+            component: menu.component,
         }
         if (menu.children && menu.children.length !== 0) {
             const routers = menu.children
@@ -117,6 +118,7 @@ const createMenuConfigByRes = (routers) => {
             key: '/home' + router.path,
             icon: <MyIcon type={router.icon}/>,
             label: router.menuName,
+            component: router.component,
         }
 
         if (router.children.length !== 0) {

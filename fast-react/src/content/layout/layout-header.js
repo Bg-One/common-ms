@@ -1,8 +1,11 @@
 import './layout-header.scss'
 import LayoutBreadCrum from './layout-breadCrum'
-import {UserOutlined} from '@ant-design/icons';
+import {
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+} from '@ant-design/icons';
 import {useNavigate} from "react-router-dom";
-import {Avatar, Badge, message} from "antd";
+import {Avatar, Badge, Button, message} from "antd";
 import {useDispatch} from "react-redux";
 import {logoutApi} from "../../common/api/sys/sys-api";
 import {setAuthentication, setLoading, setMenuConfig, setRouters, setUserInfo} from "../../redux/user/user-slice";
@@ -10,7 +13,7 @@ import {removeToken} from "../../utils/auth";
 import Websocket from "react-websocket";
 import http from "../../utils/http";
 
-const LayoutHeader = (props) => {
+const LayoutHeader = ({toggleCollapsed, collapsed}) => {
     let navigate = useNavigate();
     let dispatch = useDispatch();
     const logout = () => {
@@ -27,7 +30,18 @@ const LayoutHeader = (props) => {
     }
     return <div id={"layout-header"}>
         <div className="layout-header-content">
-            <LayoutBreadCrum/>
+            <div>
+                <Button
+                    type="primary"
+                    onClick={toggleCollapsed}
+                    style={{
+                        marginBottom: 16,
+                    }}
+                >
+                    {collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
+                </Button>
+                <LayoutBreadCrum/>
+            </div>
             <div className={"layout-header-user"}>
                 <Badge count={1}>
                     <Avatar size={40} shape="square" icon={<img src={''}/>}/>

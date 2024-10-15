@@ -1,7 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
 import {getToken} from "./auth";
-import {Modal} from 'antd';
+import {message, Modal} from 'antd';
 
 const {confirm} = Modal;
 let Allow_Origin = httpType + '://' + ip + port
@@ -56,8 +56,7 @@ http.interceptors.response.use((response) => {
     // 未设置状态码则默认成功状态
     const code = response.data.code || 200;
     // 获取错误信息
-    const msg = response.data.msg
-
+    const msg = response.data.message
     //返回 blob 文件时
     if (Object.prototype.toString.call(response.data) === '[object Blob]') {
         return response.data
@@ -83,7 +82,7 @@ http.interceptors.response.use((response) => {
 
         return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
     } else if (code !== 1) {
-        Notification.error({title: msg})
+        message.error(msg)
         return Promise.reject('error')
     } else {
         return response.data

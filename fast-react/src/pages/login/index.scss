@@ -2,47 +2,55 @@
   background-image: url("../../static/images/login-bg.png");
   height: 100vh;
   background-size: 100% 100%;
+  display: flex;
 
-  .login-title-img {
-    width: 15vw;
-    margin-left: 1vw;
-  }
 
-  .ant-form {
-    width: 38vw;
-    border-radius: 0.5vw;
-    left: 57vw;
-    position: relative;
-    top: 18vh;
-    height: 52vh;
-    padding: 9vh 6vw
-  }
-
-  .ant-input {
+  .login-form {
+    width: 21vw;
+    margin: auto;
+    border: 1px #999 solid;
+    border-radius: 1vw;
     text-align: center;
+    background-color: #ffffff;
+    padding: 1vh 1vw;;
+
+    .login-title {
+      color: #288BFE;
+      font-size: 1.5vw;
+      font-weight: bold;
+    }
+
+    .ant-form {
+      margin: 1vh 0;
+
+      .ant-form-item {
+        width: 15vw;
+        margin: 1vh auto;
+      }
+
+      .ant-input {
+        text-align: center;
+      }
+
+      .captcha-form-item {
+        display: inline-block;
+        vertical-align: super;
+        margin-right: 1vw;
+        width: 9vw;
+      }
+
+      .ant-form-item-control-input {
+        text-align: center;
+      }
+
+      .login-btn {
+        display: block;
+        width: 10vw;
+        margin: 0 auto;
+      }
+    }
+
   }
 
-  .captcha-form-item {
-    display: inline-block;
-    vertical-align: bottom;
-    margin-right: 1vw;
-  }
-
-  .ant-form-item-control-input {
-    text-align: center;
-  }
-
-  .login-btn {
-    background: url('../../static/images/login-btn.png');
-    background-size: 100% 100%;
-    color: #fff;
-    border: none;
-    width: 10vw;
-    height: 7vh;
-    line-height: 7vh;
-    font-size: 2rem;
-    margin: 1vh auto;
-    cursor: pointer;
-  }
 
 }

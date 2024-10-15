@@ -8,6 +8,7 @@ const LayoutBreadcrumb = () => {
     const location = useLocation()
     const menuConfig = useSelector(state => state.user.menuConfig)
     return <Breadcrumb
+        style={{display: 'inline-block', marginLeft: '1vw'}}
         items={findLabelsByKey(menuConfig, location.pathname).map(item => ({
             title: item.label,
         }))}
