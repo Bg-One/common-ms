@@ -36,14 +36,14 @@ public class IProduceServiceImpl implements IProduceService {
     private ProjectMapper projectMapper;
 
     @Override
-    public PageResponse listAllProduce(Producemanage producemanage) {
+    public PageResponse listProduce(Producemanage producemanage) {
         LoginUser loginUser = (LoginUser) Base.getCreatUserDetails();
         //获取用户锁定产品
         List<LockProduceToUser> lockProduceToUserList = producemanageMapper.listLockProduceToUserByUser(loginUser.getUserGuid());
         //获取list的produceGuid属性的值生成新的数组
         String[] produceGuids = lockProduceToUserList.stream().map(LockProduceToUser::getProduceGuid).toArray(String[]::new);
         PageHelper.startPage(producemanage.getCurrentPage(), producemanage.getPageSize());
-        List<Producemanage> producemanageList = producemanageMapper.listAllProduce(producemanage, produceGuids);
+        List<Producemanage> producemanageList = producemanageMapper.listProduce(producemanage, produceGuids);
 
         for (Producemanage item : producemanageList) {
             //获取项目数量
@@ -87,7 +87,7 @@ public class IProduceServiceImpl implements IProduceService {
         Producemanage checkNumberProduce = new Producemanage();
         checkNumberProduce.setNumber(producemanage.getNumber());
         if (producemanageMapper.getProduce(checkNameProduce) != null) {
-            throw new ServiceException("产品姓名重复");
+            throw new ServiceException("产品名称重复");
         } else if (producemanageMapper.getProduce(checkNumberProduce) != null) {
             throw new ServiceException("产品编号重复");
         }
@@ -117,5 +117,10 @@ public class IProduceServiceImpl implements IProduceService {
         if (produceGuids.length != 0) {
             producemanageMapper.insertLockProduceToUser(creatUserGuid, produceGuids);
         }
+    }
+
+    @Override
+    public List<Producemanage> listAllProduce() {
+        return producemanageMapper.listAllProduce();
     }
 }

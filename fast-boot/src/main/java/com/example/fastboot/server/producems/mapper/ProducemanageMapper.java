@@ -27,7 +27,7 @@ public interface ProducemanageMapper {
      *
      * @param producemanage
      */
-    List<Producemanage> listAllProduce(@Param("producemanage") Producemanage producemanage, @Param("produceGuids") String[] produceGuids);
+    List<Producemanage> listProduce(@Param("producemanage") Producemanage producemanage, @Param("produceGuids") String[] produceGuids);
 
     /**
      * 根据产品获取产品团队资源
@@ -61,10 +61,10 @@ public interface ProducemanageMapper {
     /**
      * 新增产品资源分配
      *
-     * @param guid
+     * @param produceManageGuid
      * @param producememberList
      */
-    void addProduceMember(@Param("guid") String guid, @Param("producememberList") List<Producemember> producememberList);
+    void addProduceMember(@Param("produceManageGuid") String produceManageGuid, @Param("producememberList") List<Producemember> producememberList);
 
     /**
      * 更新产品资源
@@ -115,6 +115,13 @@ public interface ProducemanageMapper {
      * @return
      */
     List<LockProduceToUser> listLockProduceToUserByUser(String userGuid);
+
+    /**
+     * 获取全部产品
+     * @return
+     */
+    List<Producemanage> listAllProduce();
+
 }
 
 

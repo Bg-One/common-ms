@@ -24,15 +24,25 @@ public class ProduceController {
     private IProduceService producemanageService;
 
     /**
-     * 获取全部产品列表
+     * 获取产品列表
      *
      * @param producemanage
      * @return
      */
     @PreAuthorize("@permission.hasAuthority('producems:produce:list')")
+    @PostMapping("listProduce")
+    public Object listProduce(Producemanage producemanage) {
+        return success(producemanageService.listProduce(producemanage));
+    }
+
+    /**
+     * 获取产品列表
+     *
+     * @return
+     */
     @PostMapping("listAllProduce")
-    public Object listAllProduce(Producemanage producemanage) {
-        return success(producemanageService.listAllProduce(producemanage));
+    public Object listAllProduce() {
+        return success(producemanageService.listAllProduce());
     }
 
     /**

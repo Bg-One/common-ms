@@ -30,6 +30,18 @@ public class Project {
     private Date createTime;
     private String deleteFlag;
 
-    private String projectMemberList;
 
+    private int currentPage;
+
+    private int pageSize;
+
+    private String produceName;
+
+    private String produceManagerName;
+
+    private String technicalManagerName;
+
+    private String projectManagerName;
+
+    private String teamReasourcesList;
 }

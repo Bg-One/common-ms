@@ -1,6 +1,9 @@
 package com.example.fastboot.server.producems.mapper;
 
 
+import com.example.fastboot.server.producems.model.Producemember;
+import com.example.fastboot.server.producems.model.Project;
+import com.example.fastboot.server.producems.model.Projectmember;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +18,74 @@ public interface ProjectMapper {
      * @param guid
      */
     int countByProduceGuid(String guid);
+
+    /**
+     * 获取产品列表
+     *
+     * @param project
+     * @return
+     */
+    List<Project> listProject(Project project);
+
+    /**
+     * 获取项目资源列表
+     *
+     * @param projectGuid
+     * @return
+     */
+    List<Projectmember> listProduceMember(String projectGuid);
+
+    /**
+     * 获取项目
+     *
+     * @param project
+     * @return
+     */
+    Project getProject(Project project);
+
+    /**
+     * 新增项目
+     *
+     * @param project
+     */
+    void insertProject(Project project);
+
+    /**
+     * 更新项目
+     *
+     * @param project
+     */
+    void updateProject(Project project);
+
+    /**
+     * 新增项目资源
+     *
+     * @param projectGuid
+     * @param projectmemberList
+     */
+    void insertProjectMember(@Param("projectGuid") String projectGuid, @Param("projectmemberList") List<Projectmember> projectmemberList);
+
+    /**
+     * 更新项目资源
+     *
+     * @param guid
+     * @param projectmember
+     */
+    void updateProjectMember(@Param("guid") String guid, @Param("projectmember") Projectmember projectmember);
+
+    /**
+     * 删除项目
+     *
+     * @param guid
+     */
+    void deleteProject(String guid);
+
+
+    /**
+     * 获取项目组成员列表
+     *
+     * @param guid
+     * @return
+     */
+    List<Producemember> listProjectMemList(String guid);
 }

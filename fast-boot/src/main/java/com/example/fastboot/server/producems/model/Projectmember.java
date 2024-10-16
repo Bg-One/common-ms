@@ -17,4 +17,8 @@ public class Projectmember {
 
     private String groupMemsGuids;
 
+    private String managerName;
+
+    private String groupMemsNames;
+
 }

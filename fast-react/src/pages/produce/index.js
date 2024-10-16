@@ -16,12 +16,12 @@ import {AppstoreAddOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/i
 import {
     addProduceApi,
     deleteProduceApi,
-    listAllProduceApi,
+    listProduceApi,
     listProduceMemListApi, updateLockProduceToUserApi
 } from "../../common/api/producems/produce";
 import {teamresourceEnum} from "../../common/enmus/teamresource-enum";
 import {listUserApi} from "../../common/api/sys/use-api";
-import {getUserTreeData} from "../../utils/user";
+import {changeGroupMems, changManage, getUserGiudsByDepGuids, getUserTreeData} from "../../utils/user";
 import {listDeptApi} from "../../common/api/sys/deptinfo-api";
 import pinyinUtil from "../../common/react-pinyin-master";
 import {hasPermi} from '../../utils/permi'
@@ -32,7 +32,7 @@ const Produce = (props) => {
     const [formInstance] = Form.useForm()
     const [searchForm] = Form.useForm()
     const [produceList, setProduceList] = useState([])
-    const [teamResourcesList, setTeamResourcesList] = useState([{teamResource: 1}, {teamResource: 2}, {teamResource: 3}])
+    const [teamResourcesList, setTeamResourcesList] = useState([{teamResource: teamresourceEnum.DEMAND_GROUP}, {teamResource: teamresourceEnum.RD_GROUP}, {teamResource: teamresourceEnum.TEST_GROUP}])
     const [addModalOpen, setAddModalOpen] = useState(false)
     const [addFlag, setAddFlag] = useState(false)
     const [pageInfo, setPageInfo] = useState({
@@ -64,7 +64,7 @@ const Produce = (props) => {
     }, [addModalOpen])
     //获取产品列表
     const listProduce = (values) => {
-        listAllProduceApi(values).then(res => {
+        listProduceApi(values).then(res => {
             //获取锁定的产品列表的guid
             setSelectedRowKeys(res.data.list.length !== 0 ? res.data.list[0].lockProduceGuids : [])
             setProduceList(res.data.list)
@@ -97,20 +97,8 @@ const Produce = (props) => {
             })
         })
     }
-    //改变负责人
-    const changManage = (index, v, option, resourcesList) => {
-        let newTeamResourcesList = [...resourcesList]
-        let groupMemsGuids = newTeamResourcesList[index].groupMemsGuids;
-        newTeamResourcesList[index].managerGuid = v
-        newTeamResourcesList[index].groupMemsGuids = groupMemsGuids ? groupMemsGuids : ''
-        return newTeamResourcesList
-    }
-    //改变项目组成员
-    const changeGroupMems = (v, option, index, resourcesList) => {
-        let newTeamResourcesList = [...resourcesList]
-        newTeamResourcesList[index].groupMemsGuids = v.join('、')
-        return newTeamResourcesList
-    }
+
+
     //新增项目
     const addProduce = () => {
         let fieldsValue = formInstance.getFieldsValue(true)
@@ -134,28 +122,12 @@ const Produce = (props) => {
                 setAddModalOpen(false)
                 formInstance.resetFields()
                 setAddFlag(false)
-                setTeamResourcesList([{teamResource: 1}, {teamResource: 2}, {teamResource: 3}])
+                setTeamResourcesList([{teamResource: teamresourceEnum.DEMAND_GROUP}, {teamResource: teamresourceEnum.RD_GROUP}, {teamResource: teamresourceEnum.TEST_GROUP}])
                 message.success('保存成功', 1)
             }
         })
     }
-    //根据单位唯一标识获取用户唯一标识
-    const getUserGiudsByDepGuids = (userList, depList, dataList) => {
-        let arr = []
-        dataList.map(item => {
-            userList.map(i => {
-                if (i.userGuid === item) {
-                    arr.push(item)
-                }
-            })
-            depList.map(i => {
-                if (i.deptGuid === item) {
-                    arr = arr.concat(userList.filter(p => p.deptGuid === item).map(p => p.userGuid))
-                }
-            })
-        })
-        return Array.from(new Set(arr))
-    }
+
 
     return <div id="produce-list">
         <div className={'search-area'}>
@@ -321,7 +293,7 @@ const Produce = (props) => {
             footer={false}
             onCancel={() => {
                 formInstance.resetFields()
-                setTeamResourcesList([{teamResource: 1}, {teamResource: 2}, {teamResource: 3}])
+                setTeamResourcesList([{teamResource: teamresourceEnum.DEMAND_GROUP}, {teamResource: teamresourceEnum.RD_GROUP}, {teamResource: teamresourceEnum.TEST_GROUP}])
                 setAddModalOpen(false)
                 setAddFlag(false)
             }}
@@ -431,9 +403,6 @@ const Produce = (props) => {
                                 treeCheckable={true} //
                                 showCheckedStrategy={TreeSelect.SHOW_PARENT}
                                 showSearch
-                                // filterOption={(input, option) => {
-                                //     return pinyinUtil.getFirstLetter(option.label).indexOf(input.toUpperCase()) !== -1 || option.label.indexOf(input.toUpperCase()) !== -1
-                                // }}
                             />
                         }
                     }
@@ -444,9 +413,7 @@ const Produce = (props) => {
                 }}
                 pagination={false}
             />
-            <Button type={'primary'}
-                    onClick={addProduce}
-            >保存</Button>
+            <Button type={'primary'} onClick={addProduce}>保存</Button>
         </Modal>
     </div>
 }

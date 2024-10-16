@@ -1,5 +1,9 @@
 import http from "../../../utils/http"
 
+export let listProduceApi = (obj = {}) => {
+    return http.post('produce/listProduce', obj)
+}
+
 export let listAllProduceApi = (obj = {}) => {
     return http.post('produce/listAllProduce', obj)
 }

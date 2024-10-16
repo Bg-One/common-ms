@@ -3,11 +3,128 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.fastboot.server.producems.mapper.ProjectMapper">
+    <insert id="insertProject">
+        insert into project(
+        <if test="name != null and name != ''">`name`,</if>
+        <if test="projectNo != null and projectNo != ''">`projectNo`,</if>
+        <if test="createTime != null ">createTime,</if>
+        <if test="executionStatus != null ">executionStatus,</if>
+        <if test="acceptanceFlag != null ">acceptanceFlag,</if>
+        <if test="acceptReportLink != null and acceptReportLink!=''">acceptReportLink,</if>
+        guid
+        )values(
+        <if test="name != null and name != ''">#{name},</if>
+        <if test="projectNo != null and projectNo != ''">#{projectNo},</if>
+        <if test="createTime != null ">#{createTime},</if>
+        <if test="executionStatus != null ">#{executionStatus},</if>
+        <if test="acceptanceFlag != null ">#{acceptanceFlag},</if>
+        <if test="acceptReportLink != null and acceptReportLink!=''">#{acceptReportLink},</if>
+        #{guid})
+    </insert>
+    <insert id="insertProjectMember">
+        INSERT INTO projectmember(projectGuid,teamResource,managerGuid,groupMemsGuids) VALUES
+        <foreach collection="producememberList" separator="," item="item">
+            (#{projectGuid},#{item.teamResource},#{item.managerGuid},#{item.groupMemsGuids})
+        </foreach>
+    </insert>
+    <update id="updateProject">
+        update project
+        <set>
+            <if test="name != null and name != ''">`name`=#{name},</if>
+            <if test="projectNo != null and projectNo != ''">`projectNo`=#{projectNo},</if>
+            <if test="createTime != null ">createTime=#{createTime},</if>
+            <if test="executionStatus != null ">executionStatus=#{executionStatus},</if>
+            <if test="acceptanceFlag != null ">acceptanceFlag=#{acceptanceFlag},</if>
+            <if test="acceptReportLink != null ">acceptReportLink=#{acceptReportLink},</if>
+        </set>
+        where guid = #{guid}
+    </update>
+    <update id="updateProjectMember">
+        update projectmember
+        <set>
+            <if test="`projectmember.groupMemsGuids` != null and `projectmember.groupMemsGuids` != ''">
+                `groupMemsGuids`=#{projectmember.groupMemsGuids},
+            </if>
+            <if test="`projectmember.managerGuid` != null and `projectmember.managerGuid` != ''">
+                `managerGuid`=#{projectmember.managerGuid},
+            </if>
+        </set>
+        <where>
+            <if test="`projectmember.produceManageGuid` != null and `projectmember.produceManageGuid` != ''">
+                produceManageGuid =
+                #{projectmember.produceManageGuid}
+            </if>
+            <if test="`projectmember.produceManageGuid` != null and `projectmember.produceManageGuid` != ''">
+                and teamResource = #{projectmember.teamResource}
+            </if>
+        </where>
+    </update>
+    <delete id="deleteProject">
+        update project
+        set deleteFlag=0
+        where guid = #{guid};
+    </delete>
 
 
     <select id="countByProduceGuid" resultType="java.lang.Integer">
         select count(*)
         from project
-        where produceGuid = #{guid} and deleteFlag = 0
+        where produceGuid = #{guid}
+          and deleteFlag = 0
+    </select>
+    <select id="listProject" resultType="com.example.fastboot.server.producems.model.Project">
+        SELECT t1.*,t2.name produceName,t3.nick_name produceManagerName
+        from project t1
+        INNER JOIN producemanage t2 on t1.produceGuid = t2.guid
+        LEFT join sys_user t3 on t2.produceManager = t3.user_guid
+        <where>
+            <if test="name !=null and name !=''">
+                and t1.`name` like concat('%',#{name},'%')
+            </if>
+            <if test="projectNo !=null and projectNo !=''">
+                and t1.`projectNo` like concat('%',#{projectNo},'%')
+            </if>
+            <if test="executionStatus !=100">
+                and t1.`executionStatus` =#{executionStatus}
+            </if>
+            <if test="produceGuid !=null and produceGuid !=''">
+                and t1.produceGuid=#{produceGuid}
+            </if>
+            and t1.deleteFlag=0
+            order by t1.createTime desc
+        </where>
+    </select>
+    <select id="listProduceMember" resultType="com.example.fastboot.server.producems.model.Projectmember">
+        SELECT t1.*,
+               t2.nick_name managerName
+        FROM projectmember t1
+                 INNER JOIN sys_user t2 ON t1.managerGuid = t2.user_guid
+        WHERE t1.projectGuid = #{projectGuid}
+    </select>
+    <select id="getProject" resultType="com.example.fastboot.server.producems.model.Project">
+        select * from project
+        <where>
+            deleteFlag=0
+            <if test="guid !=null and guid!=''">
+                and guid = #{guid}
+            </if>
+            <if test="name !=null and name!=''">
+                and `name` = #{name}
+            </if>
+            <if test="projectNo !=null and projectNo!=''">
+                and `projectNo` = #{projectNo}
+            </if>
+            <if test="executionStatus !=null ">
+                and executionStatus=#{executionStatus}
+            </if>
+            <if test="produceGuid !=null and produceGuid!=''">
+                and produceGuid=#{produceGuid}
+            </if>
+        </where>
+    </select>
+    <select id="listProjectMemList" resultType="com.example.fastboot.server.producems.model.Producemember">
+        select *
+        from projectmember
+        where projectGuid = #{guid}
     </select>
 </mapper>

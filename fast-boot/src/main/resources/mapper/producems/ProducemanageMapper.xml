@@ -37,7 +37,7 @@
     <insert id="addProduceMember">
         INSERT INTO producemember(produceManageGuid,teamResource,managerGuid,groupMemsGuids) VALUES
         <foreach collection="producememberList" separator="," item="item">
-            (#{guid},#{item.teamResource},#{item.managerGuid},#{item.groupMemsGuids})
+            (#{produceManageGuid},#{item.teamResource},#{item.managerGuid},#{item.groupMemsGuids})
         </foreach>
     </insert>
     <insert id="insertLockProduceToUser">
@@ -53,7 +53,7 @@
             <if test="number != null and number != ''">`number`=#{number},</if>
             <if test="produceManager != null and produceManager!=''">produceManager=#{produceManager},</if>
             <if test="factoryReportLink != null and factoryReportLink!=''">factoryReportLink=#{factoryReportLink},</if>
-            <if test="acceptanceFlag != null and acceptanceFlag!=''">acceptanceFlag=#{acceptanceFlag},</if>
+            <if test="acceptanceFlag != null ">acceptanceFlag=#{acceptanceFlag},</if>
         </set>
         where guid = #{guid}
     </update>
@@ -93,7 +93,7 @@
         where produceGuid = #{produceGuid};
     </delete>
 
-    <select id="listAllProduce" resultMap="BaseResultMap">
+    <select id="listProduce" resultMap="BaseResultMap">
         select t1.*,t2.nick_name produceManagerName
         from producemanage t1
         LEFT join sys_user t2 on t1.produceManager = t2.user_guid
@@ -158,6 +158,11 @@
         select *
         from lockproducetouser
         where userGuid = #{userGuid}
+    </select>
+    <select id="listAllProduce" resultType="com.example.fastboot.server.producems.model.Producemanage">
+        select *
+        from producemanage
+        where deleteFlag = 0
     </select>
 
 

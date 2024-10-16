@@ -17,7 +17,7 @@ public interface IProduceService {
      * @param producemanage 产品参数
      * @return
      */
-    PageResponse listAllProduce(Producemanage producemanage);
+    PageResponse listProduce(Producemanage producemanage);
 
     /**
      * 删除产品
@@ -47,4 +47,11 @@ public interface IProduceService {
      * @param produceGuids
      */
     void updateLockProduceToUser(String[] produceGuids);
+
+    /**
+     * 获取全部产品
+     *
+     * @return
+     */
+    List<Producemanage> listAllProduce();
 }

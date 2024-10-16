@@ -16,6 +16,8 @@ export const componentMap = {
     Flowable: React.lazy(() => import('../../pages/flowable')),
     FormDesign: React.lazy(() => import('../../pages/form')),
     Produce: React.lazy(() => import('../../pages/produce')),
+    Project: React.lazy(() => import('../../pages/project')),
+
     // 更多组件...
 };
 // 默认菜单/面包屑配置
@@ -29,6 +31,11 @@ export const menuConfig = [{
     icon: <MyIcon type={'icon-main'}/>,
     component: 'Produce',
     label: '产品列表',
+}, {
+    key: '/project',
+    icon: <MyIcon type={'icon-main'}/>,
+    component: 'Project',
+    label: '项目列表',
 }, {
     key: '/sys',
     label: '系统管理',
