@@ -15,7 +15,7 @@ export const componentMap = {
     OperateLog: React.lazy(() => import('../../pages/operalog')),
     Flowable: React.lazy(() => import('../../pages/flowable')),
     FormDesign: React.lazy(() => import('../../pages/form')),
-
+    Produce: React.lazy(() => import('../../pages/produce')),
     // 更多组件...
 };
 // 默认菜单/面包屑配置
@@ -24,6 +24,11 @@ export const menuConfig = [{
     icon: <MyIcon type={'icon-main'}/>,
     component: 'PageMain',
     label: '首页',
+}, {
+    key: '/produce',
+    icon: <MyIcon type={'icon-main'}/>,
+    component: 'Produce',
+    label: '产品列表',
 }, {
     key: '/sys',
     label: '系统管理',
@@ -73,7 +78,7 @@ export const menuConfig = [{
         label: '流程设计',
         component: 'Flowable',
         icon: <MyIcon type={'icon-danwei'}/>,
-    },{
+    }, {
         key: '/flowable/form-design',
         label: '表单设计',
         component: 'FormDesign',

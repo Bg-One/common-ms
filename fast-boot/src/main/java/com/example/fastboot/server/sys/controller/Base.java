@@ -16,6 +16,11 @@ public class Base {
         return loginUser.getUsername();
     }
 
+    public static String getCreatUserGuid() {
+        LoginUser loginUser = (LoginUser) getCreatUserDetails();
+        return loginUser.getUserGuid();
+    }
+
     public static UserDetails getCreatUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (UserDetails) authentication.getPrincipal();

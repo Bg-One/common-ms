@@ -28,6 +28,10 @@ const UserInfoDrawer = ({open, closeUserInfoDrawer, deptTreeData, userAction, fo
                 labelCol={{
                     span: 4,
                 }}
+                initialValues={{
+                    sex: 1,
+                    status: 1
+                }}
             >
                 <Form.Item
                     name="nickName"
@@ -128,6 +132,12 @@ const UserInfoDrawer = ({open, closeUserInfoDrawer, deptTreeData, userAction, fo
                 <Form.Item
                     name="postGuids"
                     label="岗位"
+                    rules={[
+                        {
+                            required: true,
+                            message: '请选择岗位',
+                        },
+                    ]}
                 >
                     <Select
                         showSearch
@@ -139,6 +149,12 @@ const UserInfoDrawer = ({open, closeUserInfoDrawer, deptTreeData, userAction, fo
                 <Form.Item
                     name="roleGuids"
                     label="角色"
+                    rules={[
+                        {
+                            required: true,
+                            message: '请选择角色',
+                        },
+                    ]}
                 >
                     <Select
                         showSearch

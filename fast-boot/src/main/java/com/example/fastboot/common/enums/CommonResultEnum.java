@@ -58,7 +58,7 @@ public enum CommonResultEnum {
     /**
      * 暂无权限
      */
-    AUTH_ERROR(1009, "暂无权限"),
+    AUTH_ERROR(1009, "该接口用户暂无访问权限"),
     //==================
     DEPT_EXIST(2001, "单位已存在"),
     PARENT_DISABLE(2002, "父节点禁用，禁止新增"),

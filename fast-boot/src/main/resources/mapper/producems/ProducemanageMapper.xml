@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.fastboot.server.producems.mapper.ProducemanageMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.fastboot.server.producems.model.Producemanage">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="guid" column="guid" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="number" column="number" jdbcType="VARCHAR"/>
+        <result property="produceManager" column="produceManager" jdbcType="VARCHAR"/>
+        <result property="produceManagerName" column="produceManagerName" jdbcType="VARCHAR"/>
+        <result property="factoryReportLink" column="factoryReportLink" jdbcType="VARCHAR"/>
+        <result property="acceptanceFlag" column="acceptanceFlag" jdbcType="VARCHAR"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="deleteFlag" column="deleteFlag" jdbcType="TINYINT"/>
+    </resultMap>
+    <insert id="addProduce">
+        insert into producemanage(
+        <if test="name != null and name != ''">`name`,</if>
+        <if test="number != null and number != ''">`number`,</if>
+        <if test="createTime != null ">createTime,</if>
+        <if test="produceManager != null and produceManager!=''">produceManager,</if>
+        <if test="factoryReportLink != null and factoryReportLink!=''">factoryReportLink,</if>
+        <if test="acceptanceFlag != null ">acceptanceFlag,</if>
+        guid
+        )values(
+        <if test="name != null and name != ''">#{name},</if>
+        <if test="number != null and number != ''">#{number},</if>
+        <if test="createTime != null ">#{createTime},</if>
+        <if test="produceManager != null and produceManager!=''">#{produceManager},</if>
+        <if test="factoryReportLink != null and factoryReportLink != ''">#{factoryReportLink},</if>
+        <if test="acceptanceFlag != null ">#{acceptanceFlag},</if>
+        #{guid})
+    </insert>
+    <insert id="addProduceMember">
+        INSERT INTO producemember(produceManageGuid,teamResource,managerGuid,groupMemsGuids) VALUES
+        <foreach collection="producememberList" separator="," item="item">
+            (#{guid},#{item.teamResource},#{item.managerGuid},#{item.groupMemsGuids})
+        </foreach>
+    </insert>
+    <insert id="insertLockProduceToUser">
+        insert into lockproducetouser(userGuid,produceGuid) values
+        <foreach collection="produceGuids" separator="," item="item">
+            (#{userGuid},#{item})
+        </foreach>
+    </insert>
+    <update id="updateProduce">
+        update producemanage
+        <set>
+            <if test="name != null and name != ''">`name`=#{name},</if>
+            <if test="number != null and number != ''">`number`=#{number},</if>
+            <if test="produceManager != null and produceManager!=''">produceManager=#{produceManager},</if>
+            <if test="factoryReportLink != null and factoryReportLink!=''">factoryReportLink=#{factoryReportLink},</if>
+            <if test="acceptanceFlag != null and acceptanceFlag!=''">acceptanceFlag=#{acceptanceFlag},</if>
+        </set>
+        where guid = #{guid}
+    </update>
+    <update id="updateProduceMember">
+        update producemember
+        <set>
+            <if test="`producemember.groupMemsGuids` != null and `producemember.groupMemsGuids` != ''">
+                `groupMemsGuids`=#{producemember.groupMemsGuids},
+            </if>
+            <if test="`producemember.managerGuid` != null and `producemember.managerGuid` != ''">
+                `managerGuid`=#{producemember.managerGuid},
+            </if>
+        </set>
+        <where>
+            <if test="`producemember.produceManageGuid` != null and `producemember.produceManageGuid` != ''">
+                produceManageGuid =
+                #{producemember.produceManageGuid}
+            </if>
+            <if test="`producemember.produceManageGuid` != null and `producemember.produceManageGuid` != ''">
+                and teamResource = #{producemember.teamResource}
+            </if>
+        </where>
+    </update>
+    <delete id="deleteProduceByGuid">
+        update producemanage
+        set deleteFlag=1
+        where guid = #{guid}
+    </delete>
+    <delete id="deleteLockProduceToUserByUser">
+        delete
+        from lockproducetouser
+        where userGuid = #{userGuid};
+    </delete>
+    <delete id="deleteLockProduceToUserByProduce">
+        delete
+        from lockproducetouser
+        where produceGuid = #{produceGuid};
+    </delete>
+
+    <select id="listAllProduce" resultMap="BaseResultMap">
+        select t1.*,t2.nick_name produceManagerName
+        from producemanage t1
+        LEFT join sys_user t2 on t1.produceManager = t2.user_guid
+        <where>
+            t1.deleteFlag = 0
+            <if test="producemanage.name !=null and producemanage.name!=''">
+                and t1.name like CONCAT('%',#{producemanage.name},'%')
+            </if>
+            <if test="producemanage.number !=null and producemanage.number!=''">
+                and t1.number like CONCAT('%',#{producemanage.number},'%')
+            </if>
+        </where>
+        order by
+        ( CASE WHEN t1.guid in
+        <foreach collection="produceGuids" separator="," close=")" open="(" item="item">
+            #{item}
+        </foreach>
+        THEN 1
+        ELSE 2 END ) ASC,
+        createTime desc
+
+    </select>
+    <select id="listProduceMember" resultType="com.example.fastboot.server.producems.model.Producemember">
+        SELECT t1.*,
+               t2.nick_name managerName
+        FROM producemember t1
+                 INNER JOIN sys_user t2 ON t1.managerGuid = t2.user_guid
+        WHERE t1.produceManageGuid = #{produceGuid}
+    </select>
+    <select id="getProduce" resultType="com.example.fastboot.server.producems.model.Producemanage">
+        select * from producemanage
+        <where>
+            deleteFlag=0
+            <if test="guid !=null and guid!=''">
+                and guid = #{guid}
+            </if>
+            <if test="name !=null and name!=''">
+                and `name` = #{name}
+            </if>
+            <if test="number !=null and number!=''">
+                and `number` = #{number}
+            </if>
+            <if test="produceManager !=null and produceManager!=''">
+                and produceManager = #{produceManager}
+            </if>
+            <if test="factoryReportLink !=null and factoryReportLink!=''">
+                and factoryReportLink = #{factoryReportLink}
+            </if>
+            <if test="acceptanceFlag !=null and acceptanceFlag!=''">
+                and acceptanceFlag = #{acceptanceFlag}
+            </if>
+        </where>
+    </select>
+    <select id="getProduceLockToUser"
+            resultType="com.example.fastboot.server.producems.model.LockProduceToUser">
+        select *
+        from lockproducetouser
+        where userGuid = #{userGuid}and produceGuid=#{produceGuid}
+    </select>
+    <select id="listLockProduceToUserByUser"
+            resultType="com.example.fastboot.server.producems.model.LockProduceToUser">
+        select *
+        from lockproducetouser
+        where userGuid = #{userGuid}
+    </select>
+
+
+</mapper>

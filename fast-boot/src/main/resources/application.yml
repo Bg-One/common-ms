@@ -58,8 +58,10 @@ mybatis:
   configuration:
     jdbc-type-for-null: 'null'
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   # 配置mapper的扫描，找到所有的mapper.xml映射文件
   mapperLocations: classpath*:mapper/**/*Mapper.xml
+
 
 # PageHelper分页插件
 pagehelper:

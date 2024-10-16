@@ -4,7 +4,7 @@ package com.example.fastboot.common.security.service;
 import com.example.fastboot.common.config.FastCommonConfig;
 import com.example.fastboot.common.constant.CacheConstants;
 import com.example.fastboot.common.enums.CommonResultEnum;
-import com.example.fastboot.common.enums.UserStatus;
+import com.example.fastboot.common.enums.UserStatusEnum;
 import com.example.fastboot.common.exception.ServiceException;
 import com.example.fastboot.common.redis.RedisCache;
 import com.example.fastboot.common.security.LoginUser;
@@ -44,9 +44,9 @@ public class CustomerUserDetailsService implements UserDetailsService {
         SysUser user = userService.selectUserByUserName(username);
         if (Objects.isNull(user)) {
             throw new ServiceException(CommonResultEnum.USER_UN);
-        } else if (UserStatus.DELETED.getCode().equals(user.getDelFlag())) {
+        } else if (UserStatusEnum.DELETED.getCode().equals(user.getDelFlag())) {
             throw new ServiceException(CommonResultEnum.USER_DEL);
-        } else if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
+        } else if (UserStatusEnum.DISABLE.getCode().equals(user.getStatus())) {
             throw new ServiceException(CommonResultEnum.USER_DISABLE);
         }
         Integer retryCount = redisCache.getCacheObject(getCacheKey(username));

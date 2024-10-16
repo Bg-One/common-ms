@@ -16,6 +16,10 @@ public class CommonResult extends BaseResult {
         super(commonResultConstant.getCode(), commonResultConstant.getMessage(), data);
     }
 
+    public CommonResult(CommonResultEnum commonResultConstant, String msg) {
+        super(commonResultConstant.getCode(), msg);
+    }
+
     public CommonResult(CommonResultEnum commonResultConstant) {
         super(commonResultConstant.getCode(), commonResultConstant.getMessage());
     }

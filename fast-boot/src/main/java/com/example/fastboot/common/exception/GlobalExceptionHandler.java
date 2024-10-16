@@ -37,6 +37,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 处理运行时异常
+     *
      * @param request
      * @param e
      * @return
@@ -49,6 +50,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 处理认证异常
+     *
      * @param request
      * @param e
      * @return
@@ -122,6 +124,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ServiceException.class)
     public CommonResult CustomExceptionHandler(HttpServletRequest req, ServiceException e) {
         CommonFun.outputException(e, log);
+        if (e.getCommonResultEnum() == null) {
+            return new CommonResult(CommonResultEnum.FAILED, e.getErrorMsg());
+        }
         return new CommonResult(e.getCommonResultEnum(), e.getErrorMsg());
     }
 }

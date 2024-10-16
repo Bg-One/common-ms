@@ -4,12 +4,25 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {findLabelsByKey, findMenuInfoByKeyAndField} from "../../utils/bread-crum";
 import './layout-menu.scss'
 import {componentMap} from "../../common/config/menu-config";
+import {useEffect} from "react";
 
 const LayoutMenu = ({collapsed, addTab}) => {
     const navigator = useNavigate();
     const menuConfig = useSelector(state => state.user.menuConfig)
     const location = useLocation()
-
+    useEffect(() => {
+        let component = findMenuInfoByKeyAndField(menuConfig, location.pathname, 'component')
+        let label = findMenuInfoByKeyAndField(menuConfig, location.pathname, 'label')
+        const Component = componentMap[component];
+        addTab({
+            label: label,
+            children: <React.Suspense fallback={<div>Loading...</div>}>
+                <Component/>
+            </React.Suspense>
+            ,
+            key: location.pathname,
+        })
+    })
     return <div id="layout-menu">
         <Menu
             className={collapsed ? "layout-menu-content" : ""}

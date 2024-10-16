@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum UserStatus {
+public enum UserStatusEnum {
     DISABLE("0", "停用"),
     OK("1", "正常"),
 

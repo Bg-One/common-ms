@@ -1,0 +1,41 @@
+#produce-list {
+  .ant-table-cell {
+    text-align: center;
+  }
+}
+
+.produce-add-moadl {
+  .ant-modal-header {
+    text-align: center;
+  }
+
+  .produce-user {
+    width: 6vw;
+    text-align: center;
+    background-color: #E4F1FF;
+    color: #1D79FC;
+    margin: 1vh 0;
+  }
+
+
+  .ant-table-thead {
+    .ant-table-cell {
+      text-align: center;
+      line-height: 0.5vw;
+      font-size: small;
+      background-color: #0F71B7;
+      color: white;
+      border-left: 1px white solid;
+    }
+  }
+
+  .ant-table-tbody > tr > td {
+    padding: 1vh 0;
+    text-align: center;
+  }
+
+  .ant-btn {
+    display: block;
+    margin: 1vh auto;
+  }
+}
