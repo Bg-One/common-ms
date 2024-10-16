@@ -53,28 +53,32 @@ public class IProjectServiceImpl implements IProjectService {
 
     @Override
     public void addOrEditProject(Project project) {
-        //检验产品名和产品编号是否唯一
-        Project checkNameProject = new Project();
-        checkNameProject.setName(project.getName());
-        Project checkNumberProject = new Project();
-        checkNumberProject.setProjectNo(project.getProjectNo());
-        if (projectMapper.getProject(checkNameProject) != null) {
-            throw new ServiceException("项目名称重复");
-        } else if (projectMapper.getProject(checkNumberProject) != null) {
-            throw new ServiceException("项目编号重复");
-        }
         List<Projectmember> projectmemberList = JSONArray.parseArray(project.getTeamReasourcesList(), Projectmember.class);
         String guid = project.getGuid();
         if (guid == null || guid.isEmpty()) {
+            //检验产品名和产品编号是否唯一
+            Project checkNameProject = new Project();
+            checkNameProject.setName(project.getName());
+            Project checkNumberProject = new Project();
+            checkNumberProject.setProjectNo(project.getProjectNo());
+            if (projectMapper.getProject(checkNameProject) != null) {
+                throw new ServiceException("项目名称重复");
+            } else if (projectMapper.getProject(checkNumberProject) != null) {
+                throw new ServiceException("项目编号重复");
+            }
             String createGuid = UUID.randomUUID().toString();
             project.setGuid(createGuid);
             project.setCreateTime(new Date());
             projectMapper.insertProject(project);
-            projectMapper.insertProjectMember(createGuid, projectmemberList);
+            if (projectmemberList != null && projectmemberList.size() != 0) {
+                projectMapper.insertProjectMember(createGuid, projectmemberList);
+            }
         } else {
             projectMapper.updateProject(project);
-            for (Projectmember projectmember : projectmemberList) {
-                projectMapper.updateProjectMember(guid, projectmember);
+            if (projectmemberList != null) {
+                for (Projectmember projectmember : projectmemberList) {
+                    projectMapper.updateProjectMember(guid, projectmember);
+                }
             }
         }
     }

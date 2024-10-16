@@ -105,6 +105,9 @@
             <if test="producemanage.number !=null and producemanage.number!=''">
                 and t1.number like CONCAT('%',#{producemanage.number},'%')
             </if>
+            <if test="producemanage.acceptanceFlag !=null">
+                and t1.acceptanceFlag = #{producemanage.acceptanceFlag}
+            </if>
         </where>
         order by
         ( CASE WHEN t1.guid in

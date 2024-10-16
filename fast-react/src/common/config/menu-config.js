@@ -3,6 +3,8 @@
  * 包含枚举及其他常量定义等
  */
 import MyIcon from "../../content/custom-icon";
+import OnsiteAccept from "../../pages/onsite-acceptance";
+import AppearanceAccept from "../../pages/appearance-accept";
 
 export const componentMap = {
     PageMain: React.lazy(() => import('../../pages/main')),
@@ -17,7 +19,8 @@ export const componentMap = {
     FormDesign: React.lazy(() => import('../../pages/form')),
     Produce: React.lazy(() => import('../../pages/produce')),
     Project: React.lazy(() => import('../../pages/project')),
-
+    OnsiteAccept: React.lazy(() => import('../../pages/onsite-acceptance')),
+    AppearanceAccept: React.lazy(() => import('../../pages/appearance-accept')),
     // 更多组件...
 };
 // 默认菜单/面包屑配置
@@ -36,6 +39,16 @@ export const menuConfig = [{
     icon: <MyIcon type={'icon-main'}/>,
     component: 'Project',
     label: '项目列表',
+}, {
+    key: '/appearance-accept',
+    icon: <MyIcon type={'icon-main'}/>,
+    component: 'AppearanceAccept',
+    label: '出厂验收',
+}, {
+    key: '/onsitea-accept',
+    icon: <MyIcon type={'icon-main'}/>,
+    component: 'OnsiteAccept',
+    label: '现场验收',
 }, {
     key: '/sys',
     label: '系统管理',

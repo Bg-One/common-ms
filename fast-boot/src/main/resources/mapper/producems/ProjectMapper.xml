@@ -90,6 +90,9 @@
             <if test="produceGuid !=null and produceGuid !=''">
                 and t1.produceGuid=#{produceGuid}
             </if>
+            <if test="acceptanceFlag !=null ">
+                and t1.acceptanceFlag=#{acceptanceFlag}
+            </if>
             and t1.deleteFlag=0
             order by t1.createTime desc
         </where>

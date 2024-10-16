@@ -1,0 +1,42 @@
+#home-appearanceaccept{
+    .project-list-query{
+        display: flex;
+        height: 6vh;
+        line-height: 6vh;
+        padding: 1vh 0 1vh 56vw;
+        .ant-input {
+            margin-right: 1vw;
+            width: 11vw;
+        }
+
+        .ant-select {
+            margin-right: 1vw;
+            width: 10vw;
+
+        }
+
+        .ant-btn {
+            margin-right: 1vw;
+            margin-right: 1vw;
+            background-color: #1D79FC;
+            color: white;
+            border-radius: 0.5vw;
+        }
+    }
+    .ant-table{
+        margin: 0.5vw
+    }
+    .ant-table-thead {
+          
+        .ant-table-cell {
+            text-align: center;
+            line-height: 0.5vw;
+            font-size: small;
+            padding: 3vh 0;
+        }
+    }
+    .ant-table-tbody > tr > td {
+        padding: 1vh 0;
+        text-align: center;
+    }
+}

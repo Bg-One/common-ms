@@ -29,10 +29,3 @@ export const addOrEditProjectApi = (data) => {
 export const listProjectMemListApi = (data) => {
     return http.post('/project/listProjectMemList', data)
 }
-/**
- * 更新验收信息
- * @returns {*}
- */
-export const updateAcceptanceProjectApi = (data) => {
-    return http.post('/project/updateAcceptanceProject', data)
-}

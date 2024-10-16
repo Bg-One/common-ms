@@ -81,31 +81,34 @@ public class IProduceServiceImpl implements IProduceService {
 
     @Override
     public void addProduce(Producemanage producemanage) {
-        //检验产品名和产品编号是否唯一
-        Producemanage checkNameProduce = new Producemanage();
-        checkNameProduce.setName(producemanage.getName());
-        Producemanage checkNumberProduce = new Producemanage();
-        checkNumberProduce.setNumber(producemanage.getNumber());
-        if (producemanageMapper.getProduce(checkNameProduce) != null) {
-            throw new ServiceException("产品名称重复");
-        } else if (producemanageMapper.getProduce(checkNumberProduce) != null) {
-            throw new ServiceException("产品编号重复");
-        }
-
         List<Producemember> producememberList = JSONArray.parseArray(producemanage.getTeamReasourcesList(), Producemember.class);
         String guid = producemanage.getGuid();
         if (guid == null || "".equals(guid)) {
+            //检验产品名和产品编号是否唯一
+            Producemanage checkNameProduce = new Producemanage();
+            checkNameProduce.setName(producemanage.getName());
+            Producemanage checkNumberProduce = new Producemanage();
+            checkNumberProduce.setNumber(producemanage.getNumber());
+            if (producemanageMapper.getProduce(checkNameProduce) != null) {
+                throw new ServiceException("产品名称重复");
+            } else if (producemanageMapper.getProduce(checkNumberProduce) != null) {
+                throw new ServiceException("产品编号重复");
+            }
             String createGuid = UUID.randomUUID().toString();
             producemanage.setCreateTime(new Date());
             producemanage.setGuid(createGuid);
             producemanageMapper.addProduce(producemanage);
-            producemanageMapper.addProduceMember(createGuid, producememberList);
-        } else {
-            producemanageMapper.updateProduce(producemanage);
-            for (Producemember producemember : producememberList) {
-                producemanageMapper.updateProduceMember(guid, producemember);
+            if (producememberList != null && producememberList.size() != 0) {
+                producemanageMapper.addProduceMember(createGuid, producememberList);
             }
 
+        } else {
+            producemanageMapper.updateProduce(producemanage);
+            if (producememberList != null) {
+                for (Producemember producemember : producememberList) {
+                    producemanageMapper.updateProduceMember(guid, producemember);
+                }
+            }
         }
     }
 
