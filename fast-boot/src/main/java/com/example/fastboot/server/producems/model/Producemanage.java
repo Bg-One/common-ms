@@ -85,6 +85,18 @@ public class Producemanage implements Serializable {
 
     private String teamReasourcesList;
 
+    private String demandGuid;
+
+    private int demandCount;
+
+    private int devFinishedCount;
+
+    private int waitConfirmCount;
+
+    private int confirmedCount;
+
+    private int noPassCount;
+
     private static final long serialVersionUID = 1L;
 
 }

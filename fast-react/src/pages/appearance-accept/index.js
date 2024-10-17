@@ -6,6 +6,7 @@ import './index.scss'
 import {SearchOutlined} from "@ant-design/icons";
 import {hasPermi} from "../../utils/permi";
 import {addProduceApi, listAllProduceApi, listProduceApi} from "../../common/api/producems/produce";
+import {handleSave} from "../../utils/table";
 
 
 //出厂验收
@@ -117,9 +118,7 @@ const AppearanceAccept = () => {
                                   value={record.factoryReportLink}
                                   onBlur={() => updateAppearanceAcceptProduce({})}
                                   onChange={(e) => {
-                                      let oldpprojectList = [...produceList]
-                                      oldpprojectList[index].factoryReportLink = e.target.value
-                                      setProduceList(oldpprojectList)
+                                      handleSave(index, 'factoryReportLink',  e.target.value, produceList, setProduceList)
                                       setAppearanceAcceptProduce({
                                           guid: record.guid,
                                           factoryReportLink: e.target.value,

@@ -5,6 +5,7 @@
 import MyIcon from "../../content/custom-icon";
 import OnsiteAccept from "../../pages/onsite-acceptance";
 import AppearanceAccept from "../../pages/appearance-accept";
+import RequireConfirm from "../../pages/demand-confirm";
 
 export const componentMap = {
     PageMain: React.lazy(() => import('../../pages/main')),
@@ -21,6 +22,9 @@ export const componentMap = {
     Project: React.lazy(() => import('../../pages/project')),
     OnsiteAccept: React.lazy(() => import('../../pages/onsite-acceptance')),
     AppearanceAccept: React.lazy(() => import('../../pages/appearance-accept')),
+    RequireConfirm: React.lazy(() => import('../../pages/demand-confirm')),
+    RequireConfirmDetail: React.lazy(() => import('../../pages/demand-confirm/confirm-detail')),
+
     // 更多组件...
 };
 // 默认菜单/面包屑配置
@@ -40,6 +44,17 @@ export const menuConfig = [{
     component: 'Project',
     label: '项目列表',
 }, {
+    key: '/demand-confirm-detail',
+    icon: <MyIcon type={'icon-main'}/>,
+    component: 'RequireConfirm',
+    label: '需求确认',
+}, {
+    key: '/demand-confirm',
+    icon: <MyIcon type={'icon-main'}/>,
+    component: 'RequireConfirmDetail',
+    label: '需求确认详情',
+}, {
+
     key: '/appearance-accept',
     icon: <MyIcon type={'icon-main'}/>,
     component: 'AppearanceAccept',

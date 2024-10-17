@@ -1,0 +1,83 @@
+#home-demand-confirm {
+
+  .ant-table-cell {
+    text-align: center;
+  }
+
+  .demandCount {
+    background-image: url('../../static/images/blue.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .devFinishedCount {
+    background-image: url('../../static/images/deep-blue.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .waitConfirmCount {
+    background-image: url('../../static/images/fluorescent.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .confirmedCount {
+    background-image: url('../../static/images/green.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .noPassCount {
+    background-image: url('../../static/images/red.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .search-area {
+    margin: 1vh 0;
+
+    .ant-btn {
+      margin-right: 1vw;
+      background-color: #1D79FC;
+      color: white;
+      border-radius: 0.5vw;
+    }
+  }
+
+  .ant-modal-content {
+    padding: 2vh;
+  }
+
+}
+

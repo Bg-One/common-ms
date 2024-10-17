@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.fastboot.server.producems.mapper.DemandMapper">
+    <resultMap id="demandItemNodes" type="com.example.fastboot.server.producems.model.DemandItem">
+        <id property="id" column="demandItemId"/>
+        <result property="guid" column="guid"/>
+        <result property="demandConfiemedState" column="demandConfiemedState"/>
+        <result property="nodeGuid" column="nodeGuid"/>
+        <result property="questionAndNotes" column="questionAndNotes"/>
+        <result property="severity" column="severity"/>
+        <result property="eventStream" column="eventStream"/>
+        <association property="nodes" javaType="com.example.fastboot.server.producems.model.Nodes">
+            <id column="nodesId" property="id"/>
+            <result property="name" column="name"/>
+            <result property="guid" column="nodeGuid"/>
+        </association>
+    </resultMap>
+    <update id="updateDemandConfirmDetail">
+        update demanditem
+        set demandConfiemedState=#{demandConfiemedState},
+            questionAndNotes=#{questionAndNotes},
+            severity            = #{severity}
+        where guid = #{guid}
+    </update>
+    <update id="updateDemandTranceConfirmName">
+        update demandtrace
+        set demandConfirmName=#{userName}
+        where nodeGuid = #{nodeGuid}
+    </update>
+    <select id="getDemand" resultType="com.example.fastboot.server.producems.model.Demandmanage">
+        select * from demandmanage
+        <where>
+            deleteFlag=0
+            <if test="guid !=null and guid!=''">
+                and guid = #{guid}
+            </if>
+            <if test="produceGuid !=null and produceGuid!=''">
+                and produceGuid=#{produceGuid}
+            </if>
+            <if test="objective !=null and objective!=''">
+                and objective=#{objective}
+            </if>
+            and deleteFlag=0
+        </where>
+    </select>
+    <select id="countDemandConfirm" resultType="com.example.fastboot.server.producems.vo.CountDemandConfirmVo">
+        SELECT t1.demandConfiemedState,
+               count(t1.demandConfiemedState) count
+        FROM
+            demanditem t1
+            INNER JOIN nodes t2
+        ON t1.nodeGuid = t2.guid
+            RIGHT JOIN demandmanage t3 ON t3.guid = t2.moduleGuid
+        WHERE
+            t3.produceGuid = #{guid}
+          AND t1.deleteFlag = 0
+          AND t3.deleteFlag = 0
+          AND t2.deleteFlag = 0
+          AND t2.classType = 1
+          AND t2.nodeType = 1
+        GROUP BY
+            t1.demandConfiemedState
+    </select>
+    <select id="countDevFinish" resultType="java.lang.Integer">
+        select COUNT(dc.id)
+        from demandtrace dc
+        where dc.devlopFinishName!='' and dc.produceGuid=#{produceGuid}
+          and dc.deleteFlag=0
+    </select>
+    <select id="listNodes" resultType="com.example.fastboot.server.producems.model.Nodes">
+        select *
+        from nodes
+        <where>
+            <if test="moduleGuid!=null and moduleGuid!=''">
+                moduleGuid = #{moduleGuid}
+            </if>
+            and deleteFlag = 0
+        </where>
+    </select>
+    <select id="listDemandConfirmDetail" resultMap="demandItemNodes">
+        SELECT
+        *
+        FROM
+        demanditem
+        INNER JOIN nodes ON nodes.guid = demanditem.nodeGuid
+        WHERE
+        nodes.moduleGuid = #{demandGuid} and nodes.classType=1 and nodeType=1
+        <if test="demandConfirmedState!=null and demandConfirmedState[0]!=100 ">
+            and demandConfiemedState in
+            <foreach collection="demandConfirmedState" item="item" open="(" close=")"
+                     index="index" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="severity!='100' ">
+            and severity=#{severity}
+        </if>
+        and demanditem.deleteFlag=0 and nodes.deleteFlag=0
+    </select>
+    <select id="countDemandTranceByNodeGuid" resultType="java.lang.Integer">
+        SELECT count(*)
+        from demandtrace dt
+        where dt.nodeGuid = #{nodeGuid}
+          and dt.deleteFlag = 0
+
+    </select>
+</mapper>

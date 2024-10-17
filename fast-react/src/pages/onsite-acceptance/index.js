@@ -6,6 +6,7 @@ import {addOrEditProjectApi, updateAcceptanceProjectApi} from "../../common/api/
 import {SearchOutlined} from "@ant-design/icons";
 import {hasPermi} from "../../utils/permi";
 import {listProjectApi} from "../../common/api/producems/project";
+import {handleSave} from "../../utils/table";
 
 
 //现场验收
@@ -118,9 +119,7 @@ const OnsiteAccept = () => {
                                value={record.acceptReportLink}
                                onBlur={() => updateAcceptanceProject({})}
                                onChange={(e) => {
-                                   let oldpprojectList = [...projectList]
-                                   oldpprojectList[index].acceptReportLink = e.target.value
-                                   setProjectList(oldpprojectList)
+                                   handleSave(index, 'acceptReportLink',  e.target.value, projectList, setProjectList)
                                    setAcceptanceProject({
                                        guid: record.guid,
                                        acceptReportLink: e.target.value,

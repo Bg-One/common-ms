@@ -167,6 +167,14 @@
         from producemanage
         where deleteFlag = 0
     </select>
+    <select id="listProduceMemberByType"
+            resultType="com.example.fastboot.server.producems.model.Producemember">
+        SELECT * from produceMember where produceManageGuid=#{produceManageGuid}
+        and teamResource in
+        <foreach collection="teamResourceList" index="index" item="item" separator="," close=")" open="(">
+            #{item}
+        </foreach>
+    </select>
 
 
 </mapper>

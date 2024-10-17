@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -100,6 +101,7 @@ public interface ProducemanageMapper {
      * 删除关联关系
      */
     void deleteLockProduceToUserByProduce(String produceGuid);
+
     /**
      * 新增关联关系
      *
@@ -118,10 +120,19 @@ public interface ProducemanageMapper {
 
     /**
      * 获取全部产品
+     *
      * @return
      */
     List<Producemanage> listAllProduce();
 
+    /**
+     * 获取产品组成员
+     *
+     * @param produceGuid
+     * @param teamResourceList
+     * @return
+     */
+    List<Producemember> listProduceMemberByType(@Param("produceGuid") String produceGuid, @Param("teamResourceList") ArrayList<Integer> teamResourceList);
 }
 
 
