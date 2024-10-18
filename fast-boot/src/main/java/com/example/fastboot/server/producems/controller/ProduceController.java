@@ -3,6 +3,7 @@ package com.example.fastboot.server.producems.controller;
 import com.example.fastboot.common.aspectj.annotation.SysLog;
 import com.example.fastboot.common.aspectj.enums.BusinessType;
 import com.example.fastboot.server.producems.model.Producemanage;
+import com.example.fastboot.server.producems.model.Project;
 import com.example.fastboot.server.producems.service.IProduceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,6 +34,18 @@ public class ProduceController {
     @PostMapping("listProduce")
     public Object listProduce(Producemanage producemanage) {
         return success(producemanageService.listProduce(producemanage));
+    }
+
+    /**
+     * 获取出厂验收列表
+     *
+     * @param producemanage
+     * @return
+     */
+    @PreAuthorize("@permission.hasAuthority('producems:produce:list')")
+    @PostMapping("listAppearanceAccept")
+    public Object listAppearanceAccept(Producemanage producemanage) {
+        return success(producemanageService.listAppearanceAccept(producemanage));
     }
 
     /**
@@ -95,6 +108,30 @@ public class ProduceController {
     public Object updateLockProduceToUser(String[] produceGuids) {
         producemanageService.updateLockProduceToUser(produceGuids);
         return success("成功");
+    }
+
+
+    /**
+     * 出厂验收/取消验收
+     *
+     * @param producemanage
+     * @return
+     */
+    @SysLog(title = "出厂验收/取消验收", businessType = BusinessType.DELETE)
+    @PostMapping("appearanceAccept")
+    public Object appearanceAccept(Producemanage producemanage) {
+        producemanageService.appearanceAccept(producemanage);
+        return success("成功");
+    }
+    /**
+     * 获取没有绑定软件测试的产品列表
+     *
+     * @param
+     * @return
+     */
+    @PostMapping("listNotBindSoftwareCheckProduceList")
+    public Object listNotBindSoftwareCheckProduceList() {
+        return success(producemanageService.listNotBindSoftwareCheckProduceList());
     }
 
 }

@@ -48,10 +48,33 @@ public interface IProduceService {
      */
     void updateLockProduceToUser(String[] produceGuids);
 
+
+    /**
+     * 获取没有绑定软件测试的产品列表
+     *
+     * @return
+     */
+    List<Producemanage> listNotBindSoftwareCheckProduceList();
+
     /**
      * 获取全部产品
      *
      * @return
      */
     List<Producemanage> listAllProduce();
+
+    /**
+     * 获取出厂验收列表
+     *
+     * @param producemanage
+     * @return
+     */
+    PageResponse listAppearanceAccept(Producemanage producemanage);
+
+    /**
+     * 出厂/取消出场
+     *
+     * @param producemanage
+     */
+    void appearanceAccept(Producemanage producemanage);
 }

@@ -4,7 +4,6 @@ import com.example.fastboot.common.aspectj.annotation.SysLog;
 import com.example.fastboot.common.aspectj.enums.BusinessType;
 import com.example.fastboot.server.producems.model.Project;
 import com.example.fastboot.server.producems.service.IProjectService;
-import liquibase.pro.packaged.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +36,17 @@ public class ProjectController {
     }
 
     /**
+     * 获取项目现场验收列表
+     *
+     * @param project
+     * @return
+     */
+    @PostMapping("listOnsiteaAccept")
+    public Object listOnsiteaAccept(Project project) {
+        return success(projectService.listOnsiteaAccept(project));
+    }
+
+    /**
      * 新增项目
      *
      * @param project
@@ -64,6 +74,18 @@ public class ProjectController {
         return success("删除成功");
     }
 
+
+    /**
+     * 现场验收/取消
+     *
+     * @param
+     * @return
+     */
+    @PostMapping("onsiteaAccept")
+    public Object onsiteaAccept(Project project) {
+        projectService.onsiteaAccept(project);
+        return success("成功");
+    }
     /**
      * 获取项目成员列表
      *

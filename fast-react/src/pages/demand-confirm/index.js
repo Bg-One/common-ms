@@ -3,7 +3,7 @@ import {Input, able, Button, message, Form, Space, Table} from 'antd';
 import './index.scss'
 import {AppstoreAddOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
 import {hasPermi} from "../../utils/permi";
-import {listDemandConfirmApi} from "../../common/api/producems/demand";
+import {countDemandConfirmApi} from "../../common/api/producems/demand";
 
 
 const RequireConfirm = () => {
@@ -17,14 +17,14 @@ const RequireConfirm = () => {
     })
 
     useEffect(() => {
-        listDemandConfirm({
+        countDemandConfirm({
             currentPage: pageInfo.currentPage,
             pageSize: pageInfo.pageSize,
         })
     }, [])
     //获取
-    const listDemandConfirm = (values) => {
-        listDemandConfirmApi({...values}).then(res => {
+    const countDemandConfirm = (values) => {
+        countDemandConfirmApi({...values}).then(res => {
             setDemandConfirmList(res.data.list)
             setPageInfo({
                 currentPage: res.data.currentPage,
@@ -36,9 +36,9 @@ const RequireConfirm = () => {
     }
 
     const onSearch = (values) => {
-        listDemandConfirm({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
+        countDemandConfirm({
+            currentPage: 1,
+            pageSize: 10,
             ...values
         })
     }
@@ -96,7 +96,7 @@ const RequireConfirm = () => {
                 dataIndex: 'demandCount',
                 key: 'demandCount',
                 render: (text, record, index) => {
-                    return <div className="demandCount">{record.demandCount}</div>
+                    return <div className="demandCount">{record.demandConfirmCountVo.demandCount}</div>
                 }
             }, {
                 title: '开发已完成数量',
@@ -104,7 +104,7 @@ const RequireConfirm = () => {
                 dataIndex: 'devFinishedCount',
                 key: 'devFinishedCount',
                 render: (text, record, index) => {
-                    return <div className="devFinishedCount">{record.devFinishedCount}</div>
+                    return <div className="devFinishedCount">{record.demandConfirmCountVo.devFinishedCount}</div>
                 }
             }, {
                 title: '待确认数量',
@@ -112,7 +112,7 @@ const RequireConfirm = () => {
                 dataIndex: 'waitConfirmCount',
                 key: 'waitConfirmCount',
                 render: (text, record, index) => {
-                    return <div className="waitConfirmCount">{record.waitConfirmCount}</div>
+                    return <div className="waitConfirmCount">{record.demandConfirmCountVo.waitConfirmCount}</div>
                 }
             }, {
                 title: '已确认数量',
@@ -120,7 +120,7 @@ const RequireConfirm = () => {
                 dataIndex: 'confirmedCount',
                 key: 'confirmedCount',
                 render: (text, record, index) => {
-                    return <div className="confirmedCount">{record.confirmedCount}</div>
+                    return <div className="confirmedCount">{record.demandConfirmCountVo.confirmedCount}</div>
                 }
             }, {
                 title: '未通过数量',
@@ -128,7 +128,7 @@ const RequireConfirm = () => {
                 dataIndex: 'noPassCount',
                 key: 'noPassCount',
                 render: (text, record, index) => {
-                    return <div className="noPassCount">{record.noPassCount}</div>
+                    return <div className="noPassCount">{record.demandConfirmCountVo.noPassCount}</div>
                 }
             }, {
                 title: '操作',
@@ -148,9 +148,10 @@ const RequireConfirm = () => {
                 pageSize: pageInfo.pageSize,
                 pageNumber: pageInfo.currentPage,
                 total: pageInfo.total,
+                current: pageInfo.currentPage,
                 showSizeChanger: true,
                 onChange: (page, pageSize) => {
-                    listDemandConfirm({
+                    countDemandConfirm({
                         currentPage: page,
                         pageSize: pageSize,
                         ...searchForm.getFieldsValue()

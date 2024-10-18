@@ -5,8 +5,14 @@ import './index.scss'
 
 import {SearchOutlined} from "@ant-design/icons";
 import {hasPermi} from "../../utils/permi";
-import {addProduceApi, listAllProduceApi, listProduceApi} from "../../common/api/producems/produce";
+import {
+    addProduceApi, appearanceAcceptApi,
+    listAllProduceApi,
+    listAppearanceAcceptApi,
+    listProduceApi
+} from "../../common/api/producems/produce";
 import {handleSave} from "../../utils/table";
+
 
 
 //出厂验收
@@ -19,15 +25,15 @@ const AppearanceAccept = () => {
     })
 
     useEffect(() => {
-        listProduce({
+        listAppearanceAccept({
             currentPage: pageInfo.currentPage,
             pageSize: pageInfo.pageSize,
             ...searchForm.getFieldsValue()
         })
     }, [])
 
-    const listProduce = async (values) => {
-        const res = await listProduceApi({...values})
+    const listAppearanceAccept = async (values) => {
+        const res = await listAppearanceAcceptApi({...values})
         setProduceList(res.data.list)
         setPageInfo({
             currentPage: res.data.currentPage,
@@ -45,10 +51,16 @@ const AppearanceAccept = () => {
         onSearch(searchForm.getFieldsValue())
     }
 
+    const appearanceAccept = (values) => {
+        appearanceAcceptApi({...values}).then(res => {
+            message.success("操作成功")
+            onSearch(searchForm.getFieldsValue())
+        })
+    }
     const onSearch = (values) => {
-        listProduce({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
+        listAppearanceAccept({
+            currentPage: 1,
+            pageSize: 10,
             ...values
         })
     }
@@ -118,11 +130,10 @@ const AppearanceAccept = () => {
                                   value={record.factoryReportLink}
                                   onBlur={() => updateAppearanceAcceptProduce({})}
                                   onChange={(e) => {
-                                      handleSave(index, 'factoryReportLink',  e.target.value, produceList, setProduceList)
+                                      handleSave(index, 'factoryReportLink', e.target.value, produceList, setProduceList)
                                       setAppearanceAcceptProduce({
                                           guid: record.guid,
                                           factoryReportLink: e.target.value,
-                                          acceptanceFlag: record.acceptanceFlag,
                                       })
                                   }}
                                   onDoubleClick={() => {
@@ -146,9 +157,8 @@ const AppearanceAccept = () => {
                     render: (text, record, index) => {
                         return <Popconfirm
                             title={record.acceptanceFlag ? `您确认将${record.name}项目取消出厂验收吗？` : `您确认将${record.name}项目出厂验收吗？`}
-                            onConfirm={(e) => updateAppearanceAcceptProduce({
+                            onConfirm={(e) => appearanceAccept({
                                 guid: record.guid,
-                                factoryReportLink: record.factoryReportLink,
                                 acceptanceFlag: record.acceptanceFlag ? 0 : 1
                             })}
                             okText="确定"
@@ -163,9 +173,10 @@ const AppearanceAccept = () => {
                 pageSize: pageInfo.pageSize,
                 pageNumber: pageInfo.currentPage,
                 total: pageInfo.total,
+                current: pageInfo.currentPage,
                 showSizeChanger: true,
                 onChange: (page, pageSize) => {
-                    listProduce({
+                    listAppearanceAccept({
                         currentPage: page,
                         pageSize: pageSize,
                         ...searchForm.getFieldsValue()

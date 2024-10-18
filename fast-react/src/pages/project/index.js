@@ -69,8 +69,8 @@ const Project = (props) => {
     //搜索
     const onSearch = (values) => {
         listProject({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
+            currentPage: 1,
+            pageSize: 10,
             ...values
         })
     }
@@ -217,8 +217,8 @@ const Project = (props) => {
                         <Button htmlType="button" icon={<ReloadOutlined/>} onClick={() => {
                             searchForm.resetFields()
                             listProject({
-                                currentPage: pageInfo.currentPage,
-                                pageSize: pageInfo.pageSize,
+                                currentPage: 1,
+                                pageSize: 10,
                                 ...searchForm.getFieldsValue()
                             })
                         }}>
@@ -284,6 +284,7 @@ const Project = (props) => {
                 pageSize: pageInfo.pageSize,
                 pageNumber: pageInfo.currentPage,
                 total: pageInfo.total,
+                current: pageInfo.currentPage,
                 showSizeChanger: true,
                 onChange: (page, pageSize) => {
                     listProject({

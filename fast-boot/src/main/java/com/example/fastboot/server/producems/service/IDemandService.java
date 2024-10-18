@@ -1,8 +1,11 @@
 package com.example.fastboot.server.producems.service;
 
 import com.example.fastboot.common.response.PageResponse;
+import com.example.fastboot.server.producems.model.Nodes;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.vo.DemandConfirmDetailVo;
+
+import java.util.List;
 
 /**
  * @Author bo
@@ -15,7 +18,7 @@ public interface IDemandService {
      * @param producemanage
      * @return
      */
-    PageResponse listDemandConfirm(Producemanage producemanage);
+    PageResponse countDemandConfirm(Producemanage producemanage);
 
     /**
      * 获取需求确认详情
@@ -32,4 +35,11 @@ public interface IDemandService {
      * @param demandGuid
      */
     void updateDemandConfirmDetail(String demandConfirmList, String demandGuid, String produceGuid);
+
+    /**
+     *
+     * @param nodes
+     * @return
+     */
+    List<Nodes> listNodes(Nodes nodes);
 }

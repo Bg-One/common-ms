@@ -133,6 +133,46 @@ public interface ProducemanageMapper {
      * @return
      */
     List<Producemember> listProduceMemberByType(@Param("produceGuid") String produceGuid, @Param("teamResourceList") ArrayList<Integer> teamResourceList);
+
+    /**
+     * 获取未绑定软件审核的产品
+     *
+     * @param produceGuidList
+     * @return
+     */
+    List<Producemanage> listCheckProduceListByNotInProduceGuid(List<String> produceGuidList);
+
+    /**
+     * 根据产品唯一标识获取产品列表
+     *
+     * @param producemanage
+     * @param produceGuids
+     * @return
+     */
+    List<Producemanage> listProduceByInProduceGuid(@Param("producemanage") Producemanage producemanage, @Param("produceGuids") String[] produceGuids);
+
+    /**
+     * 删除锁定产品的关联关系
+     *
+     * @param creatUserGuid
+     * @param deleteBindProduceGuids
+     */
+    void deleteLockProduceToUser(@Param("creatUserGuid") String creatUserGuid, @Param("deleteBindProduceGuids") String[] deleteBindProduceGuids);
+
+    /**
+     * 获取出厂验收列表
+     *
+     * @param producemanage
+     * @param produceGuids
+     * @return
+     */
+    List<Producemanage> listAppearanceAccept(@Param("producemanage") Producemanage producemanage, @Param("produceGuids") String[] produceGuids);
+
+    /**
+     * 出厂/取消出厂
+     * @param producemanage
+     */
+    void appearanceAccept(Producemanage producemanage);
 }
 
 

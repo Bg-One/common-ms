@@ -1,0 +1,124 @@
+#home-software-check {
+  .ant-table-cell {
+    text-align: center;
+  }
+
+  .totalCount {
+    background-image: url('../../static/images/deep-blue.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .checkWaitConfirmCount {
+    background-image: url('../../static/images/red.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .devWaitConfirmCount {
+    background-image: url('../../static/images/orange.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .waitConfirmCount {
+    background-image: url('../../static/images/blue.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .revisingCount {
+    background-image: url('../../static/images/purple.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .waitRetestCount {
+    background-image: url('../../static/images/fluorescent.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .noPassedCount {
+    background-image: url('../../static/images/brown.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .passedCount {
+    background-image: url('../../static/images/deep-green.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .reopenCount {
+    background-image: url('../../static/images/green.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+
+  }
+
+  .hangsCount {
+    background-image: url('../../static/images/yellow.png');
+    background-size: 100% 100%;
+    width: 3vw;
+    height: 6vh;
+    text-align: center;
+    margin: auto;
+    line-height: 6vh;
+    color: white;
+  }
+}

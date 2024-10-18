@@ -64,7 +64,7 @@ const Produce = (props) => {
     }, [addModalOpen])
     //获取产品列表
     const listProduce = (values) => {
-        listProduceApi(values).then(res => {
+        listProduceApi({...values}).then(res => {
             //获取锁定的产品列表的guid
             setSelectedRowKeys(res.data.list.length !== 0 ? res.data.list[0].lockProduceGuids : [])
             setProduceList(res.data.list)
@@ -79,8 +79,8 @@ const Produce = (props) => {
     //s搜索
     const onSearch = (values) => {
         listProduce({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
+            currentPage: 1,
+            pageSize: 10,
             ...values
         })
     }
@@ -127,7 +127,20 @@ const Produce = (props) => {
             }
         })
     }
-
+    //处理产品绑定行为
+    const handleLockProduce = (selectedRowKeys) => {
+        const unionSet = new Set([...selectedRowKeys, ...produceList[0].lockProduceGuids]);
+        updateLockProduceToUserApi({
+            produceGuids: [...unionSet].join(','),
+        }).then((() => {
+            listProduce({
+                currentPage: pageInfo.currentPage,
+                pageSize: pageInfo.pageSize,
+                ...searchForm.getFieldsValue()
+            })
+            message.success('锁定成功', 1)
+        }))
+    }
 
     return <div id="produce-list">
         <div className={'search-area'}>
@@ -165,8 +178,8 @@ const Produce = (props) => {
                         <Button htmlType="button" icon={<ReloadOutlined/>} onClick={() => {
                             searchForm.resetFields()
                             listProduce({
-                                currentPage: pageInfo.currentPage,
-                                pageSize: pageInfo.pageSize,
+                                currentPage: 1,
+                                pageSize: 10,
                             })
                         }}>
                             重置
@@ -191,9 +204,7 @@ const Produce = (props) => {
                 type: 'checkbox',
                 selectedRowKeys: selectedRowKeys,
                 onChange: (selectedRowKeys, selectedRows) => {
-                    updateLockProduceToUserApi({
-                        produceGuids: selectedRowKeys.join(",")
-                    })
+                    handleLockProduce(selectedRowKeys)
                 },
             }}
             columns={[
@@ -273,6 +284,7 @@ const Produce = (props) => {
             pagination={{
                 pageSize: pageInfo.pageSize,
                 pageNumber: pageInfo.currentPage,
+                current: pageInfo.currentPage,
                 total: pageInfo.total,
                 showSizeChanger: true,
                 onChange: (page, pageSize) => {

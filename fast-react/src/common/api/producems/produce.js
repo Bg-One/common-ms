@@ -7,6 +7,13 @@ export let listProduceApi = (obj = {}) => {
 export let listAllProduceApi = (obj = {}) => {
     return http.post('produce/listAllProduce', obj)
 }
+
+export let listAppearanceAcceptApi = (obj = {}) => {
+    return http.post('produce/listAppearanceAccept', obj)
+}
+export const appearanceAcceptApi = (data) => {
+    return http.post('/produce/appearanceAccept', data)
+}
 export let deleteProduceApi = (obj = {}) => {
     return http.post('produce/deleteProduce', obj)
 }
@@ -19,4 +26,7 @@ export const addProduceApi = (data) => {
 }
 export const updateLockProduceToUserApi = (data) => {
     return http.post('/produce/updateLockProduceToUser', data)
+}
+export const listNotBindSoftwareCheckProduceListApi = (data) => {
+    return http.post('/produce/listNotBindSoftwareCheckProduceList', data)
 }

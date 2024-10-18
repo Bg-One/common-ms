@@ -1,9 +1,14 @@
 package com.example.fastboot.common.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @Author: LiuZhaobo
  * @Date: 2021/10/17/9:52
  */
+@AllArgsConstructor
+@Getter
 public enum MessageTypeEnum {
     DEMAND_WAIT_CONFIRM(1, "需求待确认"),
     WAIT_CHECK(2, "待测试"),
@@ -21,34 +26,5 @@ public enum MessageTypeEnum {
     private int code;
     private String name;
 
-    MessageTypeEnum(int code, String name) {
-        this.code = code;
-        this.name = name;
-    }
 
-    public static String getName(int code) {
-        for (MessageTypeEnum c : MessageTypeEnum.values()) {
-            if (c.getCode() == code) {
-                return c.name;
-            }
-        }
-        return "";
-    }
-
-    public static MessageTypeEnum getValueByCode(int code) {
-        for (MessageTypeEnum c : MessageTypeEnum.values()) {
-            if (c.getCode() == code) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getCode() {
-        return code;
-    }
 }

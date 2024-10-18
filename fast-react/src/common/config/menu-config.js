@@ -24,7 +24,8 @@ export const componentMap = {
     AppearanceAccept: React.lazy(() => import('../../pages/appearance-accept')),
     RequireConfirm: React.lazy(() => import('../../pages/demand-confirm')),
     RequireConfirmDetail: React.lazy(() => import('../../pages/demand-confirm/confirm-detail')),
-
+    SoftCheck: React.lazy(() => import('../../pages/software-check')),
+    SoftCheckDetail: React.lazy(() => import('../../pages/software-check/software-check-detail')),
     // 更多组件...
 };
 // 默认菜单/面包屑配置
@@ -44,12 +45,22 @@ export const menuConfig = [{
     component: 'Project',
     label: '项目列表',
 }, {
-    key: '/demand-confirm-detail',
+    key: '/software-check',
+    icon: <MyIcon type={'icon-main'}/>,
+    component: 'SoftCheck',
+    label: '软件测试',
+}, {
+    key: '/software-check-detail',
+    icon: <MyIcon type={'icon-main'}/>,
+    component: 'SoftCheckDetail',
+    label: '软件测试详情',
+}, {
+    key: '/demand-confirm',
     icon: <MyIcon type={'icon-main'}/>,
     component: 'RequireConfirm',
     label: '需求确认',
 }, {
-    key: '/demand-confirm',
+    key: '/demand-confirm-detail',
     icon: <MyIcon type={'icon-main'}/>,
     component: 'RequireConfirmDetail',
     label: '需求确认详情',

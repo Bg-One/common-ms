@@ -46,8 +46,8 @@ const OperateLog = () => {
     const onSearch = (values) => {
         let loginTime = values.loginTime;
         listOperLogininfor({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
+            currentPage: 1,
+            pageSize:10,
             operLocation: values.operLocation,
             operIp: values.operIp,
             operName: values.operName,
@@ -299,6 +299,7 @@ const OperateLog = () => {
                 pageSize: pageInfo.pageSize,
                 pageNumber: pageInfo.currentPage,
                 total: pageInfo.total,
+                current: pageInfo.currentPage,
                 showSizeChanger: true,
                 onChange: (page, pageSize) => {
                     listOperLogininfor({

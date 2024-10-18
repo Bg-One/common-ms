@@ -41,8 +41,8 @@ const LoginLog = () => {
     const onSearch = (values) => {
         let loginTime = values.loginTime;
         listSysLogininfor({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
+            currentPage: 1,
+            pageSize: 10,
             ipaddr: values.ipaddr,
             userName: values.userName,
             status: values.status,
@@ -193,6 +193,7 @@ const LoginLog = () => {
                 pageSize: pageInfo.pageSize,
                 pageNumber: pageInfo.currentPage,
                 total: pageInfo.total,
+                current: pageInfo.currentPage,
                 showSizeChanger: true,
                 onChange: (page, pageSize) => {
                     listSysLogininfor({

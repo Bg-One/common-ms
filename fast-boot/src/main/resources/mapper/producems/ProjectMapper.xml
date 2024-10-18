@@ -9,7 +9,6 @@
         <if test="projectNo != null and projectNo != ''">`projectNo`,</if>
         <if test="createTime != null ">createTime,</if>
         <if test="executionStatus != null ">executionStatus,</if>
-        <if test="acceptanceFlag != null ">acceptanceFlag,</if>
         <if test="acceptReportLink != null and acceptReportLink!=''">acceptReportLink,</if>
         guid
         )values(
@@ -17,7 +16,6 @@
         <if test="projectNo != null and projectNo != ''">#{projectNo},</if>
         <if test="createTime != null ">#{createTime},</if>
         <if test="executionStatus != null ">#{executionStatus},</if>
-        <if test="acceptanceFlag != null ">#{acceptanceFlag},</if>
         <if test="acceptReportLink != null and acceptReportLink!=''">#{acceptReportLink},</if>
         #{guid})
     </insert>
@@ -34,7 +32,6 @@
             <if test="projectNo != null and projectNo != ''">`projectNo`=#{projectNo},</if>
             <if test="createTime != null ">createTime=#{createTime},</if>
             <if test="executionStatus != null ">executionStatus=#{executionStatus},</if>
-            <if test="acceptanceFlag != null ">acceptanceFlag=#{acceptanceFlag},</if>
             <if test="acceptReportLink != null ">acceptReportLink=#{acceptReportLink},</if>
         </set>
         where guid = #{guid}
@@ -58,6 +55,11 @@
                 and teamResource = #{projectmember.teamResource}
             </if>
         </where>
+    </update>
+    <update id="onsiteaAccept">
+        update project
+        set acceptanceFlag=#{acceptanceFlag}
+        where guid = #{guid}
     </update>
     <delete id="deleteProject">
         update project
@@ -89,9 +91,6 @@
             </if>
             <if test="produceGuid !=null and produceGuid !=''">
                 and t1.produceGuid=#{produceGuid}
-            </if>
-            <if test="acceptanceFlag !=null ">
-                and t1.acceptanceFlag=#{acceptanceFlag}
             </if>
             and t1.deleteFlag=0
             order by t1.createTime desc
@@ -129,5 +128,19 @@
         select *
         from projectmember
         where projectGuid = #{guid}
+    </select>
+    <select id="listOnsiteaAccept" resultType="com.example.fastboot.server.producems.model.Project">
+        SELECT t1.*,t2.name produceName,t3.nick_name produceManagerName
+        from project t1
+        INNER JOIN producemanage t2 on t1.produceGuid = t2.guid
+        LEFT join sys_user t3 on t2.produceManager = t3.user_guid
+        <where>
+            t1.deleteFlag=0 and t1.acceptanceFlag=#{acceptanceFlag}
+            <if test="name !=null and name !=''">
+                and t1.`name` like concat('%',#{name},'%')
+            </if>
+
+            order by t1.createTime desc
+        </where>
     </select>
 </mapper>

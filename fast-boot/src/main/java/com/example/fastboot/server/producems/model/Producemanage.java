@@ -2,6 +2,8 @@ package com.example.fastboot.server.producems.model;
 
 
 import com.example.fastboot.common.config.DateJsonSerialize;
+import com.example.fastboot.server.producems.vo.CheckFeedbackCountVo;
+import com.example.fastboot.server.producems.vo.DemandConfirmCountVo;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -87,15 +89,8 @@ public class Producemanage implements Serializable {
 
     private String demandGuid;
 
-    private int demandCount;
+    private DemandConfirmCountVo demandConfirmCountVo;
 
-    private int devFinishedCount;
-
-    private int waitConfirmCount;
-
-    private int confirmedCount;
-
-    private int noPassCount;
 
     private static final long serialVersionUID = 1L;
 

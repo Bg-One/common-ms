@@ -7,6 +7,13 @@ import http from "../../../utils/http"
 export const listProjectApi = (data) => {
     return http.post('/project/listProject', data)
 }
+export const listOnsiteaAcceptApi = (data) => {
+    return http.post('/project/listOnsiteaAccept', data)
+}
+export const onsiteaAccepttApi = (data) => {
+    return http.post('/project/onsiteaAccept', data)
+}
+
 /**
  * 删除产品
  * @returns {*}

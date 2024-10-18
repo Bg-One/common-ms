@@ -45,7 +45,7 @@
             and deleteFlag=0
         </where>
     </select>
-    <select id="countDemandConfirm" resultType="com.example.fastboot.server.producems.vo.CountDemandConfirmVo">
+    <select id="countDemandConfirm" resultType="com.example.fastboot.server.producems.vo.DemandConfirmStateCountVo">
         SELECT t1.demandConfiemedState,
                count(t1.demandConfiemedState) count
         FROM

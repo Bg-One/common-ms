@@ -2,15 +2,13 @@ package com.example.fastboot.server.producems.mapper;
 
 import com.example.fastboot.server.producems.model.DemandItem;
 import com.example.fastboot.server.producems.model.Demandmanage;
-import com.example.fastboot.server.producems.model.Demandtrace;
 import com.example.fastboot.server.producems.model.Nodes;
-import com.example.fastboot.server.producems.vo.CountDemandConfirmVo;
+import com.example.fastboot.server.producems.vo.DemandConfirmStateCountVo;
 import com.example.fastboot.server.producems.vo.DemandConfirmDetailVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.xml.soap.Node;
 import java.util.List;
 
 /**
@@ -28,7 +26,7 @@ public interface DemandMapper {
      */
     Demandmanage getDemand(Demandmanage demandmanage);
 
-    List<CountDemandConfirmVo> countDemandConfirm(String guid);
+    List<DemandConfirmStateCountVo> countDemandConfirm(String guid);
 
     /**
      * 获取已完成数量

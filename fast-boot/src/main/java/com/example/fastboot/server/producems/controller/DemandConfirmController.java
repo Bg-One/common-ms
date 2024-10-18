@@ -27,9 +27,9 @@ public class DemandConfirmController {
      * @param producemanage
      * @return
      */
-    @PostMapping("listDemandConfirm")
-    public Object listDemandConfirm(Producemanage producemanage) {
-        return success(demandService.listDemandConfirm(producemanage));
+    @PostMapping("countDemandConfirm")
+    public Object countDemandConfirm(Producemanage producemanage) {
+        return success(demandService.countDemandConfirm(producemanage));
     }
 
     /**

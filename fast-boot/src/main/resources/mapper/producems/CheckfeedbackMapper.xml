@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.fastboot.server.producems.mapper.CheckfeedbackMapper">
+    <insert id="insertCheckfeedback">
+        INSERT INTO `checkfeedback`(guid, produceGuid)
+        VALUES (#{guid}, #{produceGuid});
+    </insert>
+
+    <select id="listDistinctProduceGuid" resultType="java.lang.String">
+        select distinct produceGuid
+        from checkfeedback
+    </select>
+    <select id="countCheckFeedbackByProduce"
+            resultType="com.example.fastboot.server.producems.vo.SoftCheckStateCountVo">
+        SELECT status softCheckState,
+               COUNT(*) count
+        FROM
+            checkfeedback
+        WHERE
+            produceGuid = '311edc0a-1021-441a-8950-bddfb352ba07'
+          AND deleteFlag = 0
+          AND nodeGuid != ''
+        GROUP BY status
+    </select>
+    <select id="listSoftCheckByProduce" resultType="com.example.fastboot.server.producems.model.Checkfeedback">
+        select t1.produceGuid
+        from checkfeedback t1
+        inner join producemanage t2 on t1.produceGuid = t2.guid
+        <where>
+            t1.deleteFlag = 0 and t1.produceGuid !='' and t2.deleteFlag = 0
+            <if test="producemanage.name !=null and producemanage.name!=''">
+                and t2.name like CONCAT('%',#{producemanage.name},'%')
+            </if>
+            <if test="producemanage.number !=null and producemanage.number!=''">
+                and t2.number like CONCAT('%',#{producemanage.number},'%')
+            </if>
+            <if test="produceGuids.length!=0">
+                and t1.produceGuid in
+                <foreach collection="produceGuids" separator="," close=")" open="(" item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        group by t1.produceGuid
+    </select>
+</mapper>

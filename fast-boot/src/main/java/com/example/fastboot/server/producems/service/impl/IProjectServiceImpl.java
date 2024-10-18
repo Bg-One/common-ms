@@ -5,7 +5,6 @@ import com.example.fastboot.common.enums.TeamResourceEnum;
 import com.example.fastboot.common.exception.ServiceException;
 import com.example.fastboot.common.response.PageResponse;
 import com.example.fastboot.server.producems.mapper.ProjectMapper;
-import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.model.Producemember;
 import com.example.fastboot.server.producems.model.Project;
 import com.example.fastboot.server.producems.model.Projectmember;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -91,5 +89,18 @@ public class IProjectServiceImpl implements IProjectService {
     @Override
     public List<Producemember> listProjectMemList(String guid) {
         return projectMapper.listProjectMemList(guid);
+    }
+
+    @Override
+    public PageResponse listOnsiteaAccept(Project project) {
+        PageHelper.startPage(project.getCurrentPage(), project.getPageSize());
+        List<Project> projectList = projectMapper.listOnsiteaAccept(project);
+        PageInfo<Project> projectPageInfo = new PageInfo<>(projectList);
+        return new PageResponse<>(projectPageInfo);
+    }
+
+    @Override
+    public void onsiteaAccept(Project project) {
+        projectMapper.onsiteaAccept(project);
     }
 }

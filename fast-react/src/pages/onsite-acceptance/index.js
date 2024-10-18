@@ -2,7 +2,11 @@ import React, {useEffect, useState} from "react";
 import {Table, Button, Input, Select, message, Popconfirm, Form, Space} from 'antd';
 import './index.scss'
 
-import {addOrEditProjectApi, updateAcceptanceProjectApi} from "../../common/api/producems/project";
+import {
+    addOrEditProjectApi,
+    listOnsiteaAcceptApi, onsiteaAccepttApi,
+    updateAcceptanceProjectApi
+} from "../../common/api/producems/project";
 import {SearchOutlined} from "@ant-design/icons";
 import {hasPermi} from "../../utils/permi";
 import {listProjectApi} from "../../common/api/producems/project";
@@ -19,15 +23,15 @@ const OnsiteAccept = () => {
     })
 
     useEffect(() => {
-        listProject({
+        listOnsiteaAccept({
             currentPage: pageInfo.currentPage,
             pageSize: pageInfo.pageSize,
             ...searchForm.getFieldsValue()
         })
     }, [])
 
-    const listProject = async (values) => {
-        const res = await listProjectApi({executionStatus: 100, ...values})
+    const listOnsiteaAccept = async (values) => {
+        const res = await listOnsiteaAcceptApi({executionStatus: 100, ...values})
         setProjectList(res.data.list)
         setPageInfo({
             currentPage: res.data.currentPage,
@@ -38,17 +42,24 @@ const OnsiteAccept = () => {
 
     }
 
-    //编辑项目状态
+    //编辑项目
     const updateAcceptanceProject = async (obj) => {
         await addOrEditProjectApi({...acceptanceProject, ...obj})
         message.success('保存成功')
         onSearch(searchForm.getFieldsValue())
     }
 
+    const onsiteaAccept = (values) => {
+        onsiteaAccepttApi({...values}).then(res => {
+            message.success('操作成功')
+            onSearch(searchForm.getFieldsValue())
+        })
+    }
+
     const onSearch = (values) => {
-        listProject({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
+        listOnsiteaAccept({
+            currentPage: 1,
+            pageSize: 10,
             ...values
         })
     }
@@ -119,11 +130,10 @@ const OnsiteAccept = () => {
                                value={record.acceptReportLink}
                                onBlur={() => updateAcceptanceProject({})}
                                onChange={(e) => {
-                                   handleSave(index, 'acceptReportLink',  e.target.value, projectList, setProjectList)
+                                   handleSave(index, 'acceptReportLink', e.target.value, projectList, setProjectList)
                                    setAcceptanceProject({
                                        guid: record.guid,
                                        acceptReportLink: e.target.value,
-                                       acceptanceFlag: record.acceptanceFlag,
                                    })
                                }}
                                onDoubleClick={() => {
@@ -147,9 +157,8 @@ const OnsiteAccept = () => {
                     render: (text, record, index) => {
                         return <Popconfirm
                             title={record.acceptanceFlag ? `您确认将${record.name}项目取消现场验收吗？` : `您确认将${record.name}项目现场验收吗？`}
-                            onConfirm={(e) => updateAcceptanceProject({
+                            onConfirm={(e) => onsiteaAccept({
                                 guid: record.guid,
-                                acceptReportLink: record.acceptReportLink,
                                 acceptanceFlag: record.acceptanceFlag ? 0 : 1
                             })}
                             okText="确定"
@@ -167,7 +176,7 @@ const OnsiteAccept = () => {
                 total: pageInfo.total,
                 showSizeChanger: true,
                 onChange: (page, pageSize) => {
-                    listProject({
+                    listOnsiteaAccept({
                         currentPage: page,
                         pageSize: pageSize,
                         ...searchForm.getFieldsValue()

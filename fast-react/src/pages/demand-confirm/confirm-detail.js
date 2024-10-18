@@ -8,7 +8,8 @@ import {auto} from "html-webpack-plugin/lib/chunksorter";
 import {listDemandConfirmDetailApi, updateDemandConfirmDetailApi} from "../../common/api/producems/demand";
 import {useSearchParams} from "react-router-dom";
 import {SaveOutlined, SearchOutlined} from "@ant-design/icons";
-import {checChanges, handleSave} from "../../utils/table";
+import {checChanges, deepCopy, handleSave} from "../../utils/table";
+import DemandEventstreamModal from "../../content/soft-check-detail/demand-eventstream-modal";
 
 const {TextArea} = Input;
 
@@ -47,8 +48,8 @@ const ConfirmDetail = () => {
     //获取需求确认详情列表
     const listDemandConfirmDetail = (values) => {
         listDemandConfirmDetailApi({...values, demandGuid: searchParams.get('demandGuid')}).then((res) => {
-            setDemandConfirmList(JSON.parse(JSON.stringify(res.data.list)))
-            setOriginalDemandConfirmList(JSON.parse(JSON.stringify(res.data.list)))
+            setDemandConfirmList(deepCopy(res.data.list))
+            setOriginalDemandConfirmList(deepCopy(res.data.list))
             setPageInfo({
                 currentPage: res.data.currentPage,
                 pageSize: res.data.pageSize,
@@ -78,8 +79,8 @@ const ConfirmDetail = () => {
 
     const onSearch = (values) => {
         listDemandConfirmDetail({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
+            currentPage: 1,
+            pageSize: 10,
             severity: values.severity,
             demandConfirmedState: values.demandConfirmedState
         })
@@ -264,6 +265,7 @@ const ConfirmDetail = () => {
                 pageSize: pageInfo.pageSize,
                 pageNumber: pageInfo.currentPage,
                 total: pageInfo.total,
+                current: pageInfo.currentPage,
                 showSizeChanger: true,
                 onChange: (page, pageSize) => {
                     listDemandConfirmDetail({
@@ -274,26 +276,9 @@ const ConfirmDetail = () => {
                 }
             }}
         />
-        <Modal
-            open={eventStreamModalInfo.open}
-            centered={true}
-            closable={true}
-            footer={false}
-            forceRender={true}
-            width={auto}
-            onCancel={() => {
-                setEventStreamModalInfo({...eventStreamModalInfo, open: false})
-            }}
-            title={false}
-        >
-            <div dangerouslySetInnerHTML={{__html: eventStreamModalInfo.eventStream}}></div>
-
-            {/*<div id="eventStream">*/}
-            {/*    {*/}
-            {/*        parse(this.state.eventStream)*/}
-            {/*    }*/}
-            {/*</div>*/}
-        </Modal>
+        {/*需求事件流弹窗*/}
+        <DemandEventstreamModal eventStreamModalInfo={eventStreamModalInfo}
+                                setEventStreamModalInfo={setEventStreamModalInfo}/>
     </div>
 
 }

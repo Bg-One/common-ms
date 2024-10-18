@@ -38,3 +38,8 @@ export const checChanges = (originalData, newData, field) => {
     return {delArr, changeArr, addArr};
 
 };
+
+//深拷贝
+export const deepCopy = (obj) => {
+    return JSON.parse(JSON.stringify(obj))
+}

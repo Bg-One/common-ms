@@ -1,10 +1,7 @@
 package com.example.fastboot.server.producems.service.impl;
 
 import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
-import com.example.fastboot.common.enums.DemandItemDealStateEnum;
-import com.example.fastboot.common.enums.MessageTypeEnum;
-import com.example.fastboot.common.enums.TeamResourceEnum;
+import com.example.fastboot.common.enums.*;
 import com.example.fastboot.common.response.PageResponse;
 import com.example.fastboot.common.security.LoginUser;
 import com.example.fastboot.server.producems.mapper.DemandMapper;
@@ -12,19 +9,18 @@ import com.example.fastboot.server.producems.mapper.ProducemanageMapper;
 import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.service.IAlertService;
 import com.example.fastboot.server.producems.service.IDemandService;
-import com.example.fastboot.server.producems.vo.CountDemandConfirmVo;
+import com.example.fastboot.server.producems.vo.DemandConfirmCountVo;
+import com.example.fastboot.server.producems.vo.DemandConfirmStateCountVo;
 import com.example.fastboot.server.producems.vo.DemandConfirmDetailVo;
 import com.example.fastboot.server.sys.controller.Base;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @Author bo
@@ -41,7 +37,7 @@ public class IDemandServiceImpl implements IDemandService {
     private IAlertService alertService;
 
     @Override
-    public PageResponse listDemandConfirm(Producemanage producemanage) {
+    public PageResponse countDemandConfirm(Producemanage producemanage) {
 
         LoginUser loginUser = (LoginUser) Base.getCreatUserDetails();
         //获取用户锁定产品
@@ -49,39 +45,36 @@ public class IDemandServiceImpl implements IDemandService {
         //获取list的produceGuid属性的值生成新的数组
         String[] produceGuids = lockProduceToUserList.stream().map(LockProduceToUser::getProduceGuid).toArray(String[]::new);
         PageHelper.startPage(producemanage.getCurrentPage(), producemanage.getPageSize());
-        List<Producemanage> producemanageList = producemanageMapper.listProduce(producemanage, produceGuids);
+        List<Producemanage> producemanageList = producemanageMapper.listProduceByInProduceGuid(producemanage, produceGuids);
         for (Producemanage item : producemanageList) {
             String guid = item.getGuid();
             Demandmanage demandmanage = new Demandmanage();
             demandmanage.setProduceGuid(guid);
             Demandmanage queryDemandManage = demandMapper.getDemand(demandmanage);
+            DemandConfirmCountVo demandConfirmCountVo = new DemandConfirmCountVo();
             if (queryDemandManage != null) {
                 item.setDemandGuid(queryDemandManage.getGuid());
-                List<CountDemandConfirmVo> countDemandConfirmVoList = demandMapper.countDemandConfirm(guid);
+                List<DemandConfirmStateCountVo> demandConfirmStateCountVoList = demandMapper.countDemandConfirm(guid);
                 int allCount = 0;
-                for (CountDemandConfirmVo countDemandConfirmVo : countDemandConfirmVoList) {
-                    allCount += countDemandConfirmVo.getCount();
-                    switch (countDemandConfirmVo.getDemandConfiemedState()) {
-                        case 1:
-                            item.setWaitConfirmCount(countDemandConfirmVo.getCount());
-                            break;
-                        case 2:
-                            item.setConfirmedCount(countDemandConfirmVo.getCount());
-                            break;
-                        case 3:
-                            item.setNoPassCount(countDemandConfirmVo.getCount());
-                            break;
-                        default:
-                            break;
+                for (DemandConfirmStateCountVo demandConfirmStateCountVo : demandConfirmStateCountVoList) {
+                    allCount += demandConfirmStateCountVo.getCount();
+                    int demandConfiemedState = demandConfirmStateCountVo.getDemandConfiemedState();
+                    if (DemandItemDealStateEnum.WAIT_CONFIRMED.getCode() == demandConfiemedState) {
+                        demandConfirmCountVo.setWaitConfirmCount(demandConfirmStateCountVo.getCount());
+                    } else if (DemandItemDealStateEnum.CONFIRMED.getCode() == demandConfiemedState) {
+                        demandConfirmCountVo.setConfirmedCount(demandConfirmStateCountVo.getCount());
+                    } else if (DemandItemDealStateEnum.NOPASS.getCode() == demandConfiemedState) {
+                        demandConfirmCountVo.setNoPassCount(demandConfirmStateCountVo.getCount());
                     }
                 }
-                item.setDemandCount(allCount);
+                demandConfirmCountVo.setDemandCount(allCount);
                 Nodes nodes = new Nodes();
                 nodes.setModuleGuid(guid);
                 int devFinishedCount = demandMapper.countDevFinish(guid)
                         + (queryDemandManage.getDevFinishFlag() ? demandMapper.listNodes(nodes).size() : 0);
-                item.setDevFinishedCount(devFinishedCount);
+                demandConfirmCountVo.setDevFinishedCount(devFinishedCount);
             }
+            item.setDemandConfirmCountVo(demandConfirmCountVo);
         }
         PageInfo<Producemanage> demandConfirmCountVoPageInfo = new PageInfo<>(producemanageList);
         return new PageResponse<>(demandConfirmCountVoPageInfo);
@@ -148,5 +141,10 @@ public class IDemandServiceImpl implements IDemandService {
             //消息存库
             alertService.saveMessage(producemanage, contentDescription, managerGuids, alertType);
         }
+    }
+
+    @Override
+    public List<Nodes> listNodes(Nodes nodes) {
+        return demandMapper.listNodes(nodes);
     }
 }

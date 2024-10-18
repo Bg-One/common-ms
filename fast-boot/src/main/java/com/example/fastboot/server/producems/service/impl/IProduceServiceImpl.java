@@ -5,6 +5,7 @@ import com.example.fastboot.common.enums.TeamResourceEnum;
 import com.example.fastboot.common.exception.ServiceException;
 import com.example.fastboot.common.response.PageResponse;
 import com.example.fastboot.common.security.LoginUser;
+import com.example.fastboot.server.producems.mapper.CheckfeedbackMapper;
 import com.example.fastboot.server.producems.mapper.ProducemanageMapper;
 import com.example.fastboot.server.producems.mapper.ProjectMapper;
 import com.example.fastboot.server.producems.model.LockProduceToUser;
@@ -34,6 +35,8 @@ public class IProduceServiceImpl implements IProduceService {
     private ProducemanageMapper producemanageMapper;
     @Autowired
     private ProjectMapper projectMapper;
+    @Autowired
+    private CheckfeedbackMapper checkfeedbackMapper;
 
     @Override
     public PageResponse listProduce(Producemanage producemanage) {
@@ -123,7 +126,33 @@ public class IProduceServiceImpl implements IProduceService {
     }
 
     @Override
+    public List<Producemanage> listNotBindSoftwareCheckProduceList() {
+        //获取产品测试列表关联的产品唯一标识
+        List<String> produceGuidList = checkfeedbackMapper.listDistinctProduceGuid();
+        //获取未绑定测试的产品
+        return producemanageMapper.listCheckProduceListByNotInProduceGuid(produceGuidList);
+    }
+
+    @Override
     public List<Producemanage> listAllProduce() {
         return producemanageMapper.listAllProduce();
+    }
+
+    @Override
+    public PageResponse listAppearanceAccept(Producemanage producemanage) {
+        LoginUser loginUser = (LoginUser) Base.getCreatUserDetails();
+        //获取用户锁定产品
+        List<LockProduceToUser> lockProduceToUserList = producemanageMapper.listLockProduceToUserByUser(loginUser.getUserGuid());
+        //获取list的produceGuid属性的值生成新的数组
+        String[] produceGuids = lockProduceToUserList.stream().map(LockProduceToUser::getProduceGuid).toArray(String[]::new);
+        PageHelper.startPage(producemanage.getCurrentPage(), producemanage.getPageSize());
+        List<Producemanage> producemanageList = producemanageMapper.listAppearanceAccept(producemanage, produceGuids);
+        PageInfo<Producemanage> producemanagePageInfo = new PageInfo<>(producemanageList);
+        return new PageResponse<>(producemanagePageInfo);
+    }
+
+    @Override
+    public void appearanceAccept(Producemanage producemanage) {
+        producemanageMapper.appearanceAccept(producemanage);
     }
 }

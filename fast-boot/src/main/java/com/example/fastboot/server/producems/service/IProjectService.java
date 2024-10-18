@@ -42,4 +42,19 @@ public interface IProjectService {
      * @return
      */
     List<Producemember> listProjectMemList(String guid);
+
+    /**
+     * 获取出厂验收列表
+     *
+     * @param project
+     * @return
+     */
+    PageResponse listOnsiteaAccept(Project project);
+
+    /**
+     * 验收/取消验收
+     *
+     * @param project
+     */
+    void onsiteaAccept(Project project);
 }
