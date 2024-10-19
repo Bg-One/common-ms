@@ -1,10 +1,13 @@
 package com.example.fastboot.server.producems.service;
 
 import com.example.fastboot.common.response.PageResponse;
+import com.example.fastboot.server.producems.model.Checkfeedback;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @Author bo
@@ -23,7 +26,14 @@ public interface ISoftwareCheckService {
 
     /**
      * 关联产品
+     *
      * @param produceGuid
      */
     void relatedProduce(String produceGuid);
+
+    /**
+     * @param checkfeedback
+     * @return
+     */
+    PageResponse listCheckFeedback(Checkfeedback checkfeedback);
 }

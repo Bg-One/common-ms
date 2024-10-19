@@ -1,8 +1,11 @@
 package com.example.fastboot.server.producems.model;
 
 
+import com.example.fastboot.common.config.DateJsonSerialize;
+import com.example.fastboot.common.config.DateToDayJsonSerialize;
 import com.example.fastboot.server.producems.vo.CheckFeedbackCountVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import liquibase.pro.packaged.S;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,11 +31,11 @@ public class Checkfeedback {
     private String questionDescription;
     private String imageLink;
     private Integer severity;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonSerialize(using = DateToDayJsonSerialize.class)
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date feedbackTime;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonSerialize(using = DateToDayJsonSerialize.class)
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date dealFinishTime;
     private String submitName;
     private String checkConfirmName;
@@ -40,8 +43,8 @@ public class Checkfeedback {
     private String dealName;
     private int status;
     private String dealMethod;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonSerialize(using = DateToDayJsonSerialize.class)
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date publishTime;
     private String notes;
     private String deleteFlag;
@@ -49,5 +52,9 @@ public class Checkfeedback {
     private Integer saveImageFlag;
 
     private String produceName;
+
+    private int currentPage;
+
+    private int pageSize;
     private CheckFeedbackCountVo checkFeedbackCountVo;
 }

@@ -164,8 +164,6 @@ const ConfirmDetail = () => {
                 </Form.Item>
             </Form>
         </div>
-
-
         <Table
             dataSource={demandConfirmList}
             columns={[{

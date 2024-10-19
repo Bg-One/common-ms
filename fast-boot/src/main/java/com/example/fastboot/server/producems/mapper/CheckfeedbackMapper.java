@@ -41,7 +41,16 @@ public interface CheckfeedbackMapper {
 
     /**
      * 新增软件测试
+     *
      * @param checkfeedback
      */
-    void insertCheckfeedback( Checkfeedback checkfeedback);
+    void insertCheckfeedback(Checkfeedback checkfeedback);
+
+    /**
+     * 获取软件测试列表
+     *
+     * @param checkfeedback
+     * @return
+     */
+    List<Checkfeedback> listCheckFeedback(Checkfeedback checkfeedback);
 }

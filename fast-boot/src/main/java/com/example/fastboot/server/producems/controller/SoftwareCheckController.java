@@ -1,5 +1,6 @@
 package com.example.fastboot.server.producems.controller;
 
+import com.example.fastboot.server.producems.model.Checkfeedback;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.service.ISoftwareCheckService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,11 @@ public class SoftwareCheckController {
     public Object relatedProduce(String produceGuid) {
         softwareCheckService.relatedProduce(produceGuid);
         return success("成功");
+    }
+
+
+    @PostMapping("listCheckFeedback")
+    public Object listCheckFeedback(Checkfeedback checkfeedback) {
+        return success(softwareCheckService.listCheckFeedback(checkfeedback));
     }
 }

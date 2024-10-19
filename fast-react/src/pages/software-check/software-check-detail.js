@@ -5,7 +5,6 @@ import {
     Table,
     Button,
     message,
-    Modal,
     Popconfirm,
     Form,
     Space
@@ -15,8 +14,6 @@ import {
 import wenhao from '../../static/images/wenhao.png'
 import moment from "moment/moment";
 import './index.scss'
-import TreeSearch from "../../content/demand-tree-search/tree-search";
-import {auto} from "html-webpack-plugin/lib/chunksorter";
 import {
     addOrEditCheckChangNoteApi,
     addOrEditCheckfeedbackApi,
@@ -31,10 +28,12 @@ import ChangenodeModal from "../../content/soft-check-detail/changenode-modal";
 import ExplainModal from "../../content/soft-check-detail/explain-modal";
 import DemandTreeModal from "../../content/soft-check-detail/demand-tree-modal";
 import DemandEventstreamModal from "../../content/soft-check-detail/demand-eventstream-modal";
+import {useSearchParams} from "react-router-dom";
 
 const {TextArea} = Input;
 
 const SoftwareCheckDetail = () => {
+    const [searchParams, setSearchParams] = useSearchParams()
     const [searchForm] = Form.useForm()
     const userInfo = useSelector(state => state.user.userInfo);
     const [checkFeedbackList, setCheckFeedbackList] = useState([])
@@ -71,40 +70,43 @@ const SoftwareCheckDetail = () => {
                 sendFile()
             }
         })
-        listCheckFeedback()
+        listCheckFeedback({
+            currentPage: pageInfo.currentPage,
+            pageSize: pageInfo.pageSize,
+        })
         listNodes()
-    })
+    }, [])
 
 
-    //设置默认过滤规则
-    const setDefaultFilteredValue = () => {
-        let rulesArr = []
-        if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'add') {
-            rulesArr.push('1')
-        }
-        if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'pass') {
-            rulesArr.push('2')
-        }
-        if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'nopassed') {
-            rulesArr.push('3')
-        }
-        if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'open') {
-            rulesArr.push('4')
-        }
-        if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'hungup') {
-            rulesArr.push('5')
-        }
-        if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'close') {
-            rulesArr.push('6')
-        }
-        if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'finish') {
-            rulesArr.push('7')
-        }
-        return rulesArr
-    }
+    // //设置默认过滤规则
+    // const setDefaultFilteredValue = () => {
+    //     let rulesArr = []
+    //     if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'add') {
+    //         rulesArr.push('1')
+    //     }
+    //     if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'pass') {
+    //         rulesArr.push('2')
+    //     }
+    //     if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'nopassed') {
+    //         rulesArr.push('3')
+    //     }
+    //     if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'open') {
+    //         rulesArr.push('4')
+    //     }
+    //     if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'hungup') {
+    //         rulesArr.push('5')
+    //     }
+    //     if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'close') {
+    //         rulesArr.push('6')
+    //     }
+    //     if (getItem('checkFlag') === 'all' || getItem('checkFlag') === 'finish') {
+    //         rulesArr.push('7')
+    //     }
+    //     return rulesArr
+    // }
     //获取测试反馈列表
     const listCheckFeedback = (values) => {
-        listCheckFeedbackApi({...values}).then(res => {
+        listCheckFeedbackApi({...values, produceGuid: searchParams.get("produceGuid")}).then(res => {
             setCheckFeedbackList(res.data.list)
             setOrginalCheckFeedbackList(res.data.list)
             setPageInfo({
@@ -359,12 +361,14 @@ const SoftwareCheckDetail = () => {
                 [{
                     title: '序号',
                     fixed: 'left',
+                    width: '4vw',
                     render: (text, record, index) => {
                         return <div>{index + 1}</div>
                     }
                 }, {
                     title: '所属项目',
                     fixed: 'left',
+                    width: '10vw',
                     // filters: this.props.listProject.length !== 0 ? (this.props.listProject.filter(i => i.produceGuid === getItem('produceGuid') && i.executionStatus === projectExecutionStatusEnum.EXECUTING)).filter(i => i.produceGuid === getItem('produceGuid')).map((item) => {
                     //     return {
                     //         value: item.guid,
@@ -391,6 +395,7 @@ const SoftwareCheckDetail = () => {
                     title: '所属需求',
                     dataIndex: 'nodeName',
                     key: 'nodeName',
+                    width: '10vw',
                     fixed: 'left',
                     render: (text, record, index) => {
                         return <TextArea
@@ -408,14 +413,13 @@ const SoftwareCheckDetail = () => {
                 },
                     {
                         title: '问题描述',
-                        width: '15vw',
+                        width: '10vw',
                         dataIndex: 'questionDescription',
                         key: 'questionDescription',
                         fixed: 'left',
                         render: (text, record, index) => {
                             return <TextArea
                                 autoSize={{minRows: 1, maxRows: 6}}
-                                style={{width: '15vw'}}
                                 value={record.questionDescription}
                                 onChange={(e) => {
                                     handleSave(index, 'questionDescription', e.target.value, checkFeedbackList, setCheckFeedbackList)
@@ -426,6 +430,8 @@ const SoftwareCheckDetail = () => {
                     title: '附图',
                     dataIndex: 'imageLink',
                     key: 'imageLink',
+                    width: '10vw',
+                    fixed: 'left',
                     render: (text, record, index) => {
                         return <div id="imageLink" suppressContentEditableWarning contentEditable="true"
                                     style={{
@@ -454,6 +460,7 @@ const SoftwareCheckDetail = () => {
                     title: '反馈时间',
                     dataIndex: 'feedbackTime',
                     key: 'feedbackTime',
+                    width: '10vw',
                     render: (text, record, index) => {
                         return <Input
                             bordered={false}
@@ -470,6 +477,7 @@ const SoftwareCheckDetail = () => {
                     title: '优先级',
                     dataIndex: 'severity',
                     key: 'severity',
+                    width: '6vw',
                     render: (text, record, index) => {
                         return <Select
                             value={
@@ -493,6 +501,7 @@ const SoftwareCheckDetail = () => {
                     title: '提交人',
                     dataIndex: 'submitName',
                     key: 'submitName',
+                    width: '6vw',
                     render: (text, record, index) => {
                         return <Input
                             bordered={false}
@@ -509,9 +518,10 @@ const SoftwareCheckDetail = () => {
                     title: '测试确认',
                     dataIndex: 'checkConfirmName',
                     key: 'checkConfirmName',
+                    width: '6vw',
                     render: (text, record, index) => {
                         return <Input
-                            disabled={getItem('checkUserFlag') === 'false'}
+                            // disabled={getItem('checkUserFlag') === 'false'}
                             bordered={false}
                             value={record.checkConfirmName}
                             onClick={() => {
@@ -526,9 +536,10 @@ const SoftwareCheckDetail = () => {
                     title: '处理人',
                     dataIndex: 'dealName',
                     key: 'dealName',
+                    width: '6vw',
                     render: (text, record, index) => {
                         return <Input
-                            disabled={getItem('devUserFlag') === 'false'}
+                            // disabled={getItem('devUserFlag') === 'false'}
                             value={record.dealName}
                             onClick={() => {
                                 handleSave(index, 'dealName', userInfo.nickName, checkFeedbackList, setCheckFeedbackList)
@@ -543,12 +554,12 @@ const SoftwareCheckDetail = () => {
                     title: '处理完成时间',
                     dataIndex: 'dealFinishTime',
                     key: 'dealFinishTime',
+                    width: '10vw',
                     render: (text, record, index) => {
                         return <Input
-                            disabled={getItem('checkUserFlag') === 'false'}
+                            // disabled={getItem('checkUserFlag') === 'false'}
                             bordered={false}
-                            style={{width: '6.5vw'}}
-                            value={record.dealFinishTime.includes('1970') ? '' : record.dealFinishTime}
+                            value={record.dealFinishTime}
                             onClick={() => {
                                 handleSave(index, 'dealFinishTime', moment(), checkFeedbackList, setCheckFeedbackList)
                             }}
@@ -561,6 +572,7 @@ const SoftwareCheckDetail = () => {
                     title: '处理状态',
                     dataIndex: 'dealState',
                     key: 'dealState',
+                    width: '10vw',
                     filters: [{
                         text: '新增',
                         value: 1,
@@ -587,8 +599,9 @@ const SoftwareCheckDetail = () => {
                     onFilter: (value, record) => record.dealState === value,
                     render: (text, record, index) => {
                         return <Select
-                            disabled={getItem('checkUserFlag') === 'false' && getItem('devUserFlag') === 'false'}
+                            // disabled={getItem('checkUserFlag') === 'false' && getItem('devUserFlag') === 'false'}
                             value={record.dealState}
+                            style={{width: '6vw'}}
                             onChange={(v) => {
                                 editColumnsContent('dealState', index, v)
                             }}
@@ -624,12 +637,12 @@ const SoftwareCheckDetail = () => {
                 }, {
                     title: '处理办法',
                     dataIndex: 'dealMethod',
+                    width: '10vw',
                     key: 'dealMethod',
                     render: (text, record, index) => {
                         return <TextArea
                             autoSize={{minRows: 1, maxRows: 6}}
-                            disabled={getItem('devUserFlag') === 'false'}
-                            style={{width: '6vw'}}
+                            // disabled={getItem('devUserFlag') === 'false'}
                             bordered={false}
                             value={record.dealMethod}
                             onChange={(e) => {
@@ -640,12 +653,12 @@ const SoftwareCheckDetail = () => {
                 }, {
                     title: '发布/更新时间',
                     dataIndex: 'publishTime',
+                    width: '10vw',
                     key: 'publishTime',
                     render: (text, record, index) => {
                         return <Input
-                            disabled={getItem('checkUserFlag') === 'false'}
+                            // disabled={getItem('checkUserFlag') === 'false'}
                             bordered={false}
-                            style={{width: '6.5vw'}}
                             value={record.publishTime.includes('1970') ? '' : record.publishTime}
                             onClick={() => {
                                 handleSave(index, 'publishTime', moment().format("YYYY-MM-DD"), checkFeedbackList, setCheckFeedbackList)
@@ -658,12 +671,12 @@ const SoftwareCheckDetail = () => {
                 }, {
                     title: '备注',
                     dataIndex: 'notes',
+                    width: '10vw',
                     key: 'notes',
                     render: (text, record, index) => {
                         return <TextArea
                             autoSize={{minRows: 1, maxRows: 6}}
-                            disabled={getItem('checkUserFlag') === 'false' && getItem('devUserFlag') === 'false'}
-                            style={{width: '10vw'}}
+                            // disabled={getItem('checkUserFlag') === 'false' && getItem('devUserFlag') === 'false'}
                             value={record.notes}
                             onChange={(e) => {
                                 handleSave(index, 'notes', e.target.value, checkFeedbackList, setCheckFeedbackList)
@@ -673,9 +686,10 @@ const SoftwareCheckDetail = () => {
                 }, {
                     title: '操作',
                     key: 'action',
+                    width: '6vw',
                     fixed: 'right',
                     render: (text, record, index) => {
-                        return <div className='actionlist' style={{width: '5vw'}}>
+                        return <div className='actionlist'>
                             <Button type={'link'}
                                     onClick={() => {
                                         // this.props.history.push('/home/demand-edit' + '?guid=' + record.demandGuid + '&nodeGuid=' + record.nodeGuid + '&edit=false&tabKey=3')
@@ -693,17 +707,19 @@ const SoftwareCheckDetail = () => {
                                         })
                                     }}
                             >查看需求</Button>
-                            <Button disabled={getItem('checkUserFlag') === 'false'} type={'link'}
-                                    onClick={() => {
-                                        setCheckChangNotesObj({
-                                            open: true,
-                                            selcetCheckGuid: record.guid,
-                                            dbChange: record.dbChange,
-                                            configurationChange: record.configurationChange,
-                                            scopeOfinfluence: record.scopeOfinfluence,
-                                            checkSuggestion: record.checkSuggestion,
-                                        })
-                                    }}
+                            <Button
+                                // disabled={getItem('checkUserFlag') === 'false'}
+                                type={'link'}
+                                onClick={() => {
+                                    setCheckChangNotesObj({
+                                        open: true,
+                                        selcetCheckGuid: record.guid,
+                                        dbChange: record.dbChange,
+                                        configurationChange: record.configurationChange,
+                                        scopeOfinfluence: record.scopeOfinfluence,
+                                        checkSuggestion: record.checkSuggestion,
+                                    })
+                                }}
                             >变更说明</Button>
                             <Popconfirm
                                 title={`您确认删除${record.questionDescription}问题吗吗？`}
@@ -716,7 +732,7 @@ const SoftwareCheckDetail = () => {
                     }
                 }]}
             rowKey={record => record.guid}
-            scroll={{x: '1vw'}}
+            scroll={{x: '100%', y: 'calc(100vh - 300px)'}}
             // onChange={this.onChange}
             pagination={{
                 pageSize: pageInfo.pageSize,

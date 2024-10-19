@@ -45,4 +45,10 @@
         </where>
         group by t1.produceGuid
     </select>
+    <select id="listCheckFeedback" resultType="com.example.fastboot.server.producems.model.Checkfeedback">
+        select *
+        from checkfeedback
+        where deleteFlag = 0
+          and produceGuid = #{produceGuid}
+    </select>
 </mapper>

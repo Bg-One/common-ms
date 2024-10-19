@@ -84,4 +84,12 @@ public class ISoftwareCheckServiceImpl implements ISoftwareCheckService {
         checkfeedback.setProduceGuid(produceGuid);
         checkfeedbackMapper.insertCheckfeedback(checkfeedback);
     }
+
+    @Override
+    public PageResponse listCheckFeedback(Checkfeedback checkfeedback) {
+        PageHelper.startPage(checkfeedback.getCurrentPage(), checkfeedback.getPageSize());
+        List<Checkfeedback> checkfeedbacks = checkfeedbackMapper.listCheckFeedback(checkfeedback);
+        PageInfo<Checkfeedback> checkfeedbackPageInfo = new PageInfo<>(checkfeedbacks);
+        return new PageResponse<>(checkfeedbackPageInfo);
+    }
 }
