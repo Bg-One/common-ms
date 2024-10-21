@@ -7,6 +7,25 @@
         INSERT INTO `checkfeedback`(guid, produceGuid)
         VALUES (#{guid}, #{produceGuid});
     </insert>
+    <insert id="addCheckchangnotes">
+        INSERT INTO `checkchangnotes`(guid, checkFeedbackGuid, dbChange,
+                                      configurationChange, scopeOfInfluence, checkSuggestion)
+        VALUES (#{guid}, #{checkFeedbackGuid}, #{dbChange},
+                #{configurationChange}, #{scopeOfInfluence},
+                #{checkSuggestion});
+    </insert>
+    <update id="updateCheckchangnotes">
+        update `checkchangnotes`
+        set checkFeedbackGuid=#{checkFeedbackGuid},
+            dbChange=#{dbChange},
+            configurationChange=#{configurationChange},
+            scopeOfInfluence=#{scopeOfInfluence},
+            checkSuggestion=#{checkSuggestion}
+        where guid = #{guid}
+    </update>
+    <delete id="deleteCheckFeedback">
+        update checkfeedback set deleteFlag=1 where guid=#{guid}
+    </delete>
 
     <select id="listDistinctProduceGuid" resultType="java.lang.String">
         select distinct produceGuid
@@ -46,9 +65,29 @@
         group by t1.produceGuid
     </select>
     <select id="listCheckFeedback" resultType="com.example.fastboot.server.producems.model.Checkfeedback">
+        SELECT t1.*,
+        t2.`name` nodeName
+        FROM checkfeedback t1
+        left join nodes t2 on t2.guid = t1.nodeGuid
+        WHERE t1.deleteFlag = 0
+        AND t1.produceGuid = #{produceGuid}
+        <if test="filterStatus.length >0">
+            and t1.status in
+            <foreach collection="filterStatus" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="filterProjectList.length >0">
+            and t1.projectGuid in
+            <foreach collection="filterProjectList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="getCheckChangeNotes" resultType="com.example.fastboot.server.producems.model.Checkchangnotes">
         select *
-        from checkfeedback
-        where deleteFlag = 0
-          and produceGuid = #{produceGuid}
+        from checkchangnotes
+        where checkFeedbackGuid = #{guid}
+          and deleteFlag = 0
     </select>
 </mapper>

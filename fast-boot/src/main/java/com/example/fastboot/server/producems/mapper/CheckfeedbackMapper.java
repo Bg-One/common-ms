@@ -1,5 +1,6 @@
 package com.example.fastboot.server.producems.mapper;
 
+import com.example.fastboot.server.producems.model.Checkchangnotes;
 import com.example.fastboot.server.producems.model.Checkfeedback;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.vo.SoftCheckStateCountVo;
@@ -53,4 +54,29 @@ public interface CheckfeedbackMapper {
      * @return
      */
     List<Checkfeedback> listCheckFeedback(Checkfeedback checkfeedback);
+
+    /**
+     * 获取变更项请
+     * @param guid
+     * @return
+     */
+    Checkchangnotes getCheckChangeNotes(String guid);
+
+    /**
+     * 新增测试变更记录
+     * @param checkchangnotes
+     */
+    void addCheckchangnotes(Checkchangnotes checkchangnotes);
+
+    /**
+     * 更新变更说明
+     * @param checkchangnotes
+     */
+    void updateCheckchangnotes(Checkchangnotes checkchangnotes);
+
+    /**
+     * 删除软件测试
+     * @param guid
+     */
+    void deleteCheckFeedback(String guid);
 }

@@ -102,4 +102,11 @@ public interface ProjectMapper {
      * @param project
      */
     void onsiteaAccept(Project project);
+
+    /**
+     * 根据产品标识获取项目列表
+     * @param produceGuid
+     * @return
+     */
+    List<Project> listProjectByProduceGuid(String produceGuid);
 }

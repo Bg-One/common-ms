@@ -57,4 +57,12 @@ public interface IProjectService {
      * @param project
      */
     void onsiteaAccept(Project project);
+
+    /**
+     * 根据项目guid获取项目信息
+     *
+     * @param produceGuid
+     * @return
+     */
+    List<Project> listProjectByProduceGuid(String produceGuid);
 }

@@ -73,4 +73,11 @@ public interface DemandMapper {
      * @return
      */
     int countDemandTranceByNodeGuid(String nodeGuid);
+
+    /**
+     * 获取节点信息
+     * @param guid
+     * @return
+     */
+    DemandItem getNodes(String guid);
 }

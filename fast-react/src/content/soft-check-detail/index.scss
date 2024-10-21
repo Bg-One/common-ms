@@ -1,0 +1,30 @@
+.explain-li {
+  display: block;
+  margin-left: 1vw;
+}
+
+.imgPreview {
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  align-items: center;
+  /*容器占满整个屏幕*/
+  height: 100%;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9;
+}
+
+.imgPreviewNone {
+  display: none;
+}
+
+.close-btn {
+  position: fixed;
+  top: 0;
+  right: 17px;
+  cursor: pointer;
+  color: white;
+  fontSize: 3vw;
+}

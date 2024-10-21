@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- *
  * @TableName nodes
  */
 @Data
@@ -58,6 +57,8 @@ public class Nodes implements Serializable {
      *
      */
     private Boolean deleteFlag;
+
+    private String produceGuid;
 
     private static final long serialVersionUID = 1L;
 

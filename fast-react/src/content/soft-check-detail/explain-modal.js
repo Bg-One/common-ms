@@ -1,6 +1,6 @@
 import {Modal} from "antd";
 import React from "react";
-import './explain-modal.scss'
+import './index.scss'
 
 const ExplainModal = ({explainModalVisible, setExplainModalVisible}) => {
     return < Modal

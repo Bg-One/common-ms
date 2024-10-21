@@ -14,3 +14,6 @@ export let updateDemandConfirmDetailApi = (obj = {}) => {
 export let listNodesApi = (obj = {}) => {
     return http.post('demandItem/listNodes', obj)
 }
+export let getNodesApi = (obj = {}) => {
+    return http.post('demandItem/getNodes', obj)
+}

@@ -64,3 +64,8 @@ export function findParentByKey(tree, targetKey, parent = null) {
     // 如果没有找到，返回null
     return null;
 }
+
+//生成tree项
+export const createTreeItem = (title, key, icon, children,) => {
+    return {key, icon, children, title};
+}

@@ -143,4 +143,7 @@
             order by t1.createTime desc
         </where>
     </select>
+    <select id="listProjectByProduceGuid" resultType="com.example.fastboot.server.producems.model.Project">
+        select * from project where produceGuid=#{produceGuid} and deleteFlag=0 and executionStatus=1
+    </select>
 </mapper>

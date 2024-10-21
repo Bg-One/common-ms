@@ -5,6 +5,7 @@ import com.example.fastboot.common.response.PageResponse;
 import com.example.fastboot.common.security.LoginUser;
 import com.example.fastboot.server.producems.mapper.CheckfeedbackMapper;
 import com.example.fastboot.server.producems.mapper.ProducemanageMapper;
+import com.example.fastboot.server.producems.model.Checkchangnotes;
 import com.example.fastboot.server.producems.model.Checkfeedback;
 import com.example.fastboot.server.producems.model.LockProduceToUser;
 import com.example.fastboot.server.producems.model.Producemanage;
@@ -91,5 +92,35 @@ public class ISoftwareCheckServiceImpl implements ISoftwareCheckService {
         List<Checkfeedback> checkfeedbacks = checkfeedbackMapper.listCheckFeedback(checkfeedback);
         PageInfo<Checkfeedback> checkfeedbackPageInfo = new PageInfo<>(checkfeedbacks);
         return new PageResponse<>(checkfeedbackPageInfo);
+    }
+
+    @Override
+    public void addOrEditCheckfeedback(String checkFeedbackList) {
+
+    }
+
+    @Override
+    public void addOrEditCheckChangNote(Checkchangnotes checkchangnotes) {
+        String guid = checkchangnotes.getGuid();
+        if (guid == null || guid.isEmpty()) {
+            String checkGuid = UUID.randomUUID().toString();
+            checkchangnotes.setGuid(checkGuid);
+            checkfeedbackMapper.addCheckchangnotes(checkchangnotes);
+        } else {
+            checkchangnotes.setGuid(guid);
+            checkfeedbackMapper.updateCheckchangnotes(checkchangnotes);
+        }
+
+    }
+
+    @Override
+    public Checkchangnotes getCheckChangeNotes(String guid) {
+        Checkchangnotes checkChangeNotes = checkfeedbackMapper.getCheckChangeNotes(guid);
+        return checkChangeNotes == null ? new Checkchangnotes() : checkChangeNotes;
+    }
+
+    @Override
+    public void deleteCheckFeedback(String guid) {
+        checkfeedbackMapper.deleteCheckFeedback(guid);
     }
 }

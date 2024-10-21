@@ -2,27 +2,31 @@ import {Modal} from "antd";
 import React, {useState} from "react";
 import TreeSearch from "../demand-tree-search/tree-search";
 
-const DemandTreeModal = ({explainModalVisible, setNodeVisible, saveNode, treeData, nodeList}) => {
+const DemandTreeModal = ({nodeVisible, setNodeVisible, saveNode, treeData, nodeList}) => {
     const [selectNodeGuid, setSelectNodeGuid] = useState('')
+    const [selectName, setSelectName] = useState('')
+
     return <Modal
         className="demand-tree-modal"
-        open={explainModalVisible}
+        open={nodeVisible}
         centered={true}
         closable={true}
         forceRender={true}
-        style={{textAlign: 'center'}}
+        style={{textAlign: 'center', paddingTop: '5vh'}}
         onCancel={() => {
             setNodeVisible(false)
         }}
         onOk={() => {
-            saveNode(selectNodeGuid)
+            saveNode(selectNodeGuid, selectName)
             setNodeVisible(false)
         }}
-        title={false}
+        title={'需求选择'}
     >
         <TreeSearch
             onSelect={(e, name) => {
+                console.log(e, name)
                 setSelectNodeGuid(e[0])
+                setSelectName(name)
             }}
             defaultData={treeData}
             dataList={nodeList}

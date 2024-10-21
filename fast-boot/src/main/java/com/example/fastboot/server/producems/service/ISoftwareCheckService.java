@@ -1,6 +1,7 @@
 package com.example.fastboot.server.producems.service;
 
 import com.example.fastboot.common.response.PageResponse;
+import com.example.fastboot.server.producems.model.Checkchangnotes;
 import com.example.fastboot.server.producems.model.Checkfeedback;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.github.pagehelper.PageInfo;
@@ -36,4 +37,30 @@ public interface ISoftwareCheckService {
      * @return
      */
     PageResponse listCheckFeedback(Checkfeedback checkfeedback);
+
+    /**
+     * 新增测试反馈
+     * @param checkFeedbackList
+     */
+    void addOrEditCheckfeedback(String checkFeedbackList);
+
+    /**
+     *
+     * @param checkchangnotes
+     * @return
+     */
+    void addOrEditCheckChangNote(Checkchangnotes checkchangnotes);
+
+    /**
+     * 获取变更记录
+     * @param guid
+     * @return
+     */
+    Checkchangnotes getCheckChangeNotes(String guid);
+
+    /**
+     * 删除软件测试
+     * @param guid
+     */
+    void deleteCheckFeedback(String guid);
 }

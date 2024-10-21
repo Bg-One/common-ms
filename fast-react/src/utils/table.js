@@ -1,7 +1,7 @@
 // 处理数据变化
 export const handleSave = (index, field, value, data, setData) => {
-    const newData = [...data];
-    data[index][field] = value
+    const newData = deepCopy(data);
+    newData[index][field] = value
     setData(newData);
 }
 

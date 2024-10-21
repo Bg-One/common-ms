@@ -1,16 +1,19 @@
 import {Button, Form, Input, Modal, Space} from "antd";
-import React from "react";
+import React, {useEffect} from "react";
 
 const {TextArea} = Input;
 
 const ChangenodeModal = ({
                              checkChangNotesObj,
-                             setCheckChangNotesVisible: setCheckChangNotesObj,
-                             addOrEditCheckChangNote
+                             addOrEditCheckChangNote,
+                             setCheckChangNotesObj,
                          }) => {
 
     const [changeNodeForm] = Form.useForm()
 
+    useEffect(() => {
+        changeNodeForm.setFieldsValue({...checkChangNotesObj})
+    }, [checkChangNotesObj])
     return <Modal
         open={checkChangNotesObj.open}
         centered={true}
@@ -50,7 +53,7 @@ const ChangenodeModal = ({
                 </Form.Item>
                 <Form.Item
                     label="影响范围"
-                    name="scopeOfinfluence"
+                    name="scopeOfInfluence"
                 >
                     <TextArea
                         autoSize={{minRows: 3, maxRows: 6}}

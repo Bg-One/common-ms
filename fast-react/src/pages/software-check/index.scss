@@ -124,7 +124,28 @@
 }
 
 #home-software-check-detail {
-  .ant-table-cell {
+  //.ant-table-cell {
+  //  text-align: center;
+  //}
+
+  .ant-table-thead {
+
+    .ant-table-cell {
+      text-align: center;
+      line-height: 1vw;
+      font-size: 0.8vw;
+      font-weight: bold;
+      // padding: 3vh 0;
+    }
+  }
+
+  .ant-table-tbody > tr > td {
+    padding: 0.5vh 0;
     text-align: center;
+  }
+
+  .actionlist {
+    display: flex;
+    flex-direction: column;
   }
 }

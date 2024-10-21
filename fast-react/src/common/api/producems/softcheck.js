@@ -20,3 +20,6 @@ export let addOrEditCheckChangNoteApi = (obj = {}) => {
 export let deleteCheckFeedbackApi = (obj = {}) => {
     return http.post('softwareCheck/deleteCheckFeedback', obj)
 }
+export let getCheckChangNoteApi = (obj = {}) => {
+    return http.post('softwareCheck/getCheckChangeNotes', obj)
+}

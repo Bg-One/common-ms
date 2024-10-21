@@ -86,6 +86,7 @@ public class ProjectController {
         projectService.onsiteaAccept(project);
         return success("成功");
     }
+
     /**
      * 获取项目成员列表
      *
@@ -97,4 +98,14 @@ public class ProjectController {
         return success(projectService.listProjectMemList(guid));
     }
 
+    /**
+     * 根据产品标识获取项目列表
+     *
+     * @param produceGuid
+     * @return
+     */
+    @PostMapping("listProjectByProduceGuid")
+    public Object listProjectByProduceGuid(String produceGuid) {
+        return success(projectService.listProjectByProduceGuid(produceGuid));
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.fastboot.server.producems.service;
 
 import com.example.fastboot.common.response.PageResponse;
+import com.example.fastboot.server.producems.model.DemandItem;
 import com.example.fastboot.server.producems.model.Nodes;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.vo.DemandConfirmDetailVo;
@@ -42,4 +43,11 @@ public interface IDemandService {
      * @return
      */
     List<Nodes> listNodes(Nodes nodes);
+
+    /**
+     * 获取需求信息
+     * @param guid
+     * @return
+     */
+    DemandItem getNodes(String guid);
 }

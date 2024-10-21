@@ -52,9 +52,14 @@ public class Checkfeedback {
     private Integer saveImageFlag;
 
     private String produceName;
+    private String nodeName;
 
     private int currentPage;
 
     private int pageSize;
+
+    private String[] filterStatus;
+
+    private String[] filterProjectList;
     private CheckFeedbackCountVo checkFeedbackCountVo;
 }

@@ -147,4 +147,9 @@ public class IDemandServiceImpl implements IDemandService {
     public List<Nodes> listNodes(Nodes nodes) {
         return demandMapper.listNodes(nodes);
     }
+
+    @Override
+    public DemandItem getNodes(String guid) {
+        return demandMapper.getNodes(guid);
+    }
 }

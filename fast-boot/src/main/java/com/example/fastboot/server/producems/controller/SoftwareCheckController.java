@@ -1,5 +1,6 @@
 package com.example.fastboot.server.producems.controller;
 
+import com.example.fastboot.server.producems.model.Checkchangnotes;
 import com.example.fastboot.server.producems.model.Checkfeedback;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.service.ISoftwareCheckService;
@@ -45,8 +46,61 @@ public class SoftwareCheckController {
     }
 
 
+    /**
+     * 获取全部测试反馈列表
+     *
+     * @param checkfeedback
+     * @return
+     */
     @PostMapping("listCheckFeedback")
     public Object listCheckFeedback(Checkfeedback checkfeedback) {
         return success(softwareCheckService.listCheckFeedback(checkfeedback));
+    }
+
+    /**
+     * 新增测试反馈
+     *
+     * @param checkFeedbackList
+     * @return
+     */
+    @PostMapping("addOrEditCheckfeedback")
+    public Object addOrEditCheckfeedback(String checkFeedbackList) {
+        softwareCheckService.addOrEditCheckfeedback(checkFeedbackList);
+        return success("成功");
+    }
+
+
+    /**
+     * 获取变更详情
+     *
+     * @param guid
+     * @return
+     */
+    @PostMapping("getCheckChangeNotes")
+    public Object getCheckChangeNotes(String guid) {
+        return success(softwareCheckService.getCheckChangeNotes(guid));
+    }
+
+    /**
+     * 新增变更说明
+     *
+     * @param checkchangnotes
+     * @return
+     */
+    @PostMapping("addOrEditCheckChangNote")
+    public Object addOrEditCheckChangNote(Checkchangnotes checkchangnotes) {
+        softwareCheckService.addOrEditCheckChangNote(checkchangnotes);
+        return success("成功");
+    }
+    /**
+     * 新增变更说明
+     *
+     * @param guid
+     * @return
+     */
+    @PostMapping("deleteCheckFeedback")
+    public Object deleteCheckFeedback(String guid) {
+        softwareCheckService.deleteCheckFeedback(guid);
+        return success("成功");
     }
 }

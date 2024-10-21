@@ -31,4 +31,15 @@ public class DemandItemController {
     public Object listNodes(Nodes nodes) {
         return success(demandService.listNodes(nodes));
     }
+
+    /**
+     * 获取需求信息
+     *
+     * @param guid
+     * @return
+     */
+    @PostMapping("getNodes")
+    public Object getNodes(String guid) {
+        return success(demandService.getNodes(guid));
+    }
 }

@@ -103,4 +103,9 @@ public class IProjectServiceImpl implements IProjectService {
     public void onsiteaAccept(Project project) {
         projectMapper.onsiteaAccept(project);
     }
+
+    @Override
+    public List<Project> listProjectByProduceGuid(String produceGuid) {
+        return projectMapper.listProjectByProduceGuid(produceGuid);
+    }
 }
