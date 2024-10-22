@@ -67,5 +67,5 @@ export function findParentByKey(tree, targetKey, parent = null) {
 
 //生成tree项
 export const createTreeItem = (title, key, icon, children,) => {
-    return {key, icon, children, title};
+    return {key, value: key, icon, children, title};
 }

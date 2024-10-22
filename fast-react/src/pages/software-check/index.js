@@ -6,8 +6,14 @@ import './index.scss'
 import {countCheckFeedbackByProduceApi, relatedProduceApi} from "../../common/api/producems/softcheck";
 import {listNotBindSoftwareCheckProduceListApi} from "../../common/api/producems/produce";
 import {SearchOutlined} from "@ant-design/icons";
+import {componentMap} from "../../common/config/menu-config";
+import {addTab} from "../../redux/tab/tab-slice";
+import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
 
 const SoftwareCheck = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [searchForm] = Form.useForm()
     const [notBindCheckProduceList, setNotBindCheckProduceList] = useState([])
     const [relatedVisiBleFlag, setRelatedVisiBleFlag] = useState(false)
@@ -67,10 +73,21 @@ const SoftwareCheck = () => {
         })
     }
 
-    const urlPush = (record, checkFlag) => {
-        this.props.history.push('/home/software-check-detail' + '?produceName=' + record.produceName + '&produceGuid=' + record.produceGuid + '&checkFlag=' + checkFlag + '&devUserFlag=' + record.devUserFlag + '&checkUserFlag=' + record.checkUserFlag)
+    //获取详情
+    const getDetail = (record) => {
+        navigate('/home/software-check-detail' + '?produceGuid=' + record.produceGuid)
+        setTimeout(() => {
+            const Component = componentMap.SoftCheckDetail;
+            dispatch(addTab({
+                label: `${record.produceName}软件测试详情`,
+                children: <React.Suspense fallback={<div>Loading...</div>}>
+                    <Component/>
+                </React.Suspense>
+                ,
+                key: '/home/software-check-detail' + '?demandGuid=' + record.produceGuid,
+            }))
+        }, 200)
     }
-
     return <div id="home-software-check">
         <div className={'search-area'}>
             <Form
@@ -119,63 +136,51 @@ const SoftwareCheck = () => {
                     dataIndex: 'totalCount',
                     key: 'totalCount',
                     render: (text, record, index) => {
-                        return <div className="totalCount" onClick={() => {
-                            urlPush(record, 'all')
-                        }}>{record.checkFeedbackCountVo.totalCount}</div>
+                        return <div className="totalCount">{record.checkFeedbackCountVo.totalCount}</div>
                     }
                 }, {
                     title: '新增',
                     dataIndex: 'checkWaitConfirmCount',
                     key: 'checkWaitConfirmCount',
                     render: (text, record, index) => {
-                        return <div className="checkWaitConfirmCount" onClick={() => {
-                            urlPush(record, 'add')
-                        }}>{record.checkFeedbackCountVo.checkWaitConfirmCount}</div>
+                        return <div
+                            className="checkWaitConfirmCount">{record.checkFeedbackCountVo.checkWaitConfirmCount}</div>
                     }
                 }, {
                     title: '开发已完成',
                     dataIndex: 'reopenCount',
                     key: 'reopenCount',
                     render: (text, record, index) => {
-                        return <div className="reopenCount" onClick={() => {
-                            urlPush(record, 'finish')
-                        }}>{record.checkFeedbackCountVo.reopenCount}</div>
+                        return <div className="reopenCount">{record.checkFeedbackCountVo.reopenCount}</div>
                     }
                 }, {
                     title: '已通过',
                     dataIndex: 'devWaitConfirmCount',
                     key: 'devWaitConfirmCount',
                     render: (text, record, index) => {
-                        return <div className="devWaitConfirmCount" onClick={() => {
-                            urlPush(record, 'pass')
-                        }}>{record.checkFeedbackCountVo.devWaitConfirmCount}</div>
+                        return <div
+                            className="devWaitConfirmCount">{record.checkFeedbackCountVo.devWaitConfirmCount}</div>
                     }
                 }, {
                     title: '未通过',
                     dataIndex: 'revisingCount',
                     key: 'revisingCount',
                     render: (text, record, index) => {
-                        return <div className="revisingCount" onClick={() => {
-                            urlPush(record, 'nopassed')
-                        }}>{record.checkFeedbackCountVo.revisingCount}</div>
+                        return <div className="revisingCount">{record.checkFeedbackCountVo.revisingCount}</div>
                     }
                 }, {
                     title: '重新打开',
                     dataIndex: 'waitRetestCount',
                     key: 'waitRetestCount',
                     render: (text, record, index) => {
-                        return <div className="waitRetestCount" onClick={() => {
-                            urlPush(record, 'open')
-                        }}>{record.checkFeedbackCountVo.waitRetestCount}</div>
+                        return <div className="waitRetestCount">{record.checkFeedbackCountVo.waitRetestCount}</div>
                     }
                 }, {
                     title: '挂起',
                     dataIndex: 'noPassedCount',
                     key: 'noPassedCount',
                     render: (text, record, index) => {
-                        return <div className="noPassedCount" onClick={() => {
-                            urlPush(record, 'hungup')
-                        }}>
+                        return <div className="noPassedCount">
                             {record.checkFeedbackCountVo.noPassedCount}
                         </div>
                     }
@@ -184,18 +189,15 @@ const SoftwareCheck = () => {
                     dataIndex: 'passedCount',
                     key: 'passedCount',
                     render: (text, record, index) => {
-                        return <div className="passedCount" onClick={() => {
-                            urlPush(record, 'close')
-                        }}>{record.checkFeedbackCountVo.passedCount}</div>
+                        return <div className="passedCount">{record.checkFeedbackCountVo.passedCount}</div>
                     }
                 }, {
                     title: '操作',
                     key: 'action',
                     render: (text, record, index) => {
                         return <Button type={'link'} onClick={() => {
-                            urlPush(record, 'all')
+                            getDetail(record)
                         }}>查看</Button>
-
                     }
                 }]}
             rowKey={record => record.produceGuid}

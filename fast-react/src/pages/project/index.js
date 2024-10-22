@@ -417,6 +417,7 @@ const Project = (props) => {
                             treeCheckable={true} //
                             showCheckedStrategy={TreeSelect.SHOW_PARENT}//
                             showSearch
+                            filterTreeNode={(input, option) => pinyinUtil.getFirstLetter(option.title).indexOf(input.toUpperCase()) !== -1 || option.title.indexOf(input.toUpperCase()) !== -1}
                         />
 
                     }

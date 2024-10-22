@@ -32,10 +32,10 @@ public class Checkfeedback {
     private String imageLink;
     private Integer severity;
     @JsonSerialize(using = DateToDayJsonSerialize.class)
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date feedbackTime;
     @JsonSerialize(using = DateToDayJsonSerialize.class)
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dealFinishTime;
     private String submitName;
     private String checkConfirmName;
@@ -44,7 +44,7 @@ public class Checkfeedback {
     private int status;
     private String dealMethod;
     @JsonSerialize(using = DateToDayJsonSerialize.class)
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date publishTime;
     private String notes;
     private String deleteFlag;

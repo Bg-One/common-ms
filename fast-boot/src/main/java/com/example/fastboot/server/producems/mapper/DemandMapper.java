@@ -80,4 +80,11 @@ public interface DemandMapper {
      * @return
      */
     DemandItem getNodes(String guid);
+
+    /**
+     * 更改需求处理状态
+     * @param nodeGuid
+     * @param status
+     */
+    void updateDealState(@Param("nodeGuid") String nodeGuid,@Param("status") int status);
 }

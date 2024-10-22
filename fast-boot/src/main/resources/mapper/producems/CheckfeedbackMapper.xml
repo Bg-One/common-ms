@@ -4,8 +4,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.fastboot.server.producems.mapper.CheckfeedbackMapper">
     <insert id="insertCheckfeedback">
-        INSERT INTO `checkfeedback`(guid, produceGuid)
-        VALUES (#{guid}, #{produceGuid});
+        INSERT INTO `checkfeedback`(
+        <if test="nodeGuid != null and nodeGuid != ''">`nodeGuid`,</if>
+        <if test="produceGuid != null and produceGuid != ''">`produceGuid`,</if>
+        <if test="projectGuid != null and projectGuid != ''">`projectGuid`,</if>
+        <if test="questionDescription != null and questionDescription != ''">`questionDescription`,</if>
+        <if test="imageLink != null and imageLink != ''">`imageLink`,</if>
+        <if test="severity != null and severity != ''">`severity`,</if>
+        <if test="feedbackTime != null ">`feedbackTime`,</if>
+        <if test="submitName != null and submitName != ''">`submitName`,</if>
+        `guid`)
+        VALUES (
+        <if test="nodeGuid != null and nodeGuid != ''">#{nodeGuid},</if>
+        <if test="produceGuid != null and produceGuid != ''">#{produceGuid},</if>
+        <if test="projectGuid != null and projectGuid != ''">#{projectGuid},</if>
+        <if test="questionDescription != null and questionDescription != ''">#{questionDescription},</if>
+        <if test="imageLink != null and imageLink != ''">#{imageLink},</if>
+        <if test="severity != null and severity != ''">#{severity},</if>
+        <if test="feedbackTime != null ">#{feedbackTime},</if>
+        <if test="submitName != null and submitName != ''">#{submitName},</if>
+        #{guid});
     </insert>
     <insert id="addCheckchangnotes">
         INSERT INTO `checkchangnotes`(guid, checkFeedbackGuid, dbChange,
@@ -23,8 +41,44 @@
             checkSuggestion=#{checkSuggestion}
         where guid = #{guid}
     </update>
+    <update id="updateCheckfeedback">
+        update `checkfeedback`
+        set questionDescription=#{checkfeedback.questionDescription},
+        imageLink=#{checkfeedback.imageLink},
+        severity=#{checkfeedback.severity},
+        submitName=#{checkfeedback.submitName},
+        checkConfirmName=#{checkfeedback.checkConfirmName},
+        developConfirmName=#{checkfeedback.developConfirmName},
+        dealName=#{checkfeedback.dealName},
+        status=#{checkfeedback.status},
+        dealMethod=#{checkfeedback.dealMethod},
+        notes=#{checkfeedback.notes},
+        projectGuid=#{checkfeedback.projectGuid},
+        <if test="checkfeedback.feedbackTime!=null">
+            feedbackTime=#{checkfeedback.feedbackTime},
+        </if>
+        <if test="checkfeedback.feedbackTime==null">
+            feedbackTime='1970-01-01 00:00:00',
+        </if>
+        <if test="checkfeedback.dealFinishTime!=null">
+            dealFinishTime=#{checkfeedback.dealFinishTime},
+        </if>
+        <if test="checkfeedback.dealFinishTime==null">
+            dealFinishTime='1970-01-01 00:00:00',
+        </if>
+        <if test="checkfeedback.publishTime!=null">
+            publishTime=#{checkfeedback.publishTime},
+        </if>
+        <if test="checkfeedback.publishTime==null">
+            publishTime='1970-01-01 00:00:00',
+        </if>
+        nodeGuid=#{checkfeedback.nodeGuid}
+        where guid = #{checkfeedback.guid}
+    </update>
     <delete id="deleteCheckFeedback">
-        update checkfeedback set deleteFlag=1 where guid=#{guid}
+        update checkfeedback
+        set deleteFlag=1
+        where guid = #{guid}
     </delete>
 
     <select id="listDistinctProduceGuid" resultType="java.lang.String">
@@ -71,6 +125,9 @@
         left join nodes t2 on t2.guid = t1.nodeGuid
         WHERE t1.deleteFlag = 0
         AND t1.produceGuid = #{produceGuid}
+        <if test="questionDescription!=null and questionDescription!=''">
+            and questionDescription like CONCAT ('%',#{questionDescription},'%')
+        </if>
         <if test="filterStatus.length >0">
             and t1.status in
             <foreach collection="filterStatus" item="item" open="(" close=")" separator=",">
@@ -83,6 +140,7 @@
                 #{item}
             </foreach>
         </if>
+        order by t1.feedbackTime desc
     </select>
     <select id="getCheckChangeNotes" resultType="com.example.fastboot.server.producems.model.Checkchangnotes">
         select *

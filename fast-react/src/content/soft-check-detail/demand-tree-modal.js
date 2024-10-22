@@ -24,7 +24,6 @@ const DemandTreeModal = ({nodeVisible, setNodeVisible, saveNode, treeData, nodeL
     >
         <TreeSearch
             onSelect={(e, name) => {
-                console.log(e, name)
                 setSelectNodeGuid(e[0])
                 setSelectName(name)
             }}

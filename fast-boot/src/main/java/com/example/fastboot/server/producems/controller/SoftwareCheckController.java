@@ -58,17 +58,27 @@ public class SoftwareCheckController {
     }
 
     /**
-     * 新增测试反馈
+     * 更新测试反馈
      *
      * @param checkFeedbackList
      * @return
      */
-    @PostMapping("addOrEditCheckfeedback")
-    public Object addOrEditCheckfeedback(String checkFeedbackList) {
-        softwareCheckService.addOrEditCheckfeedback(checkFeedbackList);
+    @PostMapping("editCheckfeedback")
+    public Object editCheckfeedback(String checkFeedbackList) {
+        softwareCheckService.editCheckfeedback(checkFeedbackList);
         return success("成功");
     }
-
+    /**
+     * 新增测试反馈
+     *
+     * @param checkfeedback
+     * @return
+     */
+    @PostMapping("addCheckfeedback")
+    public Object addCheckfeedback(Checkfeedback checkfeedback) {
+        softwareCheckService.addCheckfeedback(checkfeedback);
+        return success("成功");
+    }
 
     /**
      * 获取变更详情

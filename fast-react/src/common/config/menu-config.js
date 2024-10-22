@@ -52,11 +52,6 @@ export const menuConfig = [{
     component: 'SoftCheck',
     label: '软件测试',
 }, {
-    key: '/software-check-detail',
-    icon: <MyIcon type={'icon-main'}/>,
-    component: 'SoftCheckDetail',
-    label: '软件测试详情',
-}, {
     key: '/demand-confirm',
     icon: <MyIcon type={'icon-main'}/>,
     component: 'RequireConfirm',

@@ -29,6 +29,11 @@
         set demandConfirmName=#{userName}
         where nodeGuid = #{nodeGuid}
     </update>
+    <update id="updateDealState">
+        update demanditem
+        set demandConfiemedState=#{status}
+        where nodeGuid = #{nodeGuid}
+    </update>
     <select id="getDemand" resultType="com.example.fastboot.server.producems.model.Demandmanage">
         select * from demandmanage
         <where>

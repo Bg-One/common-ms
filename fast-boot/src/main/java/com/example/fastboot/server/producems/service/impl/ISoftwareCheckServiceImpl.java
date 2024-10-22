@@ -1,14 +1,17 @@
 package com.example.fastboot.server.producems.service.impl;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
+import com.example.fastboot.common.enums.MessageTypeEnum;
 import com.example.fastboot.common.enums.SoftCheckEnum;
+import com.example.fastboot.common.enums.TeamResourceEnum;
 import com.example.fastboot.common.response.PageResponse;
 import com.example.fastboot.common.security.LoginUser;
 import com.example.fastboot.server.producems.mapper.CheckfeedbackMapper;
+import com.example.fastboot.server.producems.mapper.DemandMapper;
 import com.example.fastboot.server.producems.mapper.ProducemanageMapper;
-import com.example.fastboot.server.producems.model.Checkchangnotes;
-import com.example.fastboot.server.producems.model.Checkfeedback;
-import com.example.fastboot.server.producems.model.LockProduceToUser;
-import com.example.fastboot.server.producems.model.Producemanage;
+import com.example.fastboot.server.producems.model.*;
+import com.example.fastboot.server.producems.service.IAlertService;
 import com.example.fastboot.server.producems.service.ISoftwareCheckService;
 import com.example.fastboot.server.producems.vo.CheckFeedbackCountVo;
 import com.example.fastboot.server.producems.vo.SoftCheckStateCountVo;
@@ -19,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +37,10 @@ public class ISoftwareCheckServiceImpl implements ISoftwareCheckService {
     private ProducemanageMapper producemanageMapper;
     @Autowired
     private CheckfeedbackMapper checkfeedbackMapper;
+    @Autowired
+    private DemandMapper demandMapper;
+    @Autowired
+    private IAlertService alertService;
 
     @Override
     public PageResponse countCheckFeedbackByProduce(Producemanage producemanage) {
@@ -95,8 +103,40 @@ public class ISoftwareCheckServiceImpl implements ISoftwareCheckService {
     }
 
     @Override
-    public void addOrEditCheckfeedback(String checkFeedbackList) {
+    public void editCheckfeedback(String checkFeedbackList) {
+        List<Checkfeedback> checkfeedbacks = JSONArray.parseArray(checkFeedbackList, Checkfeedback.class);
+        for (Checkfeedback checkfeedback : checkfeedbacks) {
+            checkfeedbackMapper.updateCheckfeedback(checkfeedback);
+            demandMapper.updateDealState(checkfeedback.getNodeGuid(), checkfeedback.getStatus());
+            sendMsgBydealState(checkfeedback.getStatus(), checkfeedback.getProduceGuid(), checkfeedback.getQuestionDescription());
+        }
+    }
 
+    private void sendMsgBydealState(int dealState, String produceGuid, String content) {
+        Producemanage queryProducemanage = new Producemanage();
+        queryProducemanage.setGuid(produceGuid);
+        Producemanage produceByGuid = producemanageMapper.getProduce(queryProducemanage);
+        ArrayList<Integer> typeList = new ArrayList<>();
+        int alertType = 0;
+        if (dealState == SoftCheckEnum.NO_PASS.getCode() || dealState == SoftCheckEnum.OPEN.getCode()) {
+            //查询有关的项目组成员
+            typeList.add(TeamResourceEnum.RD_GROUP.getCode());
+            alertType = MessageTypeEnum.CHECK_NO_PASS.getCode();
+        } else if (dealState == SoftCheckEnum.DEV_FINISH.getCode()) {
+            //查询有关的项目组成员
+            typeList.add(TeamResourceEnum.TEST_GROUP.getCode());
+            alertType = MessageTypeEnum.WAIT_CHECK_AGAIN.getCode();
+        }
+        if (typeList.size() == 0) {
+            return;
+        }
+        List<Producemember> producememberList = producemanageMapper.listProduceMemberByType(produceGuid, typeList);
+        if (producememberList.size() == 0) {
+            return;
+        }
+        String[] managerGuids = producememberList.stream().map(Producemember::getManagerGuid).toArray(String[]::new);
+        //消息存库
+        alertService.saveMessage(produceByGuid, content, managerGuids, alertType);
     }
 
     @Override
@@ -122,5 +162,11 @@ public class ISoftwareCheckServiceImpl implements ISoftwareCheckService {
     @Override
     public void deleteCheckFeedback(String guid) {
         checkfeedbackMapper.deleteCheckFeedback(guid);
+    }
+
+    @Override
+    public void addCheckfeedback(Checkfeedback checkfeedback) {
+        checkfeedback.setGuid(UUID.randomUUID().toString());
+        checkfeedbackMapper.insertCheckfeedback(checkfeedback);
     }
 }

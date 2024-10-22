@@ -137,7 +137,7 @@ public class IDemandServiceImpl implements IDemandService {
             if (producememberList.size() == 0) {
                 continue;
             }
-            String[] managerGuids = producememberList.stream().map(item -> item.getManagerGuid()).toArray(String[]::new);
+            String[] managerGuids = producememberList.stream().map(Producemember::getManagerGuid).toArray(String[]::new);
             //消息存库
             alertService.saveMessage(producemanage, contentDescription, managerGuids, alertType);
         }

@@ -4,11 +4,6 @@ import com.example.fastboot.common.response.PageResponse;
 import com.example.fastboot.server.producems.model.Checkchangnotes;
 import com.example.fastboot.server.producems.model.Checkfeedback;
 import com.example.fastboot.server.producems.model.Producemanage;
-import com.github.pagehelper.PageInfo;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * @Author bo
@@ -42,7 +37,7 @@ public interface ISoftwareCheckService {
      * 新增测试反馈
      * @param checkFeedbackList
      */
-    void addOrEditCheckfeedback(String checkFeedbackList);
+    void editCheckfeedback(String checkFeedbackList);
 
     /**
      *
@@ -63,4 +58,10 @@ public interface ISoftwareCheckService {
      * @param guid
      */
     void deleteCheckFeedback(String guid);
+
+    /**
+     * 新增测试反馈
+     * @param checkfeedback
+     */
+    void addCheckfeedback(Checkfeedback checkfeedback);
 }

@@ -57,6 +57,7 @@ public interface CheckfeedbackMapper {
 
     /**
      * 获取变更项请
+     *
      * @param guid
      * @return
      */
@@ -64,19 +65,28 @@ public interface CheckfeedbackMapper {
 
     /**
      * 新增测试变更记录
+     *
      * @param checkchangnotes
      */
     void addCheckchangnotes(Checkchangnotes checkchangnotes);
 
     /**
      * 更新变更说明
+     *
      * @param checkchangnotes
      */
     void updateCheckchangnotes(Checkchangnotes checkchangnotes);
 
     /**
      * 删除软件测试
+     *
      * @param guid
      */
     void deleteCheckFeedback(String guid);
+
+    /**
+     * 更新软件测试
+     */
+    void updateCheckfeedback(@Param("checkfeedback") Checkfeedback checkfeedback);
+
 }

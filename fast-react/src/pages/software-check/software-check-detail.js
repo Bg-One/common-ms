@@ -18,9 +18,9 @@ import moment from "moment/moment";
 import './index.scss'
 import {
     addOrEditCheckChangNoteApi,
-    addOrEditCheckfeedbackApi,
+    editCheckfeedbackApi,
     deleteCheckFeedbackApi, getCheckChangNoteApi,
-    listCheckFeedbackApi
+    listCheckFeedbackApi, addCheckfeedbackApi
 } from "../../common/api/producems/softcheck";
 import {getNodesApi, listNodesApi} from "../../common/api/producems/demand";
 import {checChanges, deepCopy, handleSave} from "../../utils/table";
@@ -32,31 +32,26 @@ import DemandTreeModal from "../../content/soft-check-detail/demand-tree-modal";
 import DemandEventstreamModal from "../../content/soft-check-detail/demand-eventstream-modal";
 import {useSearchParams} from "react-router-dom";
 import ImageLargeMask from "../../content/soft-check-detail/image-large-mask";
-import {uploadsApi} from "../../common/api/sys/common";
 import {listProjectByProduceGuidApi} from "../../common/api/producems/project";
 import {createTreeItem, handleTree} from "../../utils/tree-data";
+import AddSoftCheckModal from "../../content/soft-check-detail/soft-check-add-modal";
+import {paseImageFile} from "../../utils/upload";
 
 
 const {TextArea} = Input;
 
 const SoftwareCheckDetail = () => {
-    const [isInitialRender, setIsInitialRender] = useState(true);
     const [searchParams, setSearchParams] = useSearchParams()
+    const [isInitialRender, setIsInitialRender] = useState(true);
     const [searchForm] = Form.useForm()
     const userInfo = useSelector(state => state.user.userInfo);
     const [checkFeedbackList, setCheckFeedbackList] = useState([])
     const [orginalCheckFeedbackList, setOrginalCheckFeedbackList] = useState([])
     const [nodeList, setNodeList] = useState([])
     const [treeData, setTreeData] = useState([])
-
     const [projectList, setProjectList] = useState([])
-    const [pageInfo, setPageInfo] = useState({
-        currentPage: 1, pageSize: 10, total: 0, totalPages: 0
-    })
-    const [eventStreamModalInfo, setEventStreamModalInfo] = useState({
-        open: false,
-        eventStream: ''
-    })
+    const [pageInfo, setPageInfo] = useState({currentPage: 1, pageSize: 10, total: 0, totalPages: 0})
+    const [eventStreamModalInfo, setEventStreamModalInfo] = useState({open: false, eventStream: ''})
     const [explainModalVisible, setExplainModalVisible] = useState(false)
     const [checkChangNotesObj, setCheckChangNotesObj] = useState({
         open: false,
@@ -68,21 +63,28 @@ const SoftwareCheckDetail = () => {
         checkSuggestion: '',
     })
     const [nodeVisible, setNodeVisible] = useState(false)
-    const [wetherLargeObj, setWetherLargeObj] = useState({
-        open: false,
-        imageUrl: '',
-        index: 0
-    })
-    const [filterRules, setFilterRules] = useState({
-        filterStatus: [],
-        filterProjectList: []
-    })
+    const [wetherLargeObj, setWetherLargeObj] = useState({open: false, imageUrl: '', index: 0})
+    const [filterRules, setFilterRules] = useState({filterStatus: [], filterProjectList: []})
+    const [addCheckFeedbackModalVisible, setAddCheckFeedbackModalVisible] = useState(false)
     const [selectIndex, setSelectIndex] = useState(0)
     useEffect(() => {
         listNodes()
         listProjectByProduceGuid()
     }, [])
 
+    useEffect(() => {
+        // 检查是否是首次渲染（通过状态或 ref）
+        if (isInitialRender) {
+            // 如果是首次渲染，则跳过逻辑
+            setIsInitialRender(false); // 更新状态以标记为非首次渲染
+            return; // 提前返回，不执行后续逻辑
+        }
+        listCheckFeedback({
+            currentPage: pageInfo.currentPage,
+            pageSize: pageInfo.pageSize,
+        })
+    }, [filterRules])
+    //根据产品获取项目列表
     const listProjectByProduceGuid = () => {
         listProjectByProduceGuidApi({produceGuid: searchParams.get("produceGuid")}).then(res => {
             setProjectList(res.data)
@@ -92,7 +94,6 @@ const SoftwareCheckDetail = () => {
             })
         })
     }
-
     //获取测试反馈列表
     const listCheckFeedback = async (values) => {
         let res = await listCheckFeedbackApi({
@@ -109,21 +110,7 @@ const SoftwareCheckDetail = () => {
             total: res.data.total,
             totalPages: res.data.totalPages
         })
-
     }
-
-    useEffect(() => {
-        // 检查是否是首次渲染（通过状态或 ref）
-        if (isInitialRender) {
-            // 如果是首次渲染，则跳过逻辑
-            setIsInitialRender(false); // 更新状态以标记为非首次渲染
-            return; // 提前返回，不执行后续逻辑
-        }
-        listCheckFeedback({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
-        })
-    }, [filterRules])
     //搜索
     const onSearch = (values) => {
         listCheckFeedback({
@@ -166,12 +153,10 @@ const SoftwareCheckDetail = () => {
         })
         return newNodeList;
     }
-
-
     //新增或编辑软件测试列表
-    const addOrEditCheckfeedback = () => {
+    const editCheckfeedback = () => {
         let checkResult = checChanges(orginalCheckFeedbackList, checkFeedbackList, 'guid');
-        if (checkResult.changeArr.length === 0 && checkResult.addArr.length === 0) return
+        if (checkResult.changeArr.length === 0 ) return
         for (let item of checkFeedbackList) {
             if (!item.projectGuid) {
                 message.error('请选择所属项目', 1)
@@ -181,25 +166,24 @@ const SoftwareCheckDetail = () => {
                 message.error('请选择所属需求', 1)
                 return
             }
-            if (item.severity !== 0 && item.severity !== 1) {
-                message.error('请选择优先级', 1)
-                return
-            }
             if (!item.feedbackTime) {
                 message.error('反馈时间禁止为空', 1)
                 return
             }
             //判断时间是否符合格式
-
             if (!checkDate(item.feedbackTime) || !checkDate(item.dealFinishTime) || !checkDate(item.publishTime)) {
                 message.error('时间格式不正确,格式为yyyy-MM-dd,精确到日', 1)
                 return
             }
         }
-        addOrEditCheckfeedbackApi({
-            checkFeedbackList: JSON.stringify([...checkResult.changeArr], [...checkResult.addArr])
+        editCheckfeedbackApi({
+            checkFeedbackList: JSON.stringify(checkResult.changeArr)
         }).then(res => {
-            listCheckFeedback()
+            listCheckFeedback({
+                currentPage: pageInfo.currentPage,
+                pageSize: pageInfo.pageSize,
+                ...searchForm.getFieldsValue()
+            })
             message.success('保存成功', 1)
         })
     }
@@ -207,29 +191,6 @@ const SoftwareCheckDetail = () => {
     const checkDate = (dateStr) => {
         const regExp = /^(\d{4})-(\d{2})-(\d{2})$/;
         return !dateStr || regExp.test(dateStr);
-    }
-    //新增测试反馈详情
-    const addCheckfeedback = async () => {
-        if (pageInfo.currentPage !== 1) {
-            await listCheckFeedback({
-                currentPage: 1,
-                pageSize: 10,
-            })
-        }
-        let oldcheckFeedbackList = deepCopy(checkFeedbackList)
-        if (oldcheckFeedbackList.filter(item => item.guid === '').length > 0) {
-            message.error('请先保存或删除后再新增')
-            return
-        }
-        oldcheckFeedbackList.unshift({
-            guid: '',
-            projectGuid: filterRules.filterProjectList[0],
-            nodeGuid: '',
-            nodeName: '',
-            status: 1,
-        })
-        let currentData = oldcheckFeedbackList.slice(0, 10);
-        setCheckFeedbackList(currentData)
     }
     //新增或者更新变更说明
     const addOrEditCheckChangNote = (values) => {
@@ -248,7 +209,6 @@ const SoftwareCheckDetail = () => {
             })
             message.success('保存成功', 1)
         })
-
     }
     //删除测试反馈
     const deleteCheckFeedback = (guid, index) => {
@@ -268,23 +228,10 @@ const SoftwareCheckDetail = () => {
             })
         }
     }
-
     //发送图片
     const sendFile = async () => {
-        event.preventDefault();
-        event.stopPropagation();
-        let needItem = await navigator.clipboard.read();
-        let needData = needItem[0]
-        for (const t of needData.types) {
-            if (t.indexOf('image') !== -1) {
-                let blob = await needData.getType(t);
-                const formData = new FormData();
-                formData.append('files', blob, blob.name || 'pasted_image.png');
-                uploadsApi(formData).then(res => {
-                    handleSave(wetherLargeObj.index, 'imageLink', res.data[0].url, checkFeedbackList, setCheckFeedbackList)
-                })
-            }
-        }
+        let res = await paseImageFile()
+        handleSave(wetherLargeObj.index, 'imageLink', res.data[0].url, checkFeedbackList, setCheckFeedbackList)
     }
     //编辑列内容
     const editColumnsContent = (field, index, value) => {
@@ -311,6 +258,7 @@ const SoftwareCheckDetail = () => {
             })
         })
     }
+    //获取需求描述
     const getNode = (nodeGuid) => {
         getNodesApi({guid: nodeGuid}).then(res => {
             if (res.data.eventStream === '') {
@@ -322,6 +270,20 @@ const SoftwareCheckDetail = () => {
                 eventStream: res.data.eventStream
             })
         })
+    }
+    //新增测试详情
+    const addCheckFeedback = (obj) => {
+        addCheckfeedbackApi({...obj}).then(
+            res => {
+                listCheckFeedback({
+                    currentPage: pageInfo.currentPage,
+                    pageSize: pageInfo.pageSize,
+                    ...searchForm.getFieldsValue(),
+                })
+                setAddCheckFeedbackModalVisible(false)
+                message.success("新增成功", 1)
+            }
+        )
     }
     const defaultColumns = [
         {
@@ -401,7 +363,7 @@ const SoftwareCheckDetail = () => {
             width: '5vw',
             fixed: 'left',
             render: (text, record, index) => {
-                return <div onPaste={(e) => sendFile()} suppressContentEditableWarning
+                return <div onPaste={sendFile} suppressContentEditableWarning
                             contentEditable="true"
                             style={{height: '5vh', overflow: 'hidden', display: 'flex', cursor: 'pointer'}}
                             onDoubleClick={(e) => {
@@ -417,7 +379,7 @@ const SoftwareCheckDetail = () => {
                                     index: index
                                 })
                             }}
-                >{record.imageLink ? <img className="img" style={{overflow: 'hidden'}} src={record.imageLink}/> : null}
+                >{record.imageLink ? <img style={{overflow: 'hidden'}} src={record.imageLink}/> : null}
                 </div>
             }
         }, {
@@ -695,7 +657,7 @@ const SoftwareCheckDetail = () => {
                 autoComplete="off"
             > <Form.Item
                 label="问题描述"
-                name="name"
+                name="questionDescription"
             >
                 <Input placeholder="请输入问题描述关键字"/>
             </Form.Item>
@@ -706,8 +668,11 @@ const SoftwareCheckDetail = () => {
                     }}>
                     <Space>
                         <Button type="primary" htmlType="submit" icon={<SearchOutlined/>}>查询</Button>
-                        <Button type="primary" icon={<AppstoreAddOutlined/>} onClick={addCheckfeedback}>新增</Button>
-                        <Button type="primary" icon={<SaveOutlined/>} onClick={addOrEditCheckfeedback}>保存</Button>
+                        <Button type="primary" icon={<AppstoreAddOutlined/>} onClick={() => {
+                            setAddCheckFeedbackModalVisible(true)
+                        }
+                        }>新增</Button>
+                        <Button type="primary" icon={<SaveOutlined/>} onClick={editCheckfeedback}>保存</Button>
                         <img src={wenhao} style={{width: '1.5vw', verticalAlign: 'text-bottom', cursor: 'pointer'}}
                              onClick={() => {
                                  setExplainModalVisible(true)
@@ -731,13 +696,10 @@ const SoftwareCheckDetail = () => {
                 current: pageInfo.currentPage,
                 showSizeChanger: true,
                 onChange: (page, pageSize) => {
-                    if (page === pageInfo.currentPage) {
-                        return
-                    }
-                    listCheckFeedback({
+                    setPageInfo({
+                        ...pageInfo,
                         currentPage: page,
                         pageSize: pageSize,
-                        ...searchForm.getFieldsValue(),
                     })
                 }
             }}
@@ -763,6 +725,12 @@ const SoftwareCheckDetail = () => {
                                 setEventStreamModalInfo={setEventStreamModalInfo}/>
 
         <ImageLargeMask wetherLargeObj={wetherLargeObj} setWetherLargeObj={setWetherLargeObj}/>
+
+        <AddSoftCheckModal addCheckFeedbackModalVisible={addCheckFeedbackModalVisible}
+                           setAddCheckFeedbackModalVisible={setAddCheckFeedbackModalVisible}
+                           projectList={projectList}
+                           treeData={treeData}
+                           addCheckFeedback={addCheckFeedback}/>
     </div>
 
 }

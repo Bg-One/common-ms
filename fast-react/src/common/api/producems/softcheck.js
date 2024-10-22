@@ -11,8 +11,11 @@ export let listCheckFeedbackApi = (obj = {}) => {
     return http.post('softwareCheck/listCheckFeedback', obj)
 }
 
-export let addOrEditCheckfeedbackApi = (obj = {}) => {
-    return http.post('softwareCheck/addOrEditCheckfeedback', obj)
+export let editCheckfeedbackApi = (obj = {}) => {
+    return http.post('softwareCheck/editCheckfeedback', obj)
+}
+export let addCheckfeedbackApi = (obj = {}) => {
+    return http.post('softwareCheck/addCheckfeedback', obj)
 }
 export let addOrEditCheckChangNoteApi = (obj = {}) => {
     return http.post('softwareCheck/addOrEditCheckChangNote', obj)
