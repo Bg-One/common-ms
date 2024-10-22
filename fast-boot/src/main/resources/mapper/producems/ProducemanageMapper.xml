@@ -194,18 +194,18 @@
     </select>
     <select id="listProduceByInProduceGuid"
             resultType="com.example.fastboot.server.producems.model.Producemanage">
-        select * from producemanage where deleteFlag = 0
+        select * from producemanage t1 INNER JOIN demandmanage t2 on t1.guid=t2.produceGuid where t1.deleteFlag = 0
         <if test="produceGuids.length!=0">
-            and guid in
+            and t1.guid in
             <foreach collection="produceGuids" separator="," item="item" index="index" open="(" close=")">
                 #{item}
             </foreach>
         </if>
         <if test="producemanage.name !=null and producemanage.name!=''">
-            and `name` like CONCAT('%',#{producemanage.name},'%')
+            and t1.`name` like CONCAT('%',#{producemanage.name},'%')
         </if>
         <if test="producemanage.number !=null and producemanage.number!=''">
-            and number like CONCAT('%',#{producemanage.number},'%')
+            and t1.number like CONCAT('%',#{producemanage.number},'%')
         </if>
     </select>
     <select id="listAppearanceAccept" resultType="com.example.fastboot.server.producems.model.Producemanage">

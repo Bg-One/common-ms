@@ -1,28 +1,40 @@
 import {Menu} from 'antd'
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useLocation, useNavigate} from "react-router-dom";
 import {findLabelsByKey, findMenuInfoByKeyAndField} from "../../utils/bread-crum";
 import './layout-menu.scss'
-import {componentMap} from "../../common/config/menu-config";
-import {useEffect} from "react";
+import {componentMap, otherMenuConfig} from "../../common/config/menu-config";
+import {useEffect, useRef} from "react";
+import {addTab} from "../../redux/tab/tab-slice";
 
-const LayoutMenu = ({collapsed, addTab}) => {
+const LayoutMenu = ({collapsed}) => {
     const navigator = useNavigate();
     const menuConfig = useSelector(state => state.user.menuConfig)
     const location = useLocation()
+    const dispatch = useDispatch();
+
     useEffect(() => {
-        let component = findMenuInfoByKeyAndField(menuConfig, location.pathname, 'component')
-        let label = findMenuInfoByKeyAndField(menuConfig, location.pathname, 'label')
-        const Component = componentMap[component];
-        addTab({
-            label: label,
-            children: <React.Suspense fallback={<div>Loading...</div>}>
-                <Component/>
-            </React.Suspense>
-            ,
-            key: location.pathname,
-        })
-    })
+        addTabAction(location.pathname)
+    }, [])
+
+    const addTabAction = (key) => {
+        let component = findMenuInfoByKeyAndField([...menuConfig, ...otherMenuConfig], key, 'component')
+        let label = findMenuInfoByKeyAndField([...menuConfig, ...otherMenuConfig], key, 'label')
+        if (component) {
+            let Component = componentMap[component];
+            const tab = {
+                label: label,
+                children: <React.Suspense fallback={<div>Loading...</div>}>
+                    <Component/>
+                </React.Suspense>,
+                key: key,
+            }
+            dispatch(addTab(tab))
+        }
+
+    }
+
+
     return <div id="layout-menu">
         <Menu
             className={collapsed ? "layout-menu-content" : ""}
@@ -34,16 +46,7 @@ const LayoutMenu = ({collapsed, addTab}) => {
             items={menuConfig}
             onClick={(record) => {
                 navigator(record.key)
-                let component = findMenuInfoByKeyAndField(menuConfig, record.key, 'component')
-                let label = findMenuInfoByKeyAndField(menuConfig, record.key, 'label')
-                const Component = componentMap[component];
-                addTab({
-                    label: label,
-                    children: <React.Suspense fallback={<div>Loading...</div>}>
-                        <Component/>
-                    </React.Suspense>,
-                    key: record.key,
-                })
+                addTabAction(record.key)
             }}
         />
     </div>

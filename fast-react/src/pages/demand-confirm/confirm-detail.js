@@ -178,7 +178,12 @@ const ConfirmDetail = () => {
                 title: '需求名称',
                 width: '6vw',
                 dataIndex: 'nodeName',
-                key: 'nodeName'
+                key: 'nodeName',
+                render: (text, record, index) => {
+                    return <div>
+                        {record.nodes.name}
+                    </div>
+                }
             },
                 {
                     title: '确认状态',

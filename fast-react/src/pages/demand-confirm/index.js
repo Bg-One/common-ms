@@ -1,12 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {Input, able, Button, message, Form, Space, Table} from 'antd';
+import {Input, Button, message, Form, Space, Table} from 'antd';
 import './index.scss'
 import {AppstoreAddOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
-import {hasPermi} from "../../utils/permi";
 import {countDemandConfirmApi} from "../../common/api/producems/demand";
+import {useNavigate, useSearchParams} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {addTab} from "../../redux/tab/tab-slice";
+import {componentMap, menuConfig} from "../../common/config/menu-config";
 
 
 const RequireConfirm = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [searchForm] = Form.useForm()
     const [demandConfirmList, setDemandConfirmList] = useState([]);
     const [pageInfo, setPageInfo] = useState({
@@ -15,7 +20,6 @@ const RequireConfirm = () => {
         total: 0,
         totalPages: 0
     })
-
     useEffect(() => {
         countDemandConfirm({
             currentPage: pageInfo.currentPage,
@@ -138,12 +142,23 @@ const RequireConfirm = () => {
                     return <div className='actionlist'>
                     <span style={{marginRight: '1vw', color: '#1D79FC', cursor: 'pointer'}}
                           onClick={() => {
-                              this.props.history.push('/home/confirm-detail' + '?produceName=' + record.produceName + '&demandGuid=' + record.demandGuid)
+                              navigate('/home/demand-confirm-detail' + '?demandGuid=' + record.demandGuid)
+                              setTimeout(() => {
+                                  const Component = componentMap.RequireConfirmDetail;
+                                  dispatch(addTab({
+                                      label: `${record.name}需求确认详情`,
+                                      children: <React.Suspense fallback={<div>Loading...</div>}>
+                                          <Component/>
+                                      </React.Suspense>
+                                      ,
+                                      key: '/home/demand-confirm-detail' + '?demandGuid=' + record.demandGuid,
+                                  }))
+                              }, 200)
                           }}>查看</span>
                     </div>
                 }
             }]}
-            rowKey={record => record.projectGuid}
+            rowKey={record => record.guid}
             pagination={{
                 pageSize: pageInfo.pageSize,
                 pageNumber: pageInfo.currentPage,

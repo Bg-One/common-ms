@@ -28,6 +28,8 @@ export const componentMap = {
     SoftCheckDetail: React.lazy(() => import('../../pages/software-check/software-check-detail')),
     // 更多组件...
 };
+
+
 // 默认菜单/面包屑配置
 export const menuConfig = [{
     key: '/index',
@@ -59,11 +61,6 @@ export const menuConfig = [{
     icon: <MyIcon type={'icon-main'}/>,
     component: 'RequireConfirm',
     label: '需求确认',
-}, {
-    key: '/demand-confirm-detail',
-    icon: <MyIcon type={'icon-main'}/>,
-    component: 'RequireConfirmDetail',
-    label: '需求确认详情',
 }, {
 
     key: '/appearance-accept',
@@ -130,4 +127,14 @@ export const menuConfig = [{
         component: 'FormDesign',
         icon: <MyIcon type={'icon-danwei'}/>,
     }]
+}]
+//其他页面对应关系
+export const otherMenuConfig = [{
+    key: '/home/demand-confirm-detail',
+    component: 'RequireConfirmDetail',
+    label: '需求确认详情',
+}, {
+    key: '/home/software-check-detail',
+    component: 'SoftCheckDetail',
+    label: '软件测试详情',
 }]
