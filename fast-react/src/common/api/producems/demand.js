@@ -17,3 +17,26 @@ export let listNodesApi = (obj = {}) => {
 export let getNodesApi = (obj = {}) => {
     return http.post('demandItem/getNodes', obj)
 }
+
+export let countDemandTraceByProduceApi = (obj = {}) => {
+    return http.post('demandTrace/countDemandTraceByProduce', obj)
+}
+export let relatedProduceApi = (obj = {}) => {
+    return http.post('demandTrace/relatedProduce', obj)
+}
+
+export let deleteteDemandTraceApi = (obj = {}) => {
+    return http.post('demandTrace/deleteteDemandTrace', obj)
+}
+export let listDemandTraceApi = (obj = {}) => {
+    return http.post('demandTrace/listDemandTrace', obj)
+}
+export let editdemandTraceApi = (obj = {}) => {
+    return http.post('demandTrace/editDemandTrace', obj)
+}
+export const updateDemandTraceDetailDesApi = (data) => {
+    return http.post('demandTrace/updateDemandTraceDetailDes', data)
+}
+export const addDemandTraceApi = (data) => {
+    return http.post('demandTrace/addDemandTrace', data)
+}

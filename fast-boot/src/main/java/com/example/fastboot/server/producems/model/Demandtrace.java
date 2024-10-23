@@ -1,6 +1,9 @@
 package com.example.fastboot.server.producems.model;
 
+import com.example.fastboot.common.config.DateToDayJsonSerialize;
+import com.example.fastboot.server.producems.vo.DemandTraceCountVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,8 +42,8 @@ public class Demandtrace implements Serializable {
     /**
      * 创建时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonSerialize(using = DateToDayJsonSerialize.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 
     /**
@@ -66,8 +69,8 @@ public class Demandtrace implements Serializable {
     /**
      * 提交时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonSerialize(using = DateToDayJsonSerialize.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date submitTime;
 
     /**
@@ -123,8 +126,8 @@ public class Demandtrace implements Serializable {
     /**
      * 完结时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonSerialize(using = DateToDayJsonSerialize.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date finishTime;
 
     /**
@@ -142,6 +145,14 @@ public class Demandtrace implements Serializable {
      */
     private int deleteFlag;
 
+    private String produceName;
+
+    private DemandTraceCountVo demandTraceCountVo;
+    private int currentPage;
+
+    private int pageSize;
+
+    private String[] filterProjectList;
     private static final long serialVersionUID = 1L;
 
 

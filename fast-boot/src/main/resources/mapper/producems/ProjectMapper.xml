@@ -146,4 +146,12 @@
     <select id="listProjectByProduceGuid" resultType="com.example.fastboot.server.producems.model.Project">
         select * from project where produceGuid=#{produceGuid} and deleteFlag=0 and executionStatus=1
     </select>
+    <select id="listProjectMemberByType"
+            resultType="com.example.fastboot.server.producems.model.Projectmember">
+        SELECT * from projectmember where projectGuid=#{projectGuid}
+        and teamResource in
+        <foreach collection="teamResourceList" index="index" item="item" separator="," close=")" open="(">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

@@ -2,6 +2,7 @@ package com.example.fastboot.server.producems.service;
 
 import com.example.fastboot.common.response.PageResponse;
 import com.example.fastboot.server.producems.model.DemandItem;
+import com.example.fastboot.server.producems.model.Demandtrace;
 import com.example.fastboot.server.producems.model.Nodes;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.vo.DemandConfirmDetailVo;
@@ -38,7 +39,6 @@ public interface IDemandService {
     void updateDemandConfirmDetail(String demandConfirmList, String demandGuid, String produceGuid);
 
     /**
-     *
      * @param nodes
      * @return
      */
@@ -46,8 +46,62 @@ public interface IDemandService {
 
     /**
      * 获取需求信息
+     *
      * @param guid
      * @return
      */
     DemandItem getNodes(String guid);
+
+    /**
+     * 统计需求跟踪数量
+     *
+     * @param producemanage
+     * @return
+     */
+    PageResponse countDemandTraceByProduce(Producemanage producemanage);
+
+    /**
+     * 需求跟踪相关产品
+     *
+     * @param produceGuid
+     * @return
+     */
+    void relatedProduce(String produceGuid);
+
+    /**
+     * 获取需求跟踪详情页面
+     *
+     * @param demandtrace
+     * @return
+     */
+    PageResponse listDemandTrace(Demandtrace demandtrace);
+
+    /**
+     * 更新需求跟踪详细描述
+     *
+     * @param guid
+     * @param detailDescription
+     */
+    void updateDemandTraceDetailDes(String guid, String detailDescription);
+
+    /**
+     * 删除需求跟踪
+     *
+     * @param guid
+     */
+    void deleteteDemandTrace(String guid);
+
+    /**
+     * 新增需求跟踪
+     *
+     * @param demandtrace
+     */
+    void addDemandTrace(Demandtrace demandtrace);
+
+    /**
+     * 更新需求跟踪
+     *
+     * @param demandTraceList
+     */
+    void editDemandTrace(String demandTraceList);
 }

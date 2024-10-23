@@ -30,3 +30,7 @@ export const updateLockProduceToUserApi = (data) => {
 export const listNotBindSoftwareCheckProduceListApi = (data) => {
     return http.post('/produce/listNotBindSoftwareCheckProduceList', data)
 }
+export const listNotBindDemandTraceProduceListApi = (data) => {
+    return http.post('/produce/listNotBindDemandTraceProduceList', data)
+}
+

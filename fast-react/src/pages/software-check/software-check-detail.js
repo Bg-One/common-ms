@@ -156,7 +156,7 @@ const SoftwareCheckDetail = () => {
     //新增或编辑软件测试列表
     const editCheckfeedback = () => {
         let checkResult = checChanges(orginalCheckFeedbackList, checkFeedbackList, 'guid');
-        if (checkResult.changeArr.length === 0 ) return
+        if (checkResult.changeArr.length === 0) return
         for (let item of checkFeedbackList) {
             if (!item.projectGuid) {
                 message.error('请选择所属项目', 1)
@@ -179,11 +179,6 @@ const SoftwareCheckDetail = () => {
         editCheckfeedbackApi({
             checkFeedbackList: JSON.stringify(checkResult.changeArr)
         }).then(res => {
-            listCheckFeedback({
-                currentPage: pageInfo.currentPage,
-                pageSize: pageInfo.pageSize,
-                ...searchForm.getFieldsValue()
-            })
             message.success('保存成功', 1)
         })
     }
@@ -212,21 +207,14 @@ const SoftwareCheckDetail = () => {
     }
     //删除测试反馈
     const deleteCheckFeedback = (guid, index) => {
-        //判断当前是否有唯一标识有调接口没有删内存
-        if (!guid) {
-            let deepcheckFeedbackList = deepCopy(checkFeedbackList);
-            deepcheckFeedbackList.splice(index, 1);
-            setCheckFeedbackList(deepcheckFeedbackList)
-        } else {
-            deleteCheckFeedbackApi({guid,}).then(res => {
-                listCheckFeedback({
-                    currentPage: pageInfo.currentPage,
-                    pageSize: pageInfo.pageSize,
-                    ...searchForm.getFieldsValue(),
-                })
-                message.success('删除成功', 1)
+        deleteCheckFeedbackApi({guid,}).then(res => {
+            listCheckFeedback({
+                currentPage: pageInfo.currentPage,
+                pageSize: pageInfo.pageSize,
+                ...searchForm.getFieldsValue(),
             })
-        }
+            message.success('删除成功', 1)
+        })
     }
     //发送图片
     const sendFile = async () => {
@@ -272,18 +260,15 @@ const SoftwareCheckDetail = () => {
         })
     }
     //新增测试详情
-    const addCheckFeedback = (obj) => {
-        addCheckfeedbackApi({...obj}).then(
-            res => {
-                listCheckFeedback({
-                    currentPage: pageInfo.currentPage,
-                    pageSize: pageInfo.pageSize,
-                    ...searchForm.getFieldsValue(),
-                })
-                setAddCheckFeedbackModalVisible(false)
-                message.success("新增成功", 1)
-            }
-        )
+    const addCheckFeedback = async (obj) => {
+        await addCheckfeedbackApi({...obj})
+        await listCheckFeedback({
+            currentPage: pageInfo.currentPage,
+            pageSize: pageInfo.pageSize,
+            ...searchForm.getFieldsValue(),
+        })
+        setAddCheckFeedbackModalVisible(false)
+        message.success("新增成功", 1)
     }
     const defaultColumns = [
         {

@@ -17,6 +17,19 @@
             <result property="guid" column="nodeGuid"/>
         </association>
     </resultMap>
+    <insert id="insertDemandtrace">
+        INSERT INTO `demandtrace`(guid, produceGuid)
+        VALUES (#{guid}, #{produceGuid}, 1);
+    </insert>
+    <insert id="addDemandtraceAll">
+        INSERT INTO `demandtrace`(guid,projectGuid,produceGuid,
+                                  demandType,demandDescription,proposer,submitName,
+                                  submitTime,priority,dealState)
+        VALUES( #{demandtrace.guid}, #{demandtrace.projectGuid},#{demandtrace.produceGuid},
+                #{demandtrace.demandType},#{demandtrace.demandDescription}, #{demandtrace.proposer},
+                #{demandtrace.submitName},#{demandtrace.submitTime}, #{demandtrace.priority},1
+              );
+    </insert>
     <update id="updateDemandConfirmDetail">
         update demanditem
         set demandConfiemedState=#{demandConfiemedState},
@@ -34,6 +47,50 @@
         set demandConfiemedState=#{status}
         where nodeGuid = #{nodeGuid}
     </update>
+    <update id="updateDemandTraceDetailDes">
+        update `demandtrace`
+        set detailDescription= #{detailDescription}
+        where guid = #{guid}
+    </update>
+    <update id="updateDemandtrace">
+        update `demandtrace`
+        set
+        <if test="demandtrace.finishTime!=null">
+            finishTime=#{demandtrace.finishTime},
+        </if>
+        <if test="demandtrace.finishTime==null">
+            finishTime='1970-01-01 00:00:00',
+        </if>
+        <if test="demandtrace.submitTime!=null">
+            submitTime=#{demandtrace.submitTime},
+        </if>
+        <if test="demandtrace.submitTime==null">
+            submitTime='1970-01-01 00:00:00',
+        </if>
+        guid=#{demandtrace.guid},
+        projectGuid=#{demandtrace.projectGuid},
+        demandType=#{demandtrace.demandType},
+        demandDescription=#{demandtrace.demandDescription},
+        proposer=#{demandtrace.proposer},
+        submitName=#{demandtrace.submitName},
+        priority=#{demandtrace.priority},
+        techManager=#{demandtrace.techManager},
+        reviewFlag=#{demandtrace.reviewFlag},
+        demandName=#{demandtrace.demandName},
+        reviewName=#{demandtrace.reviewName},
+        developName=#{demandtrace.developName},
+        devlopFinishName=#{demandtrace.devlopFinishName},
+        demandConfirmName=#{demandtrace.demandConfirmName},
+        checkName=#{demandtrace.checkName},
+        dealState=#{demandtrace.dealState},
+        notes=#{demandtrace.notes}
+        where guid = #{demandtrace.guid}
+    </update>
+    <delete id="deleteteDemandTrace">
+        update demandtrace
+        set deleteFlag=1
+        where guid = #{guid}
+    </delete>
     <select id="getDemand" resultType="com.example.fastboot.server.producems.model.Demandmanage">
         select * from demandmanage
         <where>
@@ -115,4 +172,66 @@
     <select id="getNodes" resultType="com.example.fastboot.server.producems.model.DemandItem">
         select * from demanditem where nodeGuid=#{guid}
     </select>
+    <select id="listDemandTraceByProduce" resultType="com.example.fastboot.server.producems.model.Demandtrace">
+        select t1.produceGuid
+        from demandtrace t1
+        inner join producemanage t2 on t1.produceGuid = t2.guid
+        <where>
+            t1.deleteFlag = 0 and t1.produceGuid !='' and t2.deleteFlag = 0
+            <if test="producemanage.name !=null and producemanage.name!=''">
+                and t2.name like CONCAT('%',#{producemanage.name},'%')
+            </if>
+            <if test="producemanage.number !=null and producemanage.number!=''">
+                and t2.number like CONCAT('%',#{producemanage.number},'%')
+            </if>
+            <if test="produceGuids.length!=0">
+                and t1.produceGuid in
+                <foreach collection="produceGuids" separator="," close=")" open="(" item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        group by t1.produceGuid
+    </select>
+    <select id="listAllDemandTraceByProduce"
+            resultType="com.example.fastboot.server.producems.model.Demandtrace">
+        select t1.*
+        from demandtrace t1
+        inner join producemanage t2 on t1.produceGuid = t2.guid
+        <where>
+            t1.deleteFlag = 0 and t1.produceGuid !='' and t2.deleteFlag = 0 and t1.dealState!=0
+            <if test="producemanage.name !=null and producemanage.name!=''">
+                and t2.name like CONCAT('%',#{producemanage.name},'%')
+            </if>
+            <if test="producemanage.number !=null and producemanage.number!=''">
+                and t2.number like CONCAT('%',#{producemanage.number},'%')
+            </if>
+            <if test="produceGuids.length!=0">
+                and t1.produceGuid in
+                <foreach collection="produceGuids" separator="," close=")" open="(" item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="listDistinctDemandTraceProduceGuid" resultType="java.lang.String">
+        select distinct produceGuid
+        from demandtrace
+    </select>
+
+    <select id="listDemandTrace" resultType="com.example.fastboot.server.producems.model.Demandtrace">
+        select * from demandtrace
+        where deleteFlag=0 and produceGuid = #{produceGuid} and dealState!=0
+        <if test="demandType!=100 ">
+            and demandType=#{demandType}
+        </if>
+        <if test="priority!=100 ">
+            and priority=#{priority}
+        </if>
+        <if test="demandDescription!=null and demandDescription!=''">
+            and demandDescription like concat('%',#{demandDescription},'%')
+        </if>
+        order by createTime desc
+    </select>
+
 </mapper>

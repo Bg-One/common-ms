@@ -133,5 +133,14 @@ public class ProduceController {
     public Object listNotBindSoftwareCheckProduceList() {
         return success(producemanageService.listNotBindSoftwareCheckProduceList());
     }
-
+    /**
+     * 获取没有绑定需求跟踪的产品列表
+     *
+     * @param
+     * @return
+     */
+    @PostMapping("listNotBindDemandTraceProduceList")
+    public Object listNotBindDemandTraceProduceList() {
+        return success(producemanageService.listNotBindDemandTraceProduceList());
+    }
 }

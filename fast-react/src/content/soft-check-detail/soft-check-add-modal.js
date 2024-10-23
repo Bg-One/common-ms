@@ -5,6 +5,7 @@ import {useSelector} from "react-redux";
 import pinyinUtil from "../../common/react-pinyin-master";
 import {paseImageFile} from "../../utils/upload";
 import {useSearchParams} from "react-router-dom";
+import {useForm} from "antd/es/form/Form";
 
 const AddSoftCheckModal = ({
                                addCheckFeedbackModalVisible,
@@ -16,6 +17,7 @@ const AddSoftCheckModal = ({
     const [searchParams, setSearchParams] = useSearchParams()
     const userInfo = useSelector(state => state.user.userInfo);
     const [imageLink, setImageLink] = useState('')
+    const [form] = Form.useForm()
     //发送图片
     const sendFile = async () => {
         let res = await paseImageFile()
@@ -23,7 +25,7 @@ const AddSoftCheckModal = ({
     }
     return <Modal
         open={addCheckFeedbackModalVisible}
-        centered={addCheckFeedbackModalVisible}
+        centered={true}
         title={'缺陷新增'}
         footer={false}
         onCancel={() => {
@@ -33,6 +35,7 @@ const AddSoftCheckModal = ({
         <Form
             className={'search-form'}
             name="basic"
+            form={form}
             labelCol={{
                 span: 7,
             }}
@@ -40,14 +43,15 @@ const AddSoftCheckModal = ({
             initialValues={{
                 severity: 0
             }}
-            onFinish={(values) => {
-                addCheckFeedback({
+            onFinish={async (values) => {
+                await addCheckFeedback({
                     ...values,
                     imageLink,
                     submitName: userInfo.user.nickName,
                     feedbackTime: moment().format("YYYY-MM-DD"),
                     produceGuid: searchParams.get('produceGuid')
                 })
+                form.resetFields()
             }}
         > <Form.Item
             label="项目名称"

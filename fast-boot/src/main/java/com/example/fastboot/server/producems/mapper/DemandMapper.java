@@ -1,8 +1,6 @@
 package com.example.fastboot.server.producems.mapper;
 
-import com.example.fastboot.server.producems.model.DemandItem;
-import com.example.fastboot.server.producems.model.Demandmanage;
-import com.example.fastboot.server.producems.model.Nodes;
+import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.vo.DemandConfirmStateCountVo;
 import com.example.fastboot.server.producems.vo.DemandConfirmDetailVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -76,6 +74,7 @@ public interface DemandMapper {
 
     /**
      * 获取节点信息
+     *
      * @param guid
      * @return
      */
@@ -83,8 +82,78 @@ public interface DemandMapper {
 
     /**
      * 更改需求处理状态
+     *
      * @param nodeGuid
      * @param status
      */
-    void updateDealState(@Param("nodeGuid") String nodeGuid,@Param("status") int status);
+    void updateDealState(@Param("nodeGuid") String nodeGuid, @Param("status") int status);
+
+    /**
+     * 获取需求跟踪列表
+     *
+     * @param producemanage
+     * @param produceGuids
+     * @return
+     */
+    List<Demandtrace> listDemandTraceByProduce(@Param("producemanage") Producemanage producemanage, @Param("produceGuids") String[] produceGuids);
+
+    /**
+     * 获取全部需求变更记录
+     *
+     * @param producemanage
+     * @param produceGuids
+     * @return
+     */
+    List<Demandtrace> listAllDemandTraceByProduce(@Param("producemanage") Producemanage producemanage, @Param("produceGuids") String[] produceGuids);
+
+    /**
+     * 获取去重后的需求跟踪关联的产品唯一标识
+     *
+     * @return
+     */
+    List<String> listDistinctDemandTraceProduceGuid();
+
+    /**
+     * 新增需求跟踪
+     *
+     * @param demandtrace
+     */
+    void insertDemandtrace(Demandtrace demandtrace);
+
+    /**
+     * 获取需求跟踪列表
+     *
+     * @param demandtrace
+     * @return
+     */
+    List<Demandtrace> listDemandTrace(Demandtrace demandtrace);
+
+    /**
+     * 更新需求跟踪详情详细描述
+     *
+     * @param guid
+     * @param detailDescription
+     */
+    void updateDemandTraceDetailDes(String guid, String detailDescription);
+
+    /**
+     * 删除需求变更记录
+     *
+     * @param guid
+     */
+    void deleteteDemandTrace(String guid);
+
+    /**
+     * 新增需求跟踪记录
+     *
+     * @param demandtrace
+     */
+    void addDemandtraceAll(@Param("demandtrace") Demandtrace demandtrace);
+
+    /**
+     * 更新需求变更
+     *
+     * @param demandtrace
+     */
+    void updateDemandtrace(@Param("demandtrace") Demandtrace demandtrace);
 }

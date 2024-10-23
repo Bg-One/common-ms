@@ -6,12 +6,11 @@ import com.example.fastboot.common.response.PageResponse;
 import com.example.fastboot.common.security.LoginUser;
 import com.example.fastboot.server.producems.mapper.DemandMapper;
 import com.example.fastboot.server.producems.mapper.ProducemanageMapper;
+import com.example.fastboot.server.producems.mapper.ProjectMapper;
 import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.service.IAlertService;
 import com.example.fastboot.server.producems.service.IDemandService;
-import com.example.fastboot.server.producems.vo.DemandConfirmCountVo;
-import com.example.fastboot.server.producems.vo.DemandConfirmStateCountVo;
-import com.example.fastboot.server.producems.vo.DemandConfirmDetailVo;
+import com.example.fastboot.server.producems.vo.*;
 import com.example.fastboot.server.sys.controller.Base;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -20,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @Author bo
@@ -35,6 +37,8 @@ public class IDemandServiceImpl implements IDemandService {
     private DemandMapper demandMapper;
     @Autowired
     private IAlertService alertService;
+    @Autowired
+    private ProjectMapper projectMapper;
 
     @Override
     public PageResponse countDemandConfirm(Producemanage producemanage) {
@@ -151,5 +155,171 @@ public class IDemandServiceImpl implements IDemandService {
     @Override
     public DemandItem getNodes(String guid) {
         return demandMapper.getNodes(guid);
+    }
+
+    @Override
+    public PageResponse countDemandTraceByProduce(Producemanage producemanage) {
+        LoginUser loginUser = (LoginUser) Base.getCreatUserDetails();
+        //获取用户锁定产品
+        List<LockProduceToUser> lockProduceToUserList = producemanageMapper.listLockProduceToUserByUser(loginUser.getUserGuid());
+        //获取list的produceGuid属性的值生成新的数组
+        String[] produceGuids = lockProduceToUserList.stream().map(LockProduceToUser::getProduceGuid).toArray(String[]::new);
+        PageHelper.startPage(producemanage.getCurrentPage(), producemanage.getPageSize());
+        List<Demandtrace> demandtraceList = demandMapper.listDemandTraceByProduce(producemanage, produceGuids);
+        //获取全部需求变更记录
+        List<Demandtrace> allDemandtraceList = demandMapper.listAllDemandTraceByProduce(producemanage, produceGuids);
+        HashMap<String, DemandTraceCountVo> demandTraceCountVoHashMap = getDemandTraceCountVoHashMap(allDemandtraceList);
+        for (Demandtrace item : demandtraceList) {
+            Producemanage queryProduceManage = new Producemanage();
+            String produceGuid = item.getProduceGuid();
+            queryProduceManage.setGuid(produceGuid);
+            item.setProduceName(producemanageMapper.getProduce(queryProduceManage).getName());
+            DemandTraceCountVo demandTraceCountVo = demandTraceCountVoHashMap.get(produceGuid);
+            item.setDemandTraceCountVo(demandTraceCountVo == null ? new DemandTraceCountVo() : demandTraceCountVo);
+        }
+        PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);
+        return new PageResponse<>(demandtracePageInfo);
+    }
+
+    @Override
+    public void relatedProduce(String produceGuid) {
+        Demandtrace demandtrace = new Demandtrace();
+        demandtrace.setGuid(UUID.randomUUID().toString());
+        demandtrace.setProduceGuid(produceGuid);
+        demandMapper.insertDemandtrace(demandtrace);
+    }
+
+    @Override
+    public PageResponse listDemandTrace(Demandtrace demandtrace) {
+        PageHelper.startPage(demandtrace.getCurrentPage(), demandtrace.getPageSize());
+        List<Demandtrace> demandtraceList = demandMapper.listDemandTrace(demandtrace);
+        PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);
+        return new PageResponse<>(demandtracePageInfo);
+    }
+
+    @Override
+    public void updateDemandTraceDetailDes(String guid, String detailDescription) {
+        demandMapper.updateDemandTraceDetailDes(guid, detailDescription);
+    }
+
+    @Override
+    public void deleteteDemandTrace(String guid) {
+        demandMapper.deleteteDemandTrace(guid);
+    }
+
+    @Override
+    public void addDemandTrace(Demandtrace demandtrace) {
+        String guid = UUID.randomUUID().toString();
+        demandtrace.setGuid(guid);
+        demandMapper.addDemandtraceAll(demandtrace);
+        ArrayList<Integer> typeList = new ArrayList<>();
+        int alertType = 0;
+        if (demandtrace.getDealState() == DemandTraceDealStateEnum.NEW_ADD.getCode()) {//新增
+            //查询有关的项目组成员
+            typeList.add(TeamResourceEnum.TECHNICAL_GROUP.getCode());
+            alertType = MessageTypeEnum.MANAGE_WAIT_CONFIRM.getCode();
+        }
+
+        String produceGuid = demandtrace.getProduceGuid();
+        Producemanage queryProducemanage = new Producemanage();
+        queryProducemanage.setGuid(produceGuid);
+        Producemanage producemanage = producemanageMapper.getProduce(queryProducemanage);
+        List<Projectmember> projectmemberList = projectMapper.listProjectMemberByType(produceGuid, typeList);
+        if (projectmemberList.size() == 0) {
+            return;
+        }
+        String[] managerGuids = projectmemberList.stream().map(Projectmember::getManagerGuid).toArray(String[]::new);
+        //消息存库
+        alertService.saveMessage(producemanage, demandtrace.getDemandDescription(), managerGuids, alertType);
+    }
+
+    @Override
+    public void editDemandTrace(String demandTraceList) {
+        List<Demandtrace> demandtraces = JSONArray.parseArray(demandTraceList, Demandtrace.class);
+        for (Demandtrace demandtrace : demandtraces) {
+            demandMapper.updateDemandtrace(demandtrace);
+            sendMessage(demandtrace);
+        }
+    }
+
+    private void sendMessage(Demandtrace demandtrace) {
+        int dealState = demandtrace.getDealState() == null ? 0 : demandtrace.getDealState();
+        ArrayList<Integer> typeList = new ArrayList<>();
+        int alertType = 0;
+        if (dealState == DemandTraceDealStateEnum.REPEAL.getCode()) {
+            //查询有关的项目组成员
+            typeList.add(TeamResourceEnum.DEMAND_GROUP.getCode());
+            alertType = MessageTypeEnum.DEMADN_VOID.getCode();
+        } else if (dealState == DemandTraceDealStateEnum.HUNG_UP.getCode()) {
+            //查询有关的项目组成员
+            typeList.add(TeamResourceEnum.DEMAND_GROUP.getCode());
+            alertType = MessageTypeEnum.DEMAND_HUNG.getCode();
+        } else if (dealState == DemandTraceDealStateEnum.WORKING.getCode()) {
+            //查询有关的项目组成员
+            typeList.add(TeamResourceEnum.DEMAND_GROUP.getCode());
+            alertType = MessageTypeEnum.DEMAND_WAIT_DEIT.getCode();
+        }
+        if (typeList.size() == 0) {
+            return;
+        }
+        String produceGuid = demandtrace.getProjectGuid();
+        Producemanage queryProducemanage = new Producemanage();
+        queryProducemanage.setGuid(produceGuid);
+        Producemanage producemanage = producemanageMapper.getProduce(queryProducemanage);
+        List<Producemember> producememberList = producemanageMapper.listProduceMemberByType(produceGuid, typeList);
+        if (producememberList.size() == 0) {
+            return;
+        }
+        String[] managerGuids = producememberList.stream().map(Producemember::getManagerGuid).toArray(String[]::new);
+        //消息存库
+        alertService.saveMessage(producemanage, demandtrace.getDemandDescription(), managerGuids, alertType);
+    }
+
+    private HashMap<String, DemandTraceCountVo> getDemandTraceCountVoHashMap(List<Demandtrace> allDemandtraceList) {
+        HashMap<String, DemandTraceCountVo> demandTraceCountVoHashMap = new HashMap<>();
+        for (Demandtrace demandtrace : allDemandtraceList) {
+            String produceGuid = demandtrace.getProduceGuid();
+            DemandTraceCountVo demandTraceCountVo = demandTraceCountVoHashMap.get(produceGuid);
+            if (demandTraceCountVo == null) {
+                demandTraceCountVo = new DemandTraceCountVo();
+            }
+            demandTraceCountVo.setTotalCount(demandTraceCountVo.getTotalCount() + 1);
+            if (demandtrace.getDealState() == 3) {
+                demandTraceCountVo.setHangCount(demandTraceCountVo.getHangCount() + 1);
+            }
+            if (demandtrace.getDealState() == 5) {
+                demandTraceCountVo.setVoidCount(demandTraceCountVo.getVoidCount() + 1);
+            }
+            if (demandtrace.getDealState() == 6) {
+                demandTraceCountVo.setSuspendCount(demandTraceCountVo.getSuspendCount() + 1);
+            }
+
+            if (demandtrace.getTechManager().equals("")) {
+                demandTraceCountVo.setWaitConfirmCount(demandTraceCountVo.getWaitConfirmCount());
+            }
+            if (demandtrace.getDealState() == 2 && demandtrace.getTechManager().equals("")) {
+                demandTraceCountVo.setWaitEditCount(demandTraceCountVo.getWaitEditCount() + 1);
+            }
+            if (demandtrace.getReviewFlag() == 1 && demandtrace.getReviewName().equals("")) {
+                demandTraceCountVo.setWaitReviewCount(demandTraceCountVo.getWaitReviewCount() + 1);
+            }
+            if (!demandtrace.getReviewName().equals("") && demandtrace.getDevelopName().equals("")) {
+                demandTraceCountVo.setWaitDevelopConfirmCount(demandTraceCountVo.getWaitDemandConfirmCount() + 1);
+            }
+            if (demandtrace.getDevlopFinishName().equals("") && !demandtrace.getDevelopName().equals("")) {
+                demandTraceCountVo.setWaitDevelopFinishCount(demandTraceCountVo.getWaitDemandConfirmCount() + 1);
+            }
+            if (!demandtrace.getDevlopFinishName().equals("") && demandtrace.getDemandConfirmName().equals("")) {
+                demandTraceCountVo.setWaitDemandConfirmCount(demandTraceCountVo.getWaitDemandConfirmCount() + 1);
+            }
+            if (demandtrace.getCheckName().equals("") && !demandtrace.getDemandConfirmName().equals("")) {
+                demandTraceCountVo.setWaitCheckCount(demandTraceCountVo.getWaitDemandConfirmCount() + 1);
+            }
+            if (!demandtrace.getCheckName().equals("")) {
+                demandTraceCountVo.setFinishCount(demandTraceCountVo.getWaitDemandConfirmCount() + 1);
+            }
+            demandTraceCountVoHashMap.put(produceGuid, demandTraceCountVo);
+        }
+        return demandTraceCountVoHashMap;
     }
 }

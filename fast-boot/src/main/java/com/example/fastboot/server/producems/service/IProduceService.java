@@ -77,4 +77,11 @@ public interface IProduceService {
      * @param producemanage
      */
     void appearanceAccept(Producemanage producemanage);
+
+    /**
+     * 获取没有绑定需求追踪的产品列表
+     * @return
+     */
+    List<Producemanage> listNotBindDemandTraceProduceList();
+
 }

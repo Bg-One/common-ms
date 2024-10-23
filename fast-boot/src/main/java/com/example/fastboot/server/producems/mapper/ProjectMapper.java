@@ -7,6 +7,7 @@ import com.example.fastboot.server.producems.model.Projectmember;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -109,4 +110,12 @@ public interface ProjectMapper {
      * @return
      */
     List<Project> listProjectByProduceGuid(String produceGuid);
+
+    /**
+     * 获取项目成员列表
+     * @param projectGuid
+     * @param teamResourceList
+     * @return
+     */
+    List<Projectmember> listProjectMemberByType(@Param("projectGuid") String projectGuid,@Param("teamResourceList") ArrayList<Integer> teamResourceList);
 }

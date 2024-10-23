@@ -66,10 +66,12 @@ const SoftwareCheck = () => {
     const relatedProduce = () => {
         relatedProduceApi({produceGuid: relateProduceGuid}).then(res => {
             setRelatedVisiBleFlag(false)
+            setRelateProduceGuid('')
             countCheckFeedbackByProduce({
                 currentPage: pageInfo.currentPage,
                 pageSize: pageInfo.pageSize,
             })
+            listNotBindCheckProduce()
         })
     }
 
@@ -84,7 +86,7 @@ const SoftwareCheck = () => {
                     <Component/>
                 </React.Suspense>
                 ,
-                key: '/home/software-check-detail' + '?demandGuid=' + record.produceGuid,
+                key: '/home/software-check-detail' + '?produceGuid=' + record.produceGuid,
             }))
         }, 200)
     }

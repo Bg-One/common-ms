@@ -6,6 +6,7 @@ import com.example.fastboot.common.exception.ServiceException;
 import com.example.fastboot.common.response.PageResponse;
 import com.example.fastboot.common.security.LoginUser;
 import com.example.fastboot.server.producems.mapper.CheckfeedbackMapper;
+import com.example.fastboot.server.producems.mapper.DemandMapper;
 import com.example.fastboot.server.producems.mapper.ProducemanageMapper;
 import com.example.fastboot.server.producems.mapper.ProjectMapper;
 import com.example.fastboot.server.producems.model.LockProduceToUser;
@@ -37,6 +38,8 @@ public class IProduceServiceImpl implements IProduceService {
     private ProjectMapper projectMapper;
     @Autowired
     private CheckfeedbackMapper checkfeedbackMapper;
+    @Autowired
+    private DemandMapper demandMapper;
 
     @Override
     public PageResponse listProduce(Producemanage producemanage) {
@@ -154,5 +157,13 @@ public class IProduceServiceImpl implements IProduceService {
     @Override
     public void appearanceAccept(Producemanage producemanage) {
         producemanageMapper.appearanceAccept(producemanage);
+    }
+
+    @Override
+    public List<Producemanage> listNotBindDemandTraceProduceList() {
+        //获取产品测试列表关联的产品唯一标识
+        List<String> produceGuidList = demandMapper.listDistinctDemandTraceProduceGuid();
+        //获取未绑定测试的产品
+        return producemanageMapper.listCheckProduceListByNotInProduceGuid(produceGuidList);
     }
 }

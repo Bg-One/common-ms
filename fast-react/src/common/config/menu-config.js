@@ -26,6 +26,8 @@ export const componentMap = {
     RequireConfirmDetail: React.lazy(() => import('../../pages/demand-confirm/confirm-detail')),
     SoftCheck: React.lazy(() => import('../../pages/software-check')),
     SoftCheckDetail: React.lazy(() => import('../../pages/software-check/software-check-detail')),
+    DemandTrace: React.lazy(() => import('../../pages/demand-trace')),
+    DemandTraceDetail: React.lazy(() => import('../../pages/demand-trace/require-trace-detail')),
     // 更多组件...
 };
 
@@ -47,15 +49,20 @@ export const menuConfig = [{
     component: 'Project',
     label: '项目列表',
 }, {
+    key: '/demand-confirm',
+    icon: <MyIcon type={'icon-main'}/>,
+    component: 'RequireConfirm',
+    label: '需求确认',
+}, {
     key: '/software-check',
     icon: <MyIcon type={'icon-main'}/>,
     component: 'SoftCheck',
     label: '软件测试',
 }, {
-    key: '/demand-confirm',
+    key: '/demand-trace',
     icon: <MyIcon type={'icon-main'}/>,
-    component: 'RequireConfirm',
-    label: '需求确认',
+    component: 'DemandTrace',
+    label: '需求跟踪',
 }, {
 
     key: '/appearance-accept',
@@ -132,4 +139,8 @@ export const otherMenuConfig = [{
     key: '/home/software-check-detail',
     component: 'SoftCheckDetail',
     label: '软件测试详情',
+}, {
+    key: '/home/demand-trace-detail',
+    component: 'DemandTraceDetail',
+    label: '需求跟踪详情',
 }]
