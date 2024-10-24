@@ -7,11 +7,9 @@ import {
     deleteDemandApi,
     listDemandApi,
     listDemandChangeRecordApi,
-    statusTransferApi
+    statusTransferApi, updateDemandApi
 } from "../../common/api/producems/demand";
 import {listNoDemandProduceApi} from "../../common/api/producems/produce";
-import {editDocumentApi, getDocumentFieldInfoApi} from "../../common/api/producems/document";
-import {documentEnum} from "../../common/enmus/document-enum";
 import {documentStatusEnum} from "../../common/enmus/document-status-enum";
 import {componentMap} from "../../common/config/menu-config";
 import {addTab} from "../../redux/tab/tab-slice";
@@ -37,6 +35,7 @@ const DemandDevelop = () => {
     const [reviewCommentsModalInfo, setReviewCommentsModalInfo] = useState({
         open: false,
         reviewComments: '',
+        demandGuid: '',
         produceName: ''
     })
     const [demandChangeRecordModalObj, setDemandChangeRecordModalObj] = useState({
@@ -103,27 +102,18 @@ const DemandDevelop = () => {
         setProduceList(res.data)
         setAddModalVisible(true)
     }
-    //获取评审意见
-    const getContentByIdentity = async (identity, guid) => {
-        await getDocumentFieldInfoApi({
-            guid,
-            identity,
-            type: documentEnum.DEMAND,
-        })
-        setReviewCommentsModalInfo({
-            open: true,
-            reviewComments: data.data.content,
-            produceName: documentEnum.getName(identity)
-        })
-    }
 
     //编辑评审意见
-    const editDamand = async (identity) => {
-        await editDocumentApi({
-            // guid: this.state.demandGuid,
-            identity,
-            type: documentEnum.DEMAND,
-            content: reviewCommentsModalInfo.reviewComments
+    const editDamand = async () => {
+        await updateDemandApi({
+            guid: reviewCommentsModalInfo.demandGuid,
+            reviewComments: reviewCommentsModalInfo.reviewComments
+        })
+        listDemand({
+            currentPage: pageInfo.currentPage,
+            pageSize: pageInfo.pageSize,
+            ...searchForm.getFieldsValue(),
+            staus: documentStatus
         })
         message.success('保存成功', 1)
     }
@@ -178,7 +168,7 @@ const DemandDevelop = () => {
     //需求流转
     const statusTransfer = async (staus, guid) => {
         await statusTransferApi({
-            guids: guid ? guid : selectedRowKeys, staus,
+            guids: guid ? guid : selectedRowKeys.join(","), staus,
         })
         setSelectedRowKeys([])
         listDemand({
@@ -280,7 +270,12 @@ const DemandDevelop = () => {
                             style={{display: record.staus === 3 ? 'block' : 'none'}}>需求变更</Button>
                     <Button type={'link'} style={{display: record.staus === 2 ? 'block' : 'none'}}
                             onClick={() => {
-                                getContentByIdentity('reviewComments', record.guid)
+                                setReviewCommentsModalInfo({
+                                    open: true,
+                                    demandGuid: record.guid,
+                                    reviewComments: record.reviewComments,
+                                    produceName: record.produceName
+                                })
                             }}>评审意见</Button>
                     <Popconfirm
                         title={`您确认撤回吗？`}
@@ -399,8 +394,8 @@ const DemandDevelop = () => {
 
         <Table
             rowSelection={{
-                type: 'radio',
-                selectedRowKeys: [selectedRowKeys],
+                type: 'checkbox',
+                selectedRowKeys: selectedRowKeys,
                 onChange: (selectedRowKeys, selectedRows) => {
                     setSelectedRowKeys(selectedRowKeys)
                 },
@@ -535,7 +530,7 @@ const DemandDevelop = () => {
                     })
                 }}
             />
-            <Button type={'primary'}>保存</Button>
+            <Button type={'primary'} onClick={editDamand}>保存</Button>
         </Modal>
     </div>
 

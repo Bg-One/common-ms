@@ -140,4 +140,10 @@ public interface IDemandService {
      * @param produceGuid
      */
     String addDemand(String produceGuid);
+
+    /**
+     * 更新需求信息
+     * @param demandmanage
+     */
+    void updateDemand(Demandmanage demandmanage);
 }

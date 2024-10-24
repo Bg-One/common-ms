@@ -100,6 +100,21 @@
         set staus=#{staus}
         where guid = #{guid}
     </update>
+    <update id="updateDemand">
+        update demandmanage
+        <set>
+            <if test="reviewComments!=null and reviewComments!=''">
+                reviewComments=#{reviewComments},
+            </if>
+            <if test="objective!=null and objective!=''">
+                objective=#{objective},
+            </if>
+            <if test="reader!=null and reader!=''">
+                reviewComments=#{reviewComments},
+            </if>
+        </set>
+        where guid=#{guid}
+    </update>
     <delete id="deleteteDemandTrace">
         update demandtrace
         set deleteFlag=1

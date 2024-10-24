@@ -15,6 +15,9 @@ export let deleteDemandApi = (obj = {}) => {
 export let statusTransferApi = (obj = {}) => {
     return http.post('demand/statusTransfer', obj)
 }
+export let updateDemandApi = (obj = {}) => {
+    return http.post('demand/updateDemand', obj)
+}
 export let listDemandChangeRecordApi = (obj = {}) => {
     return http.post('demand/listDemandChangeRecord', obj)
 }

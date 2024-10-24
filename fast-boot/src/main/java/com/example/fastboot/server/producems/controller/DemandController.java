@@ -52,6 +52,18 @@ public class DemandController {
     }
 
     /**
+     * 更新需求信息
+     *
+     * @param demandmanage
+     * @return
+     */
+    @PostMapping("updateDemand")
+    public Object updateDemand(Demandmanage demandmanage) {
+        demandService.updateDemand(demandmanage);
+        return success("成功");
+    }
+
+    /**
      * 需求流转
      *
      * @param guids
@@ -63,7 +75,6 @@ public class DemandController {
     public Object statusTransfer(String[] guids, int staus) {
         demandService.statusTransfer(guids, staus);
         return success("成功");
-
     }
 
     /**

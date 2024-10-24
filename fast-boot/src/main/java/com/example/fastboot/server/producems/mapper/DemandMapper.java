@@ -201,4 +201,9 @@ public interface DemandMapper {
      */
     List<String> listDistinctDemandProduceGuid();
 
+    /**
+     * 更新需求管理信息
+     * @param demandmanage
+     */
+    void updateDemand(Demandmanage demandmanage);
 }
