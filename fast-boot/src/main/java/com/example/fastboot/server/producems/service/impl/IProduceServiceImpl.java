@@ -166,4 +166,10 @@ public class IProduceServiceImpl implements IProduceService {
         //获取未绑定测试的产品
         return producemanageMapper.listCheckProduceListByNotInProduceGuid(produceGuidList);
     }
+
+    @Override
+    public List<Producemanage> listNoDemandProduce() {
+        List<String> produceGuidList = demandMapper.listDistinctDemandProduceGuid();
+        return producemanageMapper.listCheckProduceListByNotInProduceGuid(produceGuidList);
+    }
 }

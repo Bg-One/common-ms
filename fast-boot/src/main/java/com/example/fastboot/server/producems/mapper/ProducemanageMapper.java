@@ -1,6 +1,7 @@
 package com.example.fastboot.server.producems.mapper;
 
 
+import com.example.fastboot.server.producems.model.Demandmanage;
 import com.example.fastboot.server.producems.model.LockProduceToUser;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.model.Producemember;
@@ -170,9 +171,27 @@ public interface ProducemanageMapper {
 
     /**
      * 出厂/取消出厂
+     *
      * @param producemanage
      */
     void appearanceAccept(Producemanage producemanage);
+
+    /**
+     * 获取需求列表
+     *
+     * @param demandmanage
+     * @param produceGuids
+     * @return
+     */
+    List<Demandmanage> listDemand(@Param("demandmanage") Demandmanage demandmanage, @Param("produceGuids") String[] produceGuids);
+
+    /**
+     * 根据产品唯一标识和资源id获取息辕信息
+     * @param produceGuid
+     * @param teamResource
+     * @return
+     */
+    Producemember getProduceMemberByType(@Param("produceGuid") String produceGuid,@Param("teamResource") int teamResource);
 }
 
 

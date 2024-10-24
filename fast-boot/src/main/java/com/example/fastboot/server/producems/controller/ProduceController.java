@@ -143,4 +143,16 @@ public class ProduceController {
     public Object listNotBindDemandTraceProduceList() {
         return success(producemanageService.listNotBindDemandTraceProduceList());
     }
+
+    /**
+     * 获取没有绑定需求的产品列表
+     *
+     * @param
+     * @return
+     */
+    @PostMapping("listNoDemandProduce")
+    public Object listNoDemandProduce() {
+        return success(producemanageService.listNoDemandProduce());
+    }
+
 }

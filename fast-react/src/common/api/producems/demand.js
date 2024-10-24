@@ -1,5 +1,24 @@
 import http from "../../../utils/http"
 
+export let countDemandApi = (obj = {}) => {
+    return http.post('demand/countStatusDemand',obj)
+}
+export let listDemandApi = (obj = {}) => {
+    return http.post('demand/listDemand', obj)
+}
+export let addDemandApi = (obj = {}) => {
+    return http.post('demand/addDemand', obj)
+}
+export let deleteDemandApi = (obj = {}) => {
+    return http.post('demand/deleteDemand', obj)
+}
+export let statusTransferApi = (obj = {}) => {
+    return http.post('demand/statusTransfer', obj)
+}
+export let listDemandChangeRecordApi = (obj = {}) => {
+    return http.post('demand/listDemandChangeRecord', obj)
+}
+
 export let countDemandConfirmApi = (obj = {}) => {
     return http.post('demandConfirm/countDemandConfirm', obj)
 }

@@ -29,6 +29,16 @@
                 #{demandtrace.demandType}, #{demandtrace.demandDescription}, #{demandtrace.proposer},
                 #{demandtrace.submitName}, #{demandtrace.submitTime}, #{demandtrace.priority}, 1);
     </insert>
+    <insert id="insertDemand">
+        insert into demandmanage (guid, produceGuid)
+        values (#{demandGuid}, #{produceGuid})
+    </insert>
+    <insert id="insertNodes">
+        insert into nodes (guid,moduleGuid,`name`,classType,nodeType,nodeOrder) values
+        <foreach collection="nodelist" index="index" item="item" separator=",">
+            ( #{item.guid},#{item.moduleGuid},#{item.name},#{item.classType},#{item.nodeType},#{item.nodeOrder})
+        </foreach>
+    </insert>
     <update id="updateDemandConfirmDetail">
         update demanditem
         set demandConfiemedState=#{demandConfiemedState},
@@ -85,10 +95,23 @@
         notes=#{demandtrace.notes}
         where guid = #{demandtrace.guid}
     </update>
+    <update id="statusTransfer">
+        update demandmanage
+        set staus=#{staus}
+        where guid = #{guid}
+    </update>
     <delete id="deleteteDemandTrace">
         update demandtrace
         set deleteFlag=1
         where guid = #{guid}
+    </delete>
+    <delete id="deleteDemand">
+        update demandmanage
+        set deleteFlag=1
+        where guid in
+        <foreach collection="guids" item="item" close=")" open="(" separator=",">
+            #{item}
+        </foreach>
     </delete>
     <select id="getDemand" resultType="com.example.fastboot.server.producems.model.Demandmanage">
         select * from demandmanage
@@ -301,6 +324,23 @@
             )
         </where>
         order by createTime desc
+    </select>
+    <select id="countStatusDemand" resultType="com.example.fastboot.server.producems.vo.DocumentStatusCountVo">
+        select t1.staus status,count(t1.staus) count from demandmanage t1 INNER JOIN producemanage t2 on
+        t1.produceGuid=t2.guid
+        where t1.deleteFlag = 0 and
+        t2.deleteFlag = 0
+        <if test="produceGuids.length!=0">
+            and t2.guid in
+            <foreach collection="produceGuids" separator="," item="item" index="index" open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by t1.staus
+    </select>
+    <select id="listDistinctDemandProduceGuid" resultType="java.lang.String">
+        select distinct produceGuid
+        from demandmanage
     </select>
 
 </mapper>

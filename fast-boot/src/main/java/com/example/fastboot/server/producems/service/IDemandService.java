@@ -1,11 +1,9 @@
 package com.example.fastboot.server.producems.service;
 
 import com.example.fastboot.common.response.PageResponse;
-import com.example.fastboot.server.producems.model.DemandItem;
-import com.example.fastboot.server.producems.model.Demandtrace;
-import com.example.fastboot.server.producems.model.Nodes;
-import com.example.fastboot.server.producems.model.Producemanage;
+import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.vo.DemandConfirmDetailVo;
+import com.example.fastboot.server.producems.vo.DocumentCountVo;
 
 import java.util.List;
 
@@ -104,4 +102,42 @@ public interface IDemandService {
      * @param demandTraceList
      */
     void editDemandTrace(String demandTraceList);
+
+    /**
+     * 获取需求列表
+     *
+     * @param demandmanage
+     * @return
+     */
+    PageResponse listDemand(Demandmanage demandmanage);
+
+    /**
+     * 需求、概要、数据库、接口设计
+     *
+     * @return
+     */
+    DocumentCountVo countStatusDemand();
+
+    /**
+     * 需求流转
+     *
+     * @param guids
+     * @param staus
+     */
+    void statusTransfer(String[] guids, int staus);
+
+    /**
+     * 删除需求
+     *
+     * @param guids
+     * @return
+     */
+    void deleteDemand(String[] guids);
+
+    /**
+     * 新增需求
+     *
+     * @param produceGuid
+     */
+    String addDemand(String produceGuid);
 }

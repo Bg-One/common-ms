@@ -188,13 +188,13 @@ public class IDemandServiceImpl implements IDemandService {
 
     @Override
     public PageResponse listDemandTrace(Demandtrace demandtrace) {
-        PageHelper.startPage(demandtrace.getCurrentPage(), demandtrace.getPageSize());
         if (demandtrace.getProgressStatuss() == null) {
             List<Demandtrace> demandtraceList = new ArrayList<>();
             PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);
             return new PageResponse<>(demandtracePageInfo);
         }
-        List<String> progressStatusList = demandtrace.getProgressStatuss() != null ? Arrays.asList(demandtrace.getProgressStatuss()) : null;
+        List<String> progressStatusList = Arrays.asList(demandtrace.getProgressStatuss());
+        PageHelper.startPage(demandtrace.getCurrentPage(), demandtrace.getPageSize());
         List<Demandtrace> demandtraceList = demandMapper.listDemandTrace(demandtrace, progressStatusList);
         PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);
         return new PageResponse<>(demandtracePageInfo);
@@ -243,6 +243,115 @@ public class IDemandServiceImpl implements IDemandService {
             demandMapper.updateDemandtrace(demandtrace);
             sendMessage(demandtrace);
         }
+    }
+
+    @Override
+    public PageResponse listDemand(Demandmanage demandmanage) {
+        LoginUser loginUser = (LoginUser) Base.getCreatUserDetails();
+        //获取用户锁定产品
+        List<LockProduceToUser> lockProduceToUserList = producemanageMapper.listLockProduceToUserByUser(loginUser.getUserGuid());
+        //获取list的produceGuid属性的值生成新的数组
+        String[] produceGuids = lockProduceToUserList.stream().map(LockProduceToUser::getProduceGuid).toArray(String[]::new);
+        PageHelper.startPage(demandmanage.getCurrentPage(), demandmanage.getPageSize());
+        List<Demandmanage> demandmanageList = producemanageMapper.listDemand(demandmanage, produceGuids);
+        for (Demandmanage item : demandmanageList) {
+            ArrayList<Integer> teamResourceList = new ArrayList<>();
+            teamResourceList.add(TeamResourceEnum.DEMAND_GROUP.getCode());
+            Producemember produceMemberByType = producemanageMapper.getProduceMemberByType(item.getProduceGuid(), TeamResourceEnum.DEMAND_GROUP.getCode());
+            String name = produceMemberByType != null ? produceMemberByType.getManagerName() : "";
+            item.setDemandManagerName(name);
+        }
+        PageInfo<Demandmanage> demandmanagePageInfo = new PageInfo<>(demandmanageList);
+        return new PageResponse<>(demandmanagePageInfo);
+    }
+
+    @Override
+    public DocumentCountVo countStatusDemand() {
+        LoginUser loginUser = (LoginUser) Base.getCreatUserDetails();
+        //获取用户锁定产品
+        List<LockProduceToUser> lockProduceToUserList = producemanageMapper.listLockProduceToUserByUser(loginUser.getUserGuid());
+        //获取list的produceGuid属性的值生成新的数组
+        String[] produceGuids = lockProduceToUserList.stream().map(LockProduceToUser::getProduceGuid).toArray(String[]::new);
+        List<DocumentStatusCountVo> documentStatusCountVoList = demandMapper.countStatusDemand(produceGuids);
+        int tallCount = 0;
+        DocumentCountVo documentCountVo = new DocumentCountVo();
+        for (DocumentStatusCountVo documentStatusCountVo : documentStatusCountVoList) {
+            int status = documentStatusCountVo.getStatus();
+            int count = documentStatusCountVo.getCount();
+            tallCount += count;
+            if (status == DocumentStatusEnum.EDIT.getCode()) {
+                documentCountVo.setEditCount(count);
+            } else if (status == DocumentStatusEnum.REVIEW.getCode()) {
+                documentCountVo.setPreviewCount(count);
+            } else if (status == DocumentStatusEnum.FINAL.getCode()) {
+                documentCountVo.setFinalCount(count);
+            }
+        }
+        documentCountVo.setAllCount(tallCount);
+        return documentCountVo;
+    }
+
+    @Override
+    public void statusTransfer(String[] guids, int staus) {
+        for (String guid : guids) {
+            demandMapper.statusTransfer(guid, staus);
+        }
+    }
+
+    @Override
+    public void deleteDemand(String[] guids) {
+        demandMapper.deleteDemand(guids);
+    }
+
+    @Override
+    public String addDemand(String produceGuid) {
+        String demandGuid = UUID.randomUUID().toString();
+        demandMapper.insertDemand(produceGuid, demandGuid);
+
+        //需要将默认的非功能节点存到数据库
+        String[] titleStr = new String[]{"运行环境需求", "安全需求", "稳定性需求", "可靠性需求", "性能需求", "易用需求", "可扩展性需求", "可移植性需求", "可重用性需求"};
+        ArrayList<Nodes> nodesList = new ArrayList<>();
+        for (int i = 0; i < titleStr.length; i++) {
+            String s = titleStr[i];
+            Nodes nodes = new Nodes();
+            nodes.setGuid(UUID.randomUUID().toString());
+            nodes.setModuleGuid(demandGuid);
+            nodes.setName(s);
+            nodes.setClassType(DocumentTypeEnum.NO_FUNC_DEMAND.getCode());
+            nodes.setNodeType(true);
+            nodes.setNodeOrder(i);
+            nodesList.add(nodes);
+        }
+        demandMapper.insertNodes(nodesList);
+        //软件设计存库
+        //概要设计
+//        Outlinedesign outlinedesign = new Outlinedesign();
+//        String outlinedesignGuid = UUID.randomUUID().toString();
+//        outlinedesign.setGuid(outlinedesignGuid);
+//        outlinedesign.setProduceGuid(produceGuid);
+//        outlinedesign.setCreateTime(DateTool.parse(dateTimeUtil.getCurrDate(), "yyyy-MM-dd HH:mm:ss"));
+//        outlinedesign.setObjective("");
+//        outlinedesign.setStatus(1);
+//        softwareDesignMapper.addOutlinedesign(outlinedesign);
+//
+//        //数据库
+//        Dbdesign dbdesign = new Dbdesign();
+//        String dbdesignGuid = UUID.randomUUID().toString();
+//        dbdesign.setGuid(dbdesignGuid);
+//        dbdesign.setProduceGuid(produceGuid);
+//        dbdesign.setCreateTime(DateTool.parse(dateTimeUtil.getCurrDate(), "yyyy-MM-dd HH:mm:ss"));
+//        dbdesign.setStatus(1);
+//        dbDesignMapper.addDbDesign(dbdesign);
+//
+//        //接口
+//        Interface inter = new Interface();
+//        String interGuid = UUID.randomUUID().toString();
+//        inter.setGuid(interGuid);
+//        inter.setProduceGuid(produceGuid);
+//        inter.setCreateTime(DateTool.parse(dateTimeUtil.getCurrDate(), "yyyy-MM-dd HH:mm:ss"));
+//        inter.setStatus(1);
+//        interfaceMapper.addInterface(inter);
+        return demandGuid;
     }
 
     private void sendMessage(Demandtrace demandtrace) {

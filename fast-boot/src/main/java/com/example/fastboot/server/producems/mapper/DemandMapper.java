@@ -3,10 +3,12 @@ package com.example.fastboot.server.producems.mapper;
 import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.vo.DemandConfirmStateCountVo;
 import com.example.fastboot.server.producems.vo.DemandConfirmDetailVo;
+import com.example.fastboot.server.producems.vo.DocumentStatusCountVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -126,7 +128,7 @@ public interface DemandMapper {
      * @param demandtrace
      * @return
      */
-    List<Demandtrace> listDemandTrace(@Param("demandtrace") Demandtrace demandtrace,@Param("progressStatusList") List<String> progressStatusList);
+    List<Demandtrace> listDemandTrace(@Param("demandtrace") Demandtrace demandtrace, @Param("progressStatusList") List<String> progressStatusList);
 
     /**
      * 更新需求跟踪详情详细描述
@@ -156,4 +158,47 @@ public interface DemandMapper {
      * @param demandtrace
      */
     void updateDemandtrace(@Param("demandtrace") Demandtrace demandtrace);
+
+    /**
+     * 统计需求数量
+     *
+     * @return
+     */
+    List<DocumentStatusCountVo> countStatusDemand(@Param("produceGuids") String[] produceGuids);
+
+    /**
+     * 需求流转
+     *
+     * @param guid
+     * @param staus
+     */
+    void statusTransfer(@Param("guid") String guid, @Param("staus") int staus);
+
+    /**
+     * 删除需求
+     *
+     * @param guids
+     */
+    void deleteDemand(String[] guids);
+
+    /**
+     * 新增需求
+     *
+     * @param produceGuid
+     * @param demandGuid
+     */
+    void insertDemand(@Param("produceGuid") String produceGuid, @Param("demandGuid") String demandGuid);
+
+    /**
+     * 新增需求节点
+     * @param nodesArrayList
+     */
+    void insertNodes(@Param("nodelist") ArrayList<Nodes> nodesArrayList);
+
+    /**
+     * 获取需求关联的产品标识去重
+     * @return
+     */
+    List<String> listDistinctDemandProduceGuid();
+
 }

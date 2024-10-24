@@ -33,4 +33,6 @@ export const listNotBindSoftwareCheckProduceListApi = (data) => {
 export const listNotBindDemandTraceProduceListApi = (data) => {
     return http.post('/produce/listNotBindDemandTraceProduceList', data)
 }
-
+export const listNoDemandProduceApi = (data) => {
+    return http.post('/produce/listNoDemandProduce', data)
+}

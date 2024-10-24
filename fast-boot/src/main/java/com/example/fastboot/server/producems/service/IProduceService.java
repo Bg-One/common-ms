@@ -80,8 +80,16 @@ public interface IProduceService {
 
     /**
      * 获取没有绑定需求追踪的产品列表
+     *
      * @return
      */
     List<Producemanage> listNotBindDemandTraceProduceList();
+
+    /**
+     * 获取没有绑定需求的产品列表
+     *
+     * @return
+     */
+    List<Producemanage> listNoDemandProduce();
 
 }

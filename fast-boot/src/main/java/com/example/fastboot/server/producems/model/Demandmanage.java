@@ -29,6 +29,13 @@ public class Demandmanage {
     private int existTeamResource;
 
     private String makeManager;
+    private int currentPage;
+    private int pageSize;
 
-
+    private String produceName;
+    private String produceManagerName;
+    /**
+     *
+     */
+    private String demandManagerName;
 }

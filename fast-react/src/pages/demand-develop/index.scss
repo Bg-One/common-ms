@@ -1,0 +1,20 @@
+#home-demand-develop {
+  .ant-table-cell {
+    text-align: center;
+  }
+
+  .actionlist {
+    display: flex;
+    justify-content: space-around;
+  }
+
+}
+
+.add-project {
+  text-align: center;
+  margin-top: 2vh;
+
+  .project-name {
+    margin-bottom: 2vh;
+  }
+}

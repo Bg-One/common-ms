@@ -234,6 +234,31 @@
             order by createTime desc
         </if>
     </select>
-
-
+    <select id="listDemand" resultType="com.example.fastboot.server.producems.model.Demandmanage">
+        select t1.*,t2.name produceName,t3.nick_name produceManagerName from demandmanage t1
+        INNER JOIN producemanage t2 on t1.produceGuid=t2.guid
+        LEFT join sys_user t3 on t2.produceManager = t3.user_guid
+        where t1.deleteFlag = 0 and
+        t2.deleteFlag = 0
+        <if test="produceGuids.length!=0">
+            and t2.guid in
+            <foreach collection="produceGuids" separator="," item="item" index="index" open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="demandmanage.produceName !=null and demandmanage.produceName!=''">
+            and t2.`name` like CONCAT('%',#{demandmanage.produceName},'%')
+        </if>
+        <if test="demandmanage.staus !=100 ">
+            and t1.staus = #{demandmanage.staus}
+        </if>
+        order by t1.createTime desc
+    </select>
+    <select id="getProduceMemberByType" resultType="com.example.fastboot.server.producems.model.Producemember">
+        SELECT t1.*,
+               t2.nick_name managerName
+        FROM producemember t1
+                 INNER JOIN sys_user t2 ON t1.managerGuid = t2.user_guid
+        WHERE t1.produceManageGuid = #{produceGuid} and t1.teamResource = #{teamResource}
+    </select>
 </mapper>
