@@ -126,7 +126,7 @@ public interface DemandMapper {
      * @param demandtrace
      * @return
      */
-    List<Demandtrace> listDemandTrace(Demandtrace demandtrace);
+    List<Demandtrace> listDemandTrace(@Param("demandtrace") Demandtrace demandtrace,@Param("progressStatusList") List<String> progressStatusList);
 
     /**
      * 更新需求跟踪详情详细描述

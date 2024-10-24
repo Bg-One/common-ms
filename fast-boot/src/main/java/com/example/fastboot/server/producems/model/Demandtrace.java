@@ -153,6 +153,8 @@ public class Demandtrace implements Serializable {
     private int pageSize;
 
     private String[] filterProjectList;
+
+    private String[] progressStatuss;
     private static final long serialVersionUID = 1L;
 
 

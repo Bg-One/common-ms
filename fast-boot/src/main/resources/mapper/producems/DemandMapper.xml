@@ -22,13 +22,12 @@
         VALUES (#{guid}, #{produceGuid}, 1);
     </insert>
     <insert id="addDemandtraceAll">
-        INSERT INTO `demandtrace`(guid,projectGuid,produceGuid,
-                                  demandType,demandDescription,proposer,submitName,
-                                  submitTime,priority,dealState)
-        VALUES( #{demandtrace.guid}, #{demandtrace.projectGuid},#{demandtrace.produceGuid},
-                #{demandtrace.demandType},#{demandtrace.demandDescription}, #{demandtrace.proposer},
-                #{demandtrace.submitName},#{demandtrace.submitTime}, #{demandtrace.priority},1
-              );
+        INSERT INTO `demandtrace`(guid, projectGuid, produceGuid,
+                                  demandType, demandDescription, proposer, submitName,
+                                  submitTime, priority, dealState)
+        VALUES (#{demandtrace.guid}, #{demandtrace.projectGuid}, #{demandtrace.produceGuid},
+                #{demandtrace.demandType}, #{demandtrace.demandDescription}, #{demandtrace.proposer},
+                #{demandtrace.submitName}, #{demandtrace.submitTime}, #{demandtrace.priority}, 1);
     </insert>
     <update id="updateDemandConfirmDetail">
         update demanditem
@@ -58,13 +57,13 @@
         <if test="demandtrace.finishTime!=null">
             finishTime=#{demandtrace.finishTime},
         </if>
-        <if test="demandtrace.finishTime==null">
+        <if test="demandtrace.finishTime=null">
             finishTime='1970-01-01 00:00:00',
         </if>
         <if test="demandtrace.submitTime!=null">
             submitTime=#{demandtrace.submitTime},
         </if>
-        <if test="demandtrace.submitTime==null">
+        <if test="demandtrace.submitTime=null">
             submitTime='1970-01-01 00:00:00',
         </if>
         guid=#{demandtrace.guid},
@@ -170,7 +169,9 @@
 
     </select>
     <select id="getNodes" resultType="com.example.fastboot.server.producems.model.DemandItem">
-        select * from demanditem where nodeGuid=#{guid}
+        select *
+        from demanditem
+        where nodeGuid = #{guid}
     </select>
     <select id="listDemandTraceByProduce" resultType="com.example.fastboot.server.producems.model.Demandtrace">
         select t1.produceGuid
@@ -221,16 +222,84 @@
 
     <select id="listDemandTrace" resultType="com.example.fastboot.server.producems.model.Demandtrace">
         select * from demandtrace
-        where deleteFlag=0 and produceGuid = #{produceGuid} and dealState!=0
-        <if test="demandType!=100 ">
-            and demandType=#{demandType}
-        </if>
-        <if test="priority!=100 ">
-            and priority=#{priority}
-        </if>
-        <if test="demandDescription!=null and demandDescription!=''">
-            and demandDescription like concat('%',#{demandDescription},'%')
-        </if>
+        <where>deleteFlag=0 and produceGuid = #{demandtrace.produceGuid} and dealState!=0
+            <if test="demandtrace.demandType!=100 ">
+                and demandType=#{demandtrace.demandType}
+            </if>
+            <if test="demandtrace.priority!=100 ">
+                and priority=#{demandtrace.priority}
+            </if>
+            <if test="demandtrace.demandDescription!=null and demandtrace.demandDescription!=''">
+                and demandDescription like concat('%',#{demandtrace.demandDescription},'%')
+            </if>
+            and (
+            <if test="progressStatusList!=null and progressStatusList.size>0">
+                <if test='progressStatusList.contains("1")'>
+                    techManager=''
+                    <if test='progressStatusList.contains("2")'>
+                        or
+                    </if>
+                </if>
+                <if test='progressStatusList.contains("2")'>
+                    (techManager != '' and dealState =2)
+                    <if test='progressStatusList.contains("3")'>
+                        or
+                    </if>
+                </if>
+                <if test='progressStatusList.contains("3")'>
+                    (reviewFlag = 1 and reviewName = '')
+                    <if test='progressStatusList.contains("4")'>
+                        or
+                    </if>
+                </if>
+                <if test='progressStatusList.contains("4")'>
+                    (reviewName != '' and developName = '')
+                    <if test='progressStatusList.contains("5")'>
+                        or
+                    </if>
+                </if>
+                <if test='progressStatusList.contains("5")'>
+                    (developName != '' and devlopFinishName = '')
+                    <if test='progressStatusList.contains("6")'>
+                        or
+                    </if>
+                </if>
+                <if test='progressStatusList.contains("6")'>
+                    (devlopFinishName != '' and demandConfirmName = '')
+                    <if test='progressStatusList.contains("7")'>
+                        or
+                    </if>
+                </if>
+                <if test='progressStatusList.contains("7")'>
+                    (checkName = '' and demandConfirmName != '')
+                    <if test='progressStatusList.contains("8")'>
+                        or
+                    </if>
+                </if>
+                <if test='progressStatusList.contains("8")'>
+                    (dealState = 3)
+                    <if test='progressStatusList.contains("9")'>
+                        or
+                    </if>
+                </if>
+                <if test='progressStatusList.contains("9")'>
+                    ( dealState =6)
+                    <if test='progressStatusList.contains("10")'>
+                        or
+                    </if>
+                </if>
+                <if test='progressStatusList.contains("10")'>
+                    ( dealState =5)
+                    <if test='progressStatusList.contains("11")'>
+                        or
+                    </if>
+                </if>
+                <if test='progressStatusList.contains("11")'>
+                    (checkName != '')
+                </if>
+            </if>
+            )
+        </where>
         order by createTime desc
     </select>
 

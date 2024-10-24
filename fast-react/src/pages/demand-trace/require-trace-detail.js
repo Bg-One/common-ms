@@ -730,21 +730,21 @@ const DemandTraceDetail = () => {
                                 />
                             </Form.Item>
                             <Form.Item
-                                name="hobbies"
+                                name="progressStatuss"
                                 valuePropName="checked"
                             >
                                 <Checkbox.Group>
-                                    <Checkbox>待确认</Checkbox>
-                                    <Checkbox>待编制</Checkbox>
-                                    <Checkbox>待评审</Checkbox>
-                                    <Checkbox>开发待确认</Checkbox>
-                                    <Checkbox>开发待完成</Checkbox>
-                                    <Checkbox>需求待确认</Checkbox>
-                                    <Checkbox>待测试</Checkbox>
-                                    <Checkbox>已完结</Checkbox>
-                                    <Checkbox>挂起</Checkbox>
-                                    <Checkbox>暂缓</Checkbox>
-                                    <Checkbox>作废</Checkbox>
+                                    <Checkbox value={1}>待确认</Checkbox>
+                                    <Checkbox value={2}>待编制</Checkbox>
+                                    <Checkbox value={3}>待评审</Checkbox>
+                                    <Checkbox value={4}>开发待确认</Checkbox>
+                                    <Checkbox value={5}>开发待完成</Checkbox>
+                                    <Checkbox value={6}>需求待确认</Checkbox>
+                                    <Checkbox value={7}>待测试</Checkbox>
+                                    <Checkbox value={8}>已完结</Checkbox>
+                                    <Checkbox value={9}>挂起</Checkbox>
+                                    <Checkbox value={10}>暂缓</Checkbox>
+                                    <Checkbox value={11}>作废</Checkbox>
                                 </Checkbox.Group>
                             </Form.Item>
                             <Form.Item
@@ -757,7 +757,7 @@ const DemandTraceDetail = () => {
                                     <Button type={'primary'} onClick={() => {
                                         setAddModalFlag(true)
                                     }}>新增</Button>
-                                    <Button type={'primary'}onClick={editdemandTrace}>保存</Button>
+                                    <Button type={'primary'} onClick={editdemandTrace}>保存</Button>
                                     <img src={wenhao}
                                          style={{width: '1.5vw', verticalAlign: 'text-bottom', cursor: 'pointer'}}
                                          onClick={() => {

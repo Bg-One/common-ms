@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -192,7 +189,13 @@ public class IDemandServiceImpl implements IDemandService {
     @Override
     public PageResponse listDemandTrace(Demandtrace demandtrace) {
         PageHelper.startPage(demandtrace.getCurrentPage(), demandtrace.getPageSize());
-        List<Demandtrace> demandtraceList = demandMapper.listDemandTrace(demandtrace);
+        if (demandtrace.getProgressStatuss() == null) {
+            List<Demandtrace> demandtraceList = new ArrayList<>();
+            PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);
+            return new PageResponse<>(demandtracePageInfo);
+        }
+        List<String> progressStatusList = demandtrace.getProgressStatuss() != null ? Arrays.asList(demandtrace.getProgressStatuss()) : null;
+        List<Demandtrace> demandtraceList = demandMapper.listDemandTrace(demandtrace, progressStatusList);
         PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);
         return new PageResponse<>(demandtracePageInfo);
     }
