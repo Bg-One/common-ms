@@ -182,8 +182,11 @@ const DemandDevelop = () => {
     }
     //获取变更记录
     const listDemandChangeRecord = async () => {
+        if (selectedRowKeys.length > 1) {
+            message.error("请选择单条记录")
+        }
         await listDemandChangeRecordApi({
-            // demandGuid: this.state.demandGuid
+            demandGuid: selectedRowKeys[0]
         })
         setDemandChangeRecordModalObj({
             open: true,

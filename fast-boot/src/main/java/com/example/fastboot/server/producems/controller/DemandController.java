@@ -100,4 +100,9 @@ public class DemandController {
         demandService.addDemand(produceGuid);
         return success("成功");
     }
+
+    @PostMapping("listDemandChangeRecord")
+    public Object listDemandChangeRecord(String demandGuid) {
+        return success(demandService.listDemandChangeRecord(demandGuid));
+    }
 }

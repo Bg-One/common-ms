@@ -359,6 +359,11 @@ public class IDemandServiceImpl implements IDemandService {
         demandMapper.updateDemand(demandmanage);
     }
 
+    @Override
+    public List<Demandchangerecord> listDemandChangeRecord(String demandGuid) {
+        return demandMapper.listDemandChangeRecord(demandGuid);
+    }
+
     private void sendMessage(Demandtrace demandtrace) {
         int dealState = demandtrace.getDealState() == null ? 0 : demandtrace.getDealState();
         ArrayList<Integer> typeList = new ArrayList<>();

@@ -191,19 +191,30 @@ public interface DemandMapper {
 
     /**
      * 新增需求节点
+     *
      * @param nodesArrayList
      */
     void insertNodes(@Param("nodelist") ArrayList<Nodes> nodesArrayList);
 
     /**
      * 获取需求关联的产品标识去重
+     *
      * @return
      */
     List<String> listDistinctDemandProduceGuid();
 
     /**
      * 更新需求管理信息
+     *
      * @param demandmanage
      */
     void updateDemand(Demandmanage demandmanage);
+
+    /**
+     * 获取需求变更记录
+     *
+     * @param demandGuid
+     * @return
+     */
+    List<Demandchangerecord> listDemandChangeRecord(String demandGuid);
 }

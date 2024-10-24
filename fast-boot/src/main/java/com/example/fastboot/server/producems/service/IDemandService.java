@@ -146,4 +146,11 @@ public interface IDemandService {
      * @param demandmanage
      */
     void updateDemand(Demandmanage demandmanage);
+
+    /**
+     * 获取需求变更记录
+     * @param demandGuid
+     * @return
+     */
+    List<Demandchangerecord> listDemandChangeRecord(String demandGuid);
 }

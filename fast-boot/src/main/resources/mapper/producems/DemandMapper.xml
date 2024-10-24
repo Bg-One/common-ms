@@ -357,5 +357,13 @@
         select distinct produceGuid
         from demandmanage
     </select>
+    <select id="listDemandChangeRecord"
+            resultType="com.example.fastboot.server.producems.model.Demandchangerecord">
+        select *
+        from demandchangerecord
+                 inner join nodes on demandchangerecord.nodeGuid = nodes.guid
+        where demandchangerecord.demandGuid = #{demandGuid}
+          and demandchangerecord.deleteFlag = 0
+    </select>
 
 </mapper>
