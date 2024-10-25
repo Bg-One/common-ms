@@ -1,0 +1,14 @@
+.right-menu {
+  position: absolute;
+  background-color: white;
+  border: 1px solid gainsboro;
+  width: 5vw;
+  text-align: center;
+
+  .menu-item {
+    display: block;
+    text-align: center;
+    margin: 1vh 0;
+    cursor: pointer;
+  }
+}

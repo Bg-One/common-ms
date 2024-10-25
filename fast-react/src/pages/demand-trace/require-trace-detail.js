@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import moment from "moment/moment";
 import './index.scss'
-import {checChanges, deepCopy, handleSave} from "../../utils/table";
+import {checkChanges, deepCopy, handleSave} from "../../utils/table";
 import ExplainModal from "../../content/demand-trace/explain-modal";
 import RepeatModal from "../../content/demand-trace/repeat-modal";
 import {
@@ -132,7 +132,7 @@ const DemandTraceDetail = () => {
     };
     // 保存需求跟踪详情
     const editdemandTrace = () => {
-        let checkResult = checChanges(originalDemandTraceList, demandTraceList, 'guid');
+        let checkResult = checkChanges(originalDemandTraceList, demandTraceList, 'guid');
         if (checkResult.changeArr.length === 0) return
         //保存前进行验证
         for (let {

@@ -7,6 +7,7 @@ import OnsiteAccept from "../../pages/onsite-acceptance";
 import AppearanceAccept from "../../pages/appearance-accept";
 import RequireConfirm from "../../pages/demand-confirm";
 import DemandDevelop from "../../pages/demand-develop";
+import DemandEdit from "../../pages/demand-edit";
 
 export const componentMap = {
     PageMain: React.lazy(() => import('../../pages/main')),
@@ -29,7 +30,8 @@ export const componentMap = {
     SoftCheckDetail: React.lazy(() => import('../../pages/software-check/software-check-detail')),
     DemandTrace: React.lazy(() => import('../../pages/demand-trace')),
     DemandTraceDetail: React.lazy(() => import('../../pages/demand-trace/require-trace-detail')),
-    DemandDevelop: React.lazy(() => import('../../pages/demand-develop'))
+    DemandDevelop: React.lazy(() => import('../../pages/demand-develop')),
+    DemandEdit: React.lazy(() => import('../../pages/demand-edit'))
     // 更多组件...
 };
 
@@ -55,6 +57,11 @@ export const menuConfig = [{
     icon: <MyIcon type={'icon-main'}/>,
     component: 'DemandDevelop',
     label: '需求开发',
+}, {
+    key: '/demand-edit',
+    icon: <MyIcon type={'icon-main'}/>,
+    component: 'DemandEdit',
+    label: '需求编辑',
 }, {
     key: '/demand-confirm',
     icon: <MyIcon type={'icon-main'}/>,

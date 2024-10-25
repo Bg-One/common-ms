@@ -39,6 +39,14 @@
             ( #{item.guid},#{item.moduleGuid},#{item.name},#{item.classType},#{item.nodeType},#{item.nodeOrder})
         </foreach>
     </insert>
+    <insert id="insertDemandterm">
+        insert into demandterm (guid, demandGuid, words, `explain`)
+        values (#{demandterm.guid}, #{demandterm.demandGuid}, #{demandterm.words}, #{demandterm.explain})
+    </insert>
+    <insert id="insertIssuestobeconfirmed">
+        insert into issuestobeconfirmed (guid, demandGuid, issuesContent)
+        values (#{issuestobeconfirmed.guid}, #{issuestobeconfirmed.demandGuid}, #{issuestobeconfirmed.issuesContent})
+    </insert>
     <update id="updateDemandConfirmDetail">
         update demanditem
         set demandConfiemedState=#{demandConfiemedState},
@@ -110,10 +118,21 @@
                 objective=#{objective},
             </if>
             <if test="reader!=null and reader!=''">
-                reviewComments=#{reviewComments},
+                reader=#{reader},
             </if>
         </set>
         where guid=#{guid}
+    </update>
+    <update id="updateDemandterm">
+        update demandterm
+        set words=#{demandterm.words},
+            `explain`=#{demandterm.explain}
+        where guid = #{demandterm.guid}
+    </update>
+    <update id="updateIssuestobeconfirmed">
+        update issuestobeconfirmed
+        set issuesContent=#{issuestobeconfirmed.issuesContent}
+        where guid = #{issuestobeconfirmed.guid}
     </update>
     <delete id="deleteteDemandTrace">
         update demandtrace
@@ -127,6 +146,16 @@
         <foreach collection="guids" item="item" close=")" open="(" separator=",">
             #{item}
         </foreach>
+    </delete>
+    <delete id="deleteDemandTerm">
+        update demandterm
+        set deleteFlag=1
+        where guid = #{guid}
+    </delete>
+    <delete id="deleteIssuesToBeConfirmed">
+        update issuestobeconfirmed
+        set deleteFlag=1
+        where guid = #{guid}
     </delete>
     <select id="getDemand" resultType="com.example.fastboot.server.producems.model.Demandmanage">
         select * from demandmanage
@@ -364,6 +393,20 @@
                  inner join nodes on demandchangerecord.nodeGuid = nodes.guid
         where demandchangerecord.demandGuid = #{demandGuid}
           and demandchangerecord.deleteFlag = 0
+    </select>
+    <select id="listDemandTerm" resultType="com.example.fastboot.server.producems.model.Demandterm">
+        select *
+        from demandterm
+        where deleteFlag = 0
+          and demandGuid = #{demandGuid}
+        order by id desc
+    </select>
+    <select id="listIssuesToBeConfirmed"
+            resultType="com.example.fastboot.server.producems.model.Issuestobeconfirmed">
+        select *
+        from issuestobeconfirmed
+        where deleteFlag = 0
+          and demandGuid = #{guid} order by id desc
     </select>
 
 </mapper>

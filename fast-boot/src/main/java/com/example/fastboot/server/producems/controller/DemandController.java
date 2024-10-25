@@ -41,6 +41,14 @@ public class DemandController {
     }
 
     /**
+     * 获取需求信息
+     */
+    @PostMapping("getDemand")
+    public Object getDemand(String guid) {
+        return success(demandService.getDemand(guid));
+    }
+
+    /**
      * 获取全部的需求节点
      *
      * @param nodes
@@ -101,8 +109,84 @@ public class DemandController {
         return success("成功");
     }
 
+    /**
+     * 获取需求变更记录
+     *
+     * @param demandGuid
+     * @return
+     */
     @PostMapping("listDemandChangeRecord")
     public Object listDemandChangeRecord(String demandGuid) {
         return success(demandService.listDemandChangeRecord(demandGuid));
+    }
+
+    /**
+     * 获取需求术语
+     *
+     * @param demandGuid
+     * @return
+     */
+    @PostMapping("listDemandTerm")
+    public Object listDemandTerm(String demandGuid) {
+        return success(demandService.listDemandTerm(demandGuid));
+    }
+
+    /**
+     * 新增或编辑需求术语
+     *
+     * @param demandTermList
+     * @return
+     */
+    @PostMapping("addOrEditDemandTerm")
+    public Object addOrEditDemandTerm(String demandTermList) {
+        demandService.addOrEditDemandTerm(demandTermList);
+        return success("成功");
+    }
+
+    /**
+     * 删除需求术语
+     *
+     * @param guid
+     * @return
+     */
+    @PostMapping("deleteDemandTerm")
+    public Object deleteDemandTerm(String guid) {
+        demandService.deleteDemandTerm(guid);
+        return success("成功");
+    }
+
+    /**
+     * 获取待确认问题列表
+     *
+     * @param guid
+     * @return
+     */
+    @PostMapping("listIssuesToBeConfirmed")
+    public Object listIssuesToBeConfirmed(String guid) {
+        return success(demandService.listIssuesToBeConfirmed(guid));
+    }
+
+    /**
+     * 新增或更新待确认问题列表
+     *
+     * @param issuesToConfirmList
+     * @return
+     */
+    @PostMapping("addOrEditIssuesToConfirm")
+    public Object addOrEditIssuesToConfirm(String issuesToConfirmList) {
+        demandService.addOrEditIssuesToConfirm(issuesToConfirmList);
+        return success("成功");
+    }
+
+    /**
+     * 删除待确认问题列表
+     *
+     * @param guid
+     * @return
+     */
+    @PostMapping("deleteIssuesToBeConfirmed")
+    public Object deleteIssuesToBeConfirmed(String guid) {
+        demandService.deleteIssuesToBeConfirmed(guid);
+        return success("成功");
     }
 }

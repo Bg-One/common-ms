@@ -1,10 +1,14 @@
 import http from "../../../utils/http"
 
 export let countDemandApi = (obj = {}) => {
-    return http.post('demand/countStatusDemand',obj)
+    return http.post('demand/countStatusDemand', obj)
 }
 export let listDemandApi = (obj = {}) => {
     return http.post('demand/listDemand', obj)
+}
+
+export let getDemandApi = (obj = {}) => {
+    return http.post('demand/getDemand', obj)
 }
 export let addDemandApi = (obj = {}) => {
     return http.post('demand/addDemand', obj)
@@ -21,11 +25,28 @@ export let updateDemandApi = (obj = {}) => {
 export let listDemandChangeRecordApi = (obj = {}) => {
     return http.post('demand/listDemandChangeRecord', obj)
 }
-
+export let deleteDemandTermApi = (obj = {}) => {
+    return http.post('demand/deleteDemandTerm', obj)
+}
+export let listDemandTermApi = (obj = {}) => {
+    return http.post('demand/listDemandTerm', obj)
+}
 export let countDemandConfirmApi = (obj = {}) => {
     return http.post('demandConfirm/countDemandConfirm', obj)
 }
+export let addOrEditDemandTermApi = (obj = {}) => {
+    return http.post('demand/addOrEditDemandTerm', obj)
+}
 
+export let deleteIssuesToBeConfirmedApi = (obj = {}) => {
+    return http.post('demand/deleteIssuesToBeConfirmed', obj)
+}
+export let listIssuesToBeConfirmedApi = (obj = {}) => {
+    return http.post('demand/listIssuesToBeConfirmed', obj)
+}
+export let addOrEditIssuesToConfirmApi = (obj = {}) => {
+    return http.post('demand/addOrEditIssuesToConfirm', obj)
+}
 export let listDemandConfirmDetailApi = (obj = {}) => {
     return http.post('demandConfirm/listDemandConfirmDetail', obj)
 }

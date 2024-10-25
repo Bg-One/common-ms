@@ -8,6 +8,6 @@ document.head.insertAdjacentHTML('beforeend', '<style>html { font-size: 80%; } b
  * 一些常量
  */
 let httpType = 'http'           //http or https
-let ip = '192.168.9.8'
+let ip = 'localhost'
 let port = '28082'
 let entryName = ''   //接口的项目名

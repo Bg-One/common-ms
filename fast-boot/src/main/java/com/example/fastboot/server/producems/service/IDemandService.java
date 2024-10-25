@@ -143,14 +143,68 @@ public interface IDemandService {
 
     /**
      * 更新需求信息
+     *
      * @param demandmanage
      */
     void updateDemand(Demandmanage demandmanage);
 
     /**
      * 获取需求变更记录
+     *
      * @param demandGuid
      * @return
      */
     List<Demandchangerecord> listDemandChangeRecord(String demandGuid);
+
+    /**
+     * 获取需求信息
+     *
+     * @param guid
+     * @return
+     */
+    Demandmanage getDemand(String guid);
+
+    /**
+     * 获取需求术语列表
+     *
+     * @param demandGuid
+     * @return
+     */
+    List<Demandterm> listDemandTerm(String demandGuid);
+
+    /**
+     * 新增或编辑需求术语
+     *
+     * @param demandTermList
+     */
+    void addOrEditDemandTerm(String demandTermList);
+
+    /**
+     * 删除需求术语
+     *
+     * @param guid
+     */
+    void deleteDemandTerm(String guid);
+
+    /**
+     * 获取待确认问题列表
+     *
+     * @param guid
+     * @return
+     */
+    List<Issuestobeconfirmed> listIssuesToBeConfirmed(String guid);
+
+    /**
+     * 新增或编辑待确认问题
+     *
+     * @param issuesToConfirmList
+     */
+    void addOrEditIssuesToConfirm(String issuesToConfirmList);
+
+    /**
+     * 删除待确认问题列表
+     *
+     * @param guid
+     */
+    void deleteIssuesToBeConfirmed(String guid);
 }

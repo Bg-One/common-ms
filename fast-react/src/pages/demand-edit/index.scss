@@ -1,0 +1,31 @@
+#demand-edit {
+  height: 100%;
+  display: flex;
+
+  .demand-item-container {
+    width: 15vw;
+    height: 85vh;
+    background-color: #ffffff;
+    overflow-y: auto;
+    border: 1px solid #E6E6E6;
+    margin-right: 0.5vw;
+
+
+    .demand-item {
+      width: 1.0vw;
+      vertical-align: text-bottom;
+    }
+
+    .title {
+      text-align: center;
+      background-color: #F0F0F0;
+      height: 4vh;
+      line-height: 4vh;
+      margin-bottom: 1vh;
+    }
+  }
+
+  .demand-content-container {
+    width: 100%;
+  }
+}

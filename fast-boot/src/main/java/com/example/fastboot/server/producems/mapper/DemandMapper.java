@@ -217,4 +217,62 @@ public interface DemandMapper {
      * @return
      */
     List<Demandchangerecord> listDemandChangeRecord(String demandGuid);
+
+    /**
+     * 获取需求术语
+     *
+     * @param demandGuid
+     * @return
+     */
+    List<Demandterm> listDemandTerm(String demandGuid);
+
+    /**
+     * 新增需求术语
+     *
+     * @param demandterm
+     */
+    void insertDemandterm(@Param("demandterm") Demandterm demandterm);
+
+    /**
+     * 更新需求术语
+     *
+     * @param demandterm
+     */
+    void updateDemandterm(@Param("demandterm") Demandterm demandterm);
+
+    /**
+     * 删除需求术语
+     *
+     * @param guid
+     */
+    void deleteDemandTerm(String guid);
+
+    /**
+     * 获取需求待确认问题
+     *
+     * @param guid
+     * @return
+     */
+    List<Issuestobeconfirmed> listIssuesToBeConfirmed(String guid);
+
+    /**
+     * 新增问题待确认列表
+     *
+     * @param issuestobeconfirmed
+     */
+    void insertIssuestobeconfirmed(@Param("issuestobeconfirmed") Issuestobeconfirmed issuestobeconfirmed);
+
+    /**
+     * 更新需求待确认列表
+     *
+     * @param issuestobeconfirmed
+     */
+    void updateIssuestobeconfirmed(@Param("issuestobeconfirmed") Issuestobeconfirmed issuestobeconfirmed);
+
+    /**
+     * 删除问题待确认列表
+     *
+     * @param guid
+     */
+    void deleteIssuesToBeConfirmed(String guid);
 }

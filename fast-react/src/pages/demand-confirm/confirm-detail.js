@@ -8,7 +8,7 @@ import {auto} from "html-webpack-plugin/lib/chunksorter";
 import {listDemandConfirmDetailApi, updateDemandConfirmDetailApi} from "../../common/api/producems/demand";
 import {useSearchParams} from "react-router-dom";
 import {SaveOutlined, SearchOutlined} from "@ant-design/icons";
-import {checChanges, deepCopy, handleSave} from "../../utils/table";
+import {checkChanges, deepCopy, handleSave} from "../../utils/table";
 import DemandEventstreamModal from "../../content/soft-check-detail/demand-eventstream-modal";
 
 const {TextArea} = Input;
@@ -42,7 +42,7 @@ const ConfirmDetail = () => {
 
 // 监视数据变化
     useEffect(() => {
-        setChangedDemandConfirmList(checChanges(originalDemandConfirmList, demandConfirmList, 'guid').changeArr)
+        setChangedDemandConfirmList(checkChanges(originalDemandConfirmList, demandConfirmList, 'guid').changeArr)
         // 你可以在这里添加其他逻辑，比如发送数据到服务器等
     }, [demandConfirmList]); // 注意这里的依赖数组 [data]
     //获取需求确认详情列表

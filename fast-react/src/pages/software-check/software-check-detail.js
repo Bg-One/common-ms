@@ -23,7 +23,7 @@ import {
     listCheckFeedbackApi, addCheckfeedbackApi
 } from "../../common/api/producems/softcheck";
 import {getNodesApi, listNodesApi} from "../../common/api/producems/demand";
-import {checChanges, deepCopy, handleSave} from "../../utils/table";
+import {checkChanges, deepCopy, handleSave} from "../../utils/table";
 import {useSelector} from "react-redux";
 import {AppstoreAddOutlined, SaveOutlined, SearchOutlined} from "@ant-design/icons";
 import ChangenodeModal from "../../content/soft-check-detail/changenode-modal";
@@ -124,7 +124,8 @@ const SoftwareCheckDetail = () => {
         listNodesApi({
             produceGuid: searchParams.get("produceGuid")
         }).then(res => {
-            setNodeList(deepCopy(res.data))
+            setNodeList([...deepCopy(res.data), {guid: 'func-demand', name: '功能需求'},
+                {guid: 'nofunc-demand', name: '非功能需求'}])
             let oldNodeList = deepCopy(res.data)
             let handleTreeData = handleTree(oldNodeList, "guid", 'name', 'parentNodeGuid');
             let newFuncNodeList = createFuncDemandNode(handleTreeData, 1)
@@ -155,7 +156,7 @@ const SoftwareCheckDetail = () => {
     }
     //新增或编辑软件测试列表
     const editCheckfeedback = () => {
-        let checkResult = checChanges(orginalCheckFeedbackList, checkFeedbackList, 'guid');
+        let checkResult = checkChanges(orginalCheckFeedbackList, checkFeedbackList, 'guid');
         if (checkResult.changeArr.length === 0) return
         for (let item of checkFeedbackList) {
             if (!item.projectGuid) {

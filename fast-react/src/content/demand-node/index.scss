@@ -1,0 +1,25 @@
+.title-span {
+  background-color: #E4F1FF;
+  display: inherit;
+  text-align: center;
+  border-radius: 0.5vw;
+  color: #1384FE;
+  margin: 1vh 0;
+  width: 4vw;
+}
+
+#demand-term-area {
+  .ant-table-cell {
+    text-align: center;
+  }
+}
+
+.func-item {
+  margin-left: 2vw;
+
+  .ant-select {
+    width: 10vw;
+    margin-left: 0.6vw;
+    margin-right: 2vw;
+  }
+}

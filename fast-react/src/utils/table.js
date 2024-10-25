@@ -6,7 +6,7 @@ export const handleSave = (index, field, value, data, setData) => {
 }
 
 // 检查数据变化
-export const checChanges = (originalData, newData, field) => {
+export const checkChanges = (originalData, newData, field) => {
     const delArr = [];
     const changeArr = [];
     const addArr = [];

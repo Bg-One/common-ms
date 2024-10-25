@@ -364,6 +364,64 @@ public class IDemandServiceImpl implements IDemandService {
         return demandMapper.listDemandChangeRecord(demandGuid);
     }
 
+    @Override
+    public Demandmanage getDemand(String guid) {
+        Demandmanage demandmanage = new Demandmanage();
+        demandmanage.setGuid(guid);
+        Demandmanage demand = demandMapper.getDemand(demandmanage);
+        return demand != null ? demand : new Demandmanage();
+    }
+
+    @Override
+    public List<Demandterm> listDemandTerm(String demandGuid) {
+        return demandMapper.listDemandTerm(demandGuid);
+    }
+
+    @Override
+    public void addOrEditDemandTerm(String demandTermList) {
+        List<Demandterm> demandtermList = JSONArray.parseArray(demandTermList, Demandterm.class);
+        Iterator<Demandterm> it = demandtermList.iterator();
+        while (it.hasNext()) {
+            Demandterm demandterm = it.next();
+            if (demandterm.getGuid() == null || demandterm.getGuid().equals("")) {
+                demandterm.setGuid(UUID.randomUUID().toString());
+                demandMapper.insertDemandterm(demandterm);
+            } else {
+                demandMapper.updateDemandterm(demandterm);
+            }
+        }
+    }
+
+    @Override
+    public void deleteDemandTerm(String guid) {
+        demandMapper.deleteDemandTerm(guid);
+    }
+
+    @Override
+    public List<Issuestobeconfirmed> listIssuesToBeConfirmed(String guid) {
+        return demandMapper.listIssuesToBeConfirmed(guid);
+    }
+
+    @Override
+    public void addOrEditIssuesToConfirm(String issuesToConfirmList) {
+        List<Issuestobeconfirmed> issuestobeconfirmedList = JSONArray.parseArray(issuesToConfirmList, Issuestobeconfirmed.class);
+        Iterator<Issuestobeconfirmed> it = issuestobeconfirmedList.iterator();
+        while (it.hasNext()) {
+            Issuestobeconfirmed issuestobeconfirmed = it.next();
+            if (issuestobeconfirmed.getGuid() == null || issuestobeconfirmed.getGuid().equals("")) {
+                issuestobeconfirmed.setGuid(UUID.randomUUID().toString());
+                demandMapper.insertIssuestobeconfirmed(issuestobeconfirmed);
+            } else {
+                demandMapper.updateIssuestobeconfirmed(issuestobeconfirmed);
+            }
+        }
+    }
+
+    @Override
+    public void deleteIssuesToBeConfirmed(String guid) {
+        demandMapper.deleteIssuesToBeConfirmed(guid);
+    }
+
     private void sendMessage(Demandtrace demandtrace) {
         int dealState = demandtrace.getDealState() == null ? 0 : demandtrace.getDealState();
         ArrayList<Integer> typeList = new ArrayList<>();

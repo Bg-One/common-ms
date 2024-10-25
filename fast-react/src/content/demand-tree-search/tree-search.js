@@ -1,8 +1,10 @@
-import { Input, Tree } from 'antd';
-import React, { useMemo, useState } from 'react';
-const { Search } = Input;
+import {Input, Tree} from 'antd';
+import React, {useMemo, useState} from 'react';
+
+const {Search} = Input;
 
 import './tree-search.scss'
+
 const getParentKey = (key, tree) => {
     let parentKey;
     for (let i = 0; i < tree.length; i++) {
@@ -18,7 +20,7 @@ const getParentKey = (key, tree) => {
     return parentKey;
 };
 
-const TreeSearch = ({defaultData,dataList,onSelect}) => {
+const TreeSearch = ({defaultData, dataList, onSelect, handleRightClick}) => {
     const [expandedKeys, setExpandedKeys] = useState([]);
     const [searchValue, setSearchValue] = useState('');
     const [autoExpandParent, setAutoExpandParent] = useState(true);
@@ -32,7 +34,7 @@ const TreeSearch = ({defaultData,dataList,onSelect}) => {
         for (let i = 0; i < data.length; i++) {
             const node = data[i];
             allData.push({
-                key:node.guid,
+                key: node.guid,
                 title: node.name,
             });
             if (node.child) {
@@ -42,13 +44,13 @@ const TreeSearch = ({defaultData,dataList,onSelect}) => {
     };
     generateList(dataList)
     const onChange = (e) => {
-        const { value } = e.target;
+        const {value} = e.target;
         const newExpandedKeys = allData.map((item) => {
-                if (item.title.indexOf(value) > -1) {
-                    return getParentKey(item.key, defaultData);
-                }
-                return null;
-            })
+            if (item.title.indexOf(value) > -1) {
+                return getParentKey(item.key, defaultData);
+            }
+            return null;
+        })
             .filter((item, i, self) => item && self.indexOf(item) === i);
         setExpandedKeys(newExpandedKeys);
         setSearchValue(value);
@@ -87,23 +89,26 @@ const TreeSearch = ({defaultData,dataList,onSelect}) => {
                 };
             });
         return loop(defaultData);
-    }, [searchValue,defaultData]);
+    }, [searchValue, defaultData]);
     return (
         <div>
             <Search
                 style={{
                     marginBottom: 8,
                 }}
-                placeholder="Search"
+                placeholder="需求关键字"
                 onChange={onChange}
             />
             <Tree
-                onSelect={(e)=>{
-                    onSelect(e,allData.find(item=>item.key===e[0]).title)
+                onSelect={(e) => {
+                    onSelect(e, allData.find(item => item.key === e[0]).title)
                 }}
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}
                 autoExpandParent={autoExpandParent}
+                onRightClick={(e) => {
+                    handleRightClick?.(e)
+                }}
                 treeData={treeData}
             />
         </div>
