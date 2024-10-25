@@ -1,7 +1,13 @@
 import React, {useEffect, useRef, useState} from "react";
 import './index.scss'
 import TreeSearch from "../../content/demand-tree-search/tree-search";
-import {getDemandApi, listNodesApi, updateDemandApi} from "../../common/api/producems/demand";
+import {
+    getDemandApi,
+    getDetailDesignApi,
+    getNodesApi,
+    listNodesApi,
+    updateDemandApi
+} from "../../common/api/producems/demand";
 import {deepCopy} from "../../utils/table";
 import {createTreeItem, handleTree} from "../../utils/tree-data";
 import file from "../../static/images/file.png";
@@ -26,6 +32,10 @@ const DemandEdit = () => {
     const [showMenu, setShowMenu] = useState(false);
     const dropdownElement = useRef(null);
     const [demandManage, setDemandManage] = useState({objective: '', reader: ''})
+    const [demandVisible, setDemandVisible] = useState(false)
+    const [demandItem, setDemandItem] = useState({})
+    const [softDesignDetail, setSoftDesignDetail] = useState({})
+
     useEffect(() => {
         listNodes()
         getDemandDetil()
@@ -36,12 +46,28 @@ const DemandEdit = () => {
     }, [showMenu]);
 
     useEffect(() => {
-        if (activeNode === '') {
+        setDemandVisible(false)
 
-        } else if (activeNode === '') {
-
+        //判断是否显示需求节点面板
+        if (activeNode === 'objective' || activeNode === 'demandTerm'
+            || activeNode === 'userFunc' || activeNode === 'func-demand'
+            || activeNode === 'nofunc-demand' || activeNode === 'question-confirmed') {
+            return
         }
+        let obj = nodeList.find(item => item.guid === activeNode);
+        obj && obj.nodeType && getDemandItemDetail()
     }, [activeNode])
+
+    //获取需求节点的软件设计、需求设计
+    const getDemandItemDetail = async () => {
+        //获取节点信息
+        let response = await getNodesApi({guid: activeNode})
+        setDemandItem(response.data)
+        let res = await getDetailDesignApi({nodeGuid: activeNode})
+        setSoftDesignDetail(res.data)
+        setDemandVisible(true)
+    }
+
     //获取需求信息
     const getDemandDetil = async () => {
         let res = await getDemandApi({guid: searchParams.get('demandGuid')})
@@ -159,20 +185,22 @@ const DemandEdit = () => {
                         activeNode === 'demandTerm' ? <DemandTerm/> :
                             activeNode === 'userFunc' ? <UserFunc/> :
                                 activeNode === 'question-confirmed' ? <QuestionConfirmed/> :
-                                    <Tabs defaultActiveKey="1" items={[
-                                        {
-                                            key: '1',
-                                            label: '需求功能设计',
-                                            children: <DemandItemContent/>,
-                                        },
-                                        {
-                                            key: '2',
-                                            label: '开发详细设计',
-                                            children: <SoftDetaildesign/>,
-                                        }]} onChange={() => {
-                                        console.log(1)
-                                    }
-                                    }/>
+                                    demandVisible ?
+                                        <Tabs defaultActiveKey="1" items={[
+                                            {
+                                                key: '1',
+                                                label: '需求功能设计',
+                                                children: <DemandItemContent
+                                                    demandItem={{...demandItem, nodeGuid: activeNode}}
+                                                    setDemandItem={setDemandItem}/>,
+                                            },
+                                            {
+                                                key: '2',
+                                                label: '开发详细设计',
+                                                children: <SoftDetaildesign
+                                                    softDesignDetail={{...softDesignDetail, nodeGuid: activeNode}}
+                                                    setSoftDesignDetail={setSoftDesignDetail}/>,
+                                            }]}/> : ''
             }
         </div>
     </div>

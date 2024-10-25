@@ -207,4 +207,17 @@ public interface IDemandService {
      * @param guid
      */
     void deleteIssuesToBeConfirmed(String guid);
+
+    /**
+     * 获取软件详细设计
+     * @param nodeGuid
+     * @return
+     */
+    Detaileddesign getDetailDesign(String nodeGuid);
+
+    /**
+     * 新增或编辑详细设计
+     * @param detaileddesign
+     */
+    void addOrEditDetailDesign(Detaileddesign detaileddesign);
 }

@@ -275,4 +275,23 @@ public interface DemandMapper {
      * @param guid
      */
     void deleteIssuesToBeConfirmed(String guid);
+
+    /**
+     * 获取软件详细设计
+     * @param nodeGuid
+     * @return
+     */
+    Detaileddesign getDetatilDesign(String nodeGuid);
+
+    /**
+     * 新增软件设计详情
+     * @param detaileddesign
+     */
+    void insertDetaileddesign(@Param("detaileddesign") Detaileddesign detaileddesign);
+
+    /**
+     * 更新软件设计详情
+     * @param detaileddesign
+     */
+    void updateDetaileddesign(@Param("detaileddesign") Detaileddesign detaileddesign);
 }

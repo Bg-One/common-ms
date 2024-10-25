@@ -37,4 +37,6 @@ public class DemandItem {
     private String nodeName;
     private Nodes nodes;
 
+    private String demandName;
+
 }

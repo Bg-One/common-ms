@@ -4,10 +4,14 @@ import com.example.fastboot.server.producems.model.Demandmanage;
 import com.example.fastboot.server.producems.model.Nodes;
 import com.example.fastboot.server.producems.service.IDemandService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 
 import static com.example.fastboot.common.response.CommonResult.success;
@@ -18,6 +22,7 @@ import static com.example.fastboot.common.response.CommonResult.success;
  **/
 @RestController
 @RequestMapping("demand")
+@Validated
 public class DemandController {
 
     @Autowired
@@ -44,7 +49,7 @@ public class DemandController {
      * 获取需求信息
      */
     @PostMapping("getDemand")
-    public Object getDemand(String guid) {
+    public Object getDemand(@NotNull(message = "需求唯一标识不能为空") @NotBlank(message = "厂站id不能为空串")  String guid) {
         return success(demandService.getDemand(guid));
     }
 
@@ -189,4 +194,6 @@ public class DemandController {
         demandService.deleteIssuesToBeConfirmed(guid);
         return success("成功");
     }
+
+
 }

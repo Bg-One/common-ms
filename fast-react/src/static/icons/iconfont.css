@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4326503 */
-  src: url('iconfont.woff2?t=1725585774948') format('woff2'),
-       url('iconfont.woff?t=1725585774948') format('woff'),
-       url('iconfont.ttf?t=1725585774948') format('truetype');
+  src: url('iconfont.woff2?t=1729846442828') format('woff2'),
+       url('iconfont.woff?t=1729846442828') format('woff'),
+       url('iconfont.ttf?t=1729846442828') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,82 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-chanpin:before {
+  content: "\e647";
+}
+
+.icon-yonghu:before {
+  content: "\e788";
+}
+
+.icon-simple:before {
+  content: "\e63f";
+}
+
+.icon-b_by:before {
+  content: "\e61a";
+}
+
+.icon-baodanguanli:before {
+  content: "\e626";
+}
+
+.icon-shenpi-wopingshende:before {
+  content: "\e640";
+}
+
+.icon-icon_xuqiu:before {
+  content: "\e6c3";
+}
+
+.icon-gongdanchaxun:before {
+  content: "\e67e";
+}
+
+.icon-telephone2:before {
+  content: "\e96d";
+}
+
+.icon-ruanjianceshi:before {
+  content: "\e609";
+}
+
+.icon-xuqiuqueren:before {
+  content: "\e638";
+}
+
+.icon-daitijiao:before {
+  content: "\e615";
+}
+
+.icon-gongdanshenhe:before {
+  content: "\e717";
+}
+
+.icon-xiangmu:before {
+  content: "\e68d";
+}
+
+.icon-ruanjian-:before {
+  content: "\e641";
+}
+
+.icon-daishenhe:before {
+  content: "\e676";
+}
+
+.icon-xuqiugenzong-copy:before {
+  content: "\e642";
+}
+
+.icon-gongshitongji:before {
+  content: "\e600";
+}
+
+.icon-xianchangyanshou:before {
+  content: "\e731";
 }
 
 .icon-gangwei:before {

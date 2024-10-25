@@ -47,6 +47,7 @@ export let listIssuesToBeConfirmedApi = (obj = {}) => {
 export let addOrEditIssuesToConfirmApi = (obj = {}) => {
     return http.post('demand/addOrEditIssuesToConfirm', obj)
 }
+
 export let listDemandConfirmDetailApi = (obj = {}) => {
     return http.post('demandConfirm/listDemandConfirmDetail', obj)
 }
@@ -60,7 +61,16 @@ export let listNodesApi = (obj = {}) => {
 export let getNodesApi = (obj = {}) => {
     return http.post('demandItem/getNodes', obj)
 }
+export let addOrEditDemandItemApi = (obj = {}) => {
+    return http.post('demandItem/addOrEditDemandItem', obj)
+}
+export let addOrEditDetailDesignApi = (obj = {}) => {
+    return http.post('demandItem/addOrEditDetailDesign', obj)
+}
 
+export let getDetailDesignApi = (obj = {}) => {
+    return http.post('demandItem/getDetailDesign', obj)
+}
 export let countDemandTraceByProduceApi = (obj = {}) => {
     return http.post('demandTrace/countDemandTraceByProduce', obj)
 }

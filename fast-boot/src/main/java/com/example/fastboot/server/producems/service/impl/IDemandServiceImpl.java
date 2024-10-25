@@ -422,6 +422,23 @@ public class IDemandServiceImpl implements IDemandService {
         demandMapper.deleteIssuesToBeConfirmed(guid);
     }
 
+    @Override
+    public Detaileddesign getDetailDesign(String nodeGuid) {
+        Detaileddesign detatilDesign = demandMapper.getDetatilDesign(nodeGuid);
+        return detatilDesign != null ? detatilDesign : new Detaileddesign();
+    }
+
+    @Override
+    public void addOrEditDetailDesign(Detaileddesign detaileddesign) {
+        if (detaileddesign.getGuid().equals("")) {
+            String uuid = UUID.randomUUID().toString();
+            detaileddesign.setGuid(uuid);
+            demandMapper.insertDetaileddesign(detaileddesign);
+        } else {
+            demandMapper.updateDetaileddesign(detaileddesign);
+        }
+    }
+
     private void sendMessage(Demandtrace demandtrace) {
         int dealState = demandtrace.getDealState() == null ? 0 : demandtrace.getDealState();
         ArrayList<Integer> typeList = new ArrayList<>();

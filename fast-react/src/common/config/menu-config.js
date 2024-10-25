@@ -37,24 +37,26 @@ export const componentMap = {
 
 
 // 默认菜单/面包屑配置
-export const menuConfig = [{
-    key: '/index',
-    icon: <MyIcon type={'icon-main'}/>,
-    component: 'PageMain',
-    label: '首页',
-}, {
+export const menuConfig = [
+//     {
+//     key: '/index',
+//     icon: <MyIcon type={'icon-main'}/>,
+//     component: 'PageMain',
+//     label: '首页',
+// },
+    {
     key: '/produce',
-    icon: <MyIcon type={'icon-main'}/>,
+    icon: <MyIcon type={'icon-chanpin'}/>,
     component: 'Produce',
     label: '产品列表',
 }, {
     key: '/project',
-    icon: <MyIcon type={'icon-main'}/>,
+    icon: <MyIcon type={'icon-xiangmu'}/>,
     component: 'Project',
     label: '项目列表',
 }, {
     key: '/demand-develop',
-    icon: <MyIcon type={'icon-main'}/>,
+    icon: <MyIcon type={'icon-icon_xuqiu'}/>,
     component: 'DemandDevelop',
     label: '需求开发',
 }, {
@@ -64,28 +66,28 @@ export const menuConfig = [{
     label: '需求编辑',
 }, {
     key: '/demand-confirm',
-    icon: <MyIcon type={'icon-main'}/>,
+    icon: <MyIcon type={'icon-xuqiuqueren'}/>,
     component: 'RequireConfirm',
     label: '需求确认',
 }, {
     key: '/software-check',
-    icon: <MyIcon type={'icon-main'}/>,
+    icon: <MyIcon type={'icon-ruanjianceshi'}/>,
     component: 'SoftCheck',
     label: '软件测试',
 }, {
     key: '/demand-trace',
-    icon: <MyIcon type={'icon-main'}/>,
+    icon: <MyIcon type={'icon-xuqiugenzong-copy'}/>,
     component: 'DemandTrace',
     label: '需求跟踪',
 }, {
 
     key: '/appearance-accept',
-    icon: <MyIcon type={'icon-main'}/>,
+    icon: <MyIcon type={'icon-b_by'}/>,
     component: 'AppearanceAccept',
     label: '出厂验收',
 }, {
     key: '/onsitea-accept',
-    icon: <MyIcon type={'icon-main'}/>,
+    icon: <MyIcon type={'icon-xianchangyanshou'}/>,
     component: 'OnsiteAccept',
     label: '现场验收',
 }, {

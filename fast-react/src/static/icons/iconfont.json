@@ -6,6 +6,139 @@
   "description": "管理后台",
   "glyphs": [
     {
+      "icon_id": "434962",
+      "name": "chanpin",
+      "font_class": "chanpin",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "579741",
+      "name": "用户",
+      "font_class": "yonghu",
+      "unicode": "e788",
+      "unicode_decimal": 59272
+    },
+    {
+      "icon_id": "593373",
+      "name": "Simple",
+      "font_class": "simple",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "1527828",
+      "name": "2_出厂验收",
+      "font_class": "b_by",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "4787400",
+      "name": "报单管理",
+      "font_class": "baodanguanli",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "5885602",
+      "name": "审批-我评审的",
+      "font_class": "shenpi-wopingshende",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "6251524",
+      "name": "icon_需求1",
+      "font_class": "icon_xuqiu",
+      "unicode": "e6c3",
+      "unicode_decimal": 59075
+    },
+    {
+      "icon_id": "7001876",
+      "name": "工单查询",
+      "font_class": "gongdanchaxun",
+      "unicode": "e67e",
+      "unicode_decimal": 59006
+    },
+    {
+      "icon_id": "7568889",
+      "name": "24gf-telephone2",
+      "font_class": "telephone2",
+      "unicode": "e96d",
+      "unicode_decimal": 59757
+    },
+    {
+      "icon_id": "7581989",
+      "name": "软件测试",
+      "font_class": "ruanjianceshi",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "8686346",
+      "name": "需求确认",
+      "font_class": "xuqiuqueren",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "9304175",
+      "name": "待提交",
+      "font_class": "daitijiao",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "9430978",
+      "name": "工单审核",
+      "font_class": "gongdanshenhe",
+      "unicode": "e717",
+      "unicode_decimal": 59159
+    },
+    {
+      "icon_id": "10452275",
+      "name": "xiangmu",
+      "font_class": "xiangmu",
+      "unicode": "e68d",
+      "unicode_decimal": 59021
+    },
+    {
+      "icon_id": "12218105",
+      "name": "软件-7",
+      "font_class": "ruanjian-",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "22928002",
+      "name": "待审核",
+      "font_class": "daishenhe",
+      "unicode": "e676",
+      "unicode_decimal": 58998
+    },
+    {
+      "icon_id": "29264445",
+      "name": "需求跟踪",
+      "font_class": "xuqiugenzong-copy",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "40734565",
+      "name": "工时统计-copy",
+      "font_class": "gongshitongji",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "40936998",
+      "name": "现场验收",
+      "font_class": "xianchangyanshou",
+      "unicode": "e731",
+      "unicode_decimal": 59185
+    },
+    {
       "icon_id": "8949009",
       "name": "岗位",
       "font_class": "gangwei",

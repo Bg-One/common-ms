@@ -1,41 +1,86 @@
-import {Form, Input, Select} from "antd";
+import {Button, Form, Input, message, Select} from "antd";
 import TinymceEditor from "../tinymce";
+import React, {useState} from "react";
+import {handleSave} from "../../utils/table";
+import {useSelector} from "react-redux";
+import moment from "moment";
+import {addOrEditDemandItemApi, addOrEditDetailDesignApi} from "../../common/api/producems/demand";
 
-const SoftDetaildesign = () => {
+const {TextArea} = Input;
+const SoftDetaildesign = ({softDesignDetail, setSoftDesignDetail}) => {
+    const userInfo = useSelector(state => state.user.userInfo);
+    const [form] = Form.useForm()
+    const addOrEditDetailDesign = async () => {
+        await addOrEditDetailDesignApi({
+            ...softDesignDetail,
+            ...form.getFieldsValue(),
+            createName: userInfo.user.nickName,
+            createTime: moment().format("YYYY-MM-DD"),
+        })
+        message.success('保存成功', 1)
+    }
 
     return (<div style={{height: '79vh', overflowY: 'auto'}}>
             <Form
                 layout="horizontal"
-                disabled={true}
+                // disabled={true}
                 labelAlign={'right'}
                 labelCol={{
                     span: 2,
                 }}
+                initialValues={{...softDesignDetail}}
             >
                 <Form.Item>
-                    <span>编写人：{}</span>
-                    <span>当前时间：{}</span>
+                    <span style={{
+                        marginLeft: '3vw',
+                        marginRight: '10vw'
+                    }}>编写人：{setSoftDesignDetail.createName ? setSoftDesignDetail.createName : userInfo.user.nickName}</span>
+                    <span>创建时间：{setSoftDesignDetail.createTime ? setSoftDesignDetail.createTime : moment().format("YYYY-MM-DD")}</span>
                 </Form.Item>
                 <Form.Item label={'流程分析'}>
-                    <TinymceEditor id={'processAnalysis'}/>
+                    <TinymceEditor id={'processAnalysis'}
+                                   data={softDesignDetail.processAnalysis === null ? '' : softDesignDetail.processAnalysis}
+                                   func={(data) => {
+                                       setSoftDesignDetail({
+                                           ...softDesignDetail,
+                                           processAnalysis: data
+                                       })
+                                   }}/>
                 </Form.Item>
-                <Form.Item label="配置要求">
-                    <Input/>
+                <Form.Item label="配置要求" name={'configurationRequirements'}>
+                    <TextArea
+                        autoSize={{minRows: 1, maxRows: 6}}
+                    />
                 </Form.Item>
-                <Form.Item label="类层设计">
-                    <Input/>
+                <Form.Item label="类层设计" name={'classDesign'}>
+                    <TextArea
+                        autoSize={{minRows: 1, maxRows: 6}}
+                    />
                 </Form.Item>
-                <Form.Item label="数据库操作">
-                    <Input/>
+                <Form.Item label="数据库操作" name={'dbOperate'}>
+                    <TextArea
+                        autoSize={{minRows: 1, maxRows: 6}}
+                    />
                 </Form.Item>
-                <Form.Item label="通信接口设计">
-                    <Input/>
+                <Form.Item label="通信接口设计" name={'communicationDesignDescription'}>
+                    <TextArea
+                        autoSize={{minRows: 1, maxRows: 6}}
+                    />
                 </Form.Item>
-                <Form.Item label="复杂逻辑及算法">
-                    <Input/>
+                <Form.Item label="复杂逻辑及算法" name={'complexLogic'}>
+                    <TextArea
+                        autoSize={{minRows: 1, maxRows: 6}}
+                    />
                 </Form.Item>
-                <Form.Item label="备注">
-                    <Input/>
+                <Form.Item label="备注" name={'notes'}>
+                    <TextArea
+                        autoSize={{minRows: 1, maxRows: 6}}
+                    />
+                </Form.Item>
+                <Form.Item>
+                    <div style={{textAlign: 'center'}}>
+                        <Button type={'primary'} htmlType={'submit'} onClick={addOrEditDetailDesign}>保存</Button>
+                    </div>
                 </Form.Item>
             </Form>
         </div>
