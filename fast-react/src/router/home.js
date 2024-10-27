@@ -28,7 +28,6 @@ const Home = (props) => {
 
     //编辑tab
     const onEdit = (targetKey, action) => {
-        console.log(targetKey, action)
         remove(targetKey);
     };
 
@@ -87,7 +86,7 @@ const Home = (props) => {
         {
             key: '3',
             label: <div onClick={() => {
-                dispatch(removeAllTab())
+                dispatch(removeAllTab(navigator))
             }}>关闭全部标签页</div>,
         },
     ];

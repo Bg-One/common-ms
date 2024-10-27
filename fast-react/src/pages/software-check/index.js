@@ -5,7 +5,6 @@ import pinyinUtil from '../../common/react-pinyin-master/pinyinUtil'
 import './index.scss'
 import {countCheckFeedbackByProduceApi, relatedProduceApi} from "../../common/api/producems/softcheck";
 import {listNotBindSoftwareCheckProduceListApi} from "../../common/api/producems/produce";
-import {SearchOutlined} from "@ant-design/icons";
 import {componentMap} from "../../common/config/menu-config";
 import {addTab} from "../../redux/tab/tab-slice";
 import {useNavigate} from "react-router-dom";
@@ -78,17 +77,6 @@ const SoftwareCheck = () => {
     //获取详情
     const getDetail = (record) => {
         navigate('/home/software-check-detail' + '?produceGuid=' + record.produceGuid)
-        setTimeout(() => {
-            const Component = componentMap.SoftCheckDetail;
-            dispatch(addTab({
-                label: `${record.produceName}软件测试详情`,
-                children: <React.Suspense fallback={<div>Loading...</div>}>
-                    <Component/>
-                </React.Suspense>
-                ,
-                key: '/home/software-check-detail' + '?produceGuid=' + record.produceGuid,
-            }))
-        }, 200)
     }
     return <div id="home-software-check">
         <div className={'search-area'}>

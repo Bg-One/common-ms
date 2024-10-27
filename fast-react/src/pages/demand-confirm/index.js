@@ -40,17 +40,6 @@ const RequireConfirm = () => {
     }
     const getDetail = (record) => {
         navigate('/home/demand-confirm-detail' + '?demandGuid=' + record.demandGuid)
-        setTimeout(() => {
-            const Component = componentMap.RequireConfirmDetail;
-            dispatch(addTab({
-                label: `${record.name}需求确认详情`,
-                children: <React.Suspense fallback={<div>Loading...</div>}>
-                    <Component/>
-                </React.Suspense>
-                ,
-                key: '/home/demand-confirm-detail' + '?demandGuid=' + record.demandGuid,
-            }))
-        }, 200)
     }
     const onSearch = (values) => {
         countDemandConfirm({

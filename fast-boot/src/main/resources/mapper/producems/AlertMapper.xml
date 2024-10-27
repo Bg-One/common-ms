@@ -10,9 +10,8 @@
                 #{messageRecord.alertType}, #{messageRecord.contentDescription})
     </insert>
     <insert id="insertMessageToPerson">
-        insert into messagetoperson (messageGuid, responsiblePerson, responsiblePersonGuid)
-        values (#{messageToPerson.messageGuid}, #{messageToPerson.responsiblePerson},
+        insert into messagetoperson (messageGuid, responsiblePersonGuid)
+        values (#{messageToPerson.messageGuid},
                 #{messageToPerson.responsiblePersonGuid})
-
     </insert>
 </mapper>

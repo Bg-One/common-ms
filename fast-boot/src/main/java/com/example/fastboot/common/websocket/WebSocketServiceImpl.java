@@ -59,7 +59,7 @@ public class WebSocketServiceImpl implements WebSocketService {
     public void sendMessage(String userGuid, TextMessage message) throws IOException {
         WebSocketSession webSocketSession = clients.get(userGuid);
 
-        if (webSocketSession.isOpen()) {
+        if (webSocketSession != null && webSocketSession.isOpen()) {
             webSocketSession.sendMessage(message);
         }
     }

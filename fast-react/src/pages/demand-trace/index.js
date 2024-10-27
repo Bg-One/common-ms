@@ -74,17 +74,6 @@ const DemandTrace = () => {
     //获取详情
     const getDetail = (record) => {
         navigate('/home/demand-trace-detail' + '?produceGuid=' + record.produceGuid)
-        setTimeout(() => {
-            const Component = componentMap.DemandTraceDetail;
-            dispatch(addTab({
-                label: `${record.produceName}需求跟踪详情`,
-                children: <React.Suspense fallback={<div>Loading...</div>}>
-                    <Component/>
-                </React.Suspense>
-                ,
-                key: '/home/demand-trace-detail' + '?produceGuid=' + record.produceGuid,
-            }))
-        }, 200)
     }
     return <div id="home-require-trace">
         <div className={'search-area'}>

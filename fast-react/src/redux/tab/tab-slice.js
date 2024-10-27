@@ -1,7 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 
 
-
 export const tabSlice = createSlice({
     name: 'tab',
     initialState: {
@@ -26,7 +25,8 @@ export const tabSlice = createSlice({
             state.tabList = state.tabList.filter(item => item.key !== action.payload)
         },
         removeAllTab: (state, action) => {
-            state.tabList = [];
+            state.tabList = state.tabList.filter(item => item.key === '/home/produce');
+            action.payload('/home/produce')
         },
         removeOtherTab: (state, action) => {
             state.tabList = state.tabList.filter(item => item.key === action.payload)
@@ -39,5 +39,5 @@ export const tabSlice = createSlice({
         }
     },
 });
-export const {addTab, removeTab, removeAllTab, removeOtherTab, setActiveKey,setTabList} = tabSlice.actions;
+export const {addTab, removeTab, removeAllTab, removeOtherTab, setActiveKey, setTabList} = tabSlice.actions;
 export default tabSlice.reducer;
