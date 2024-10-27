@@ -176,7 +176,7 @@
     </select>
     <select id="listProduceMemberByType"
             resultType="com.example.fastboot.server.producems.model.Producemember">
-        SELECT * from producemember where produceManageGuid=#{produceManageGuid}
+        SELECT * from producemember where produceManageGuid=#{produceGuid}
         and teamResource in
         <foreach collection="teamResourceList" index="index" item="item" separator="," close=")" open="(">
             #{item}

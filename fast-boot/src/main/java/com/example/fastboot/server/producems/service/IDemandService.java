@@ -210,6 +210,7 @@ public interface IDemandService {
 
     /**
      * 获取软件详细设计
+     *
      * @param nodeGuid
      * @return
      */
@@ -217,7 +218,22 @@ public interface IDemandService {
 
     /**
      * 新增或编辑详细设计
+     *
      * @param detaileddesign
      */
     void addOrEditDetailDesign(Detaileddesign detaileddesign);
+
+    /**
+     * 新增或者编辑需求项
+     *
+     * @param demanditem
+     */
+    void addOrEditDemandItem(DemandItem demanditem);
+
+    /**
+     * 添加需求变更
+     * @param demandchangerecord
+     * @return
+     */
+    void addDemandChangeRecord(Demandchangerecord demandchangerecord);
 }

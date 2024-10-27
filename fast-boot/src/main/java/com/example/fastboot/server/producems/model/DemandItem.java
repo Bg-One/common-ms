@@ -31,12 +31,16 @@ public class DemandItem {
     private String severity;
     private String deleteFlag;
 
-    private String demandTraceGuid;
+    private String[] demandTraceGuids;
     private Integer demandConfiemedState;
     private boolean changeFlag;
     private String nodeName;
     private Nodes nodes;
 
     private String demandName;
+
+    private String demandGuid;
+
+    private String produceGuid;
 
 }

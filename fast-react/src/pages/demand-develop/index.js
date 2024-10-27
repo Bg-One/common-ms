@@ -131,16 +131,16 @@ const DemandDevelop = () => {
 
     //查看
     const getDetail = (record) => {
-        navigate('/home/demand-trace-detail' + '?produceGuid=' + record.produceGuid)
+        navigate('/home/demand-edit' + '?produceGuid=' + record.produceGuid + "&demandGuid=" + record.guid)
         setTimeout(() => {
-            const Component = componentMap.DemandTraceDetail;
+            const Component = componentMap.DemandEdit;
             dispatch(addTab({
-                label: `${record.produceName}需求跟踪详情`,
+                label: `${record.produceName}需求详情`,
                 children: <React.Suspense fallback={<div>Loading...</div>}>
                     <Component/>
                 </React.Suspense>
                 ,
-                key: '/home/demand-trace-detail' + '?produceGuid=' + record.produceGuid,
+                key: '/home/demand-edit' + '?produceGuid=' + record.produceGuid + "&demandGuid=" + record.guid,
             }))
         }, 200)
     }
@@ -258,7 +258,7 @@ const DemandDevelop = () => {
             key: 'action',
             render: (text, record, index) => {
                 return <div className='actionlist'>
-                    <Button type={'link'}>查看</Button>
+                    <Button type={'link'} onClick={() => getDetail(record)}>查看</Button>
                     <Button style={{display: record.staus !== 3 ? 'block' : 'none'}} type="link">编辑</Button>
                     <Popconfirm
                         title={`您确认送审吗？`}

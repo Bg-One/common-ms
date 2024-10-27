@@ -1,19 +1,24 @@
 import {Button, Form, Input, message, Select} from "antd";
 import TinymceEditor from "../tinymce";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {handleSave} from "../../utils/table";
 import {useSelector} from "react-redux";
 import moment from "moment";
 import {addOrEditDemandItemApi, addOrEditDetailDesignApi} from "../../common/api/producems/demand";
 
 const {TextArea} = Input;
-const SoftDetaildesign = ({softDesignDetail, setSoftDesignDetail}) => {
+const SoftDetaildesign = ({softDesignDetail, setSoftDesignDetail, softDesignForm}) => {
     const userInfo = useSelector(state => state.user.userInfo);
-    const [form] = Form.useForm()
+    // useEffect(() => {
+    //     return () => {
+    //         addOrEditDetailDesign()
+    //     }
+    // }, [])
+
     const addOrEditDetailDesign = async () => {
         await addOrEditDetailDesignApi({
             ...softDesignDetail,
-            ...form.getFieldsValue(),
+            ...softDesignForm.getFieldsValue(),
             createName: userInfo.user.nickName,
             createTime: moment().format("YYYY-MM-DD"),
         })
@@ -28,7 +33,9 @@ const SoftDetaildesign = ({softDesignDetail, setSoftDesignDetail}) => {
                 labelCol={{
                     span: 2,
                 }}
+                form={softDesignForm}
                 initialValues={{...softDesignDetail}}
+                clearOnDestroy={true}
             >
                 <Form.Item>
                     <span style={{

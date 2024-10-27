@@ -1,12 +1,29 @@
 import {Button, Form, Input, message, Select, Space} from "antd";
 import TinymceEditor from "../tinymce";
-import React from "react";
-import {addOrEditDemandItemApi} from "../../common/api/producems/demand";
+import React, {useEffect, useState} from "react";
+import {addOrEditDemandItemApi, listDemandTraceApi} from "../../common/api/producems/demand";
+import {useSearchParams} from "react-router-dom";
 
 const {TextArea} = Input;
-const DemandItemContent = ({demandItem, setDemandItem}) => {
-    const [form] = Form.useForm()
+const DemandItemContent = ({demandItem, setDemandItem, demandItemForm}) => {
+    const [searchParams, setSearchParams] = useSearchParams()
+    const [demandTraceList, setDemandTraceList] = useState([])
+    // useEffect(() => {
+    //     return () => {
+    //         addOrEditDemandItemApi({
+    //             ...demandItem,
+    //             ...demandItemForm.getFieldsValue(),
+    //         })
+    //     }
+    // }, [])
 
+    //获取需求跟踪列表
+    const listDemandItemTrace = async () => {
+        let res = await listDemandTraceApi({
+            produceGuid: searchParams.get('produceGuid')
+        })
+        setDemandTraceList(res.data)
+    }
     const addOrEditDemandItem = async () => {
 
         // if (this.state.demandTraceGuid === '') {
@@ -14,8 +31,14 @@ const DemandItemContent = ({demandItem, setDemandItem}) => {
         //     return
         // }
         await addOrEditDemandItemApi({
-            ...demandItem,
-            ...form.getFieldsValue(),
+            ...demandItemForm.getFieldsValue(),
+            degreeOfImportance: demandItem.degreeOfImportance,
+            priority: demandItem.priority,
+            demandState: demandItem.demandState,
+            eventStream: demandItem.eventStream,
+            guid: demandItem.guid,
+            nodeGuid: demandItem.nodeGuid,
+            produceGuid: searchParams.get('produceGuid')
         })
         message.success('保存成功', 1)
     }
@@ -28,10 +51,11 @@ const DemandItemContent = ({demandItem, setDemandItem}) => {
             labelCol={{
                 span: 2,
             }}
-            form={form}
+            form={demandItemForm}
             initialValues={{
                 ...demandItem
             }}
+            clearOnDestroy={true}
         >
             <Form.Item label="需求名称" name={'demandName'}>
                 <Input disabled={true}/>
@@ -104,10 +128,14 @@ const DemandItemContent = ({demandItem, setDemandItem}) => {
                             }
                         ]}
                     />
-                    {/*<span>关联跟踪:</span>*/}
-                    {/*<Select*/}
-                    {/*    mode="multiple"*/}
-                    {/*/>*/}
+                    <span>关联跟踪:</span>
+                    <Select
+                        mode="multiple"
+                        // options={demandTraceList.map(item => ({
+                        //     label: item.name,
+                        //     value: item.guid
+                        // }))}
+                    />
                 </div>
             </Form.Item>
             <Form.Item label="功能描述" name={'funDescription'}>

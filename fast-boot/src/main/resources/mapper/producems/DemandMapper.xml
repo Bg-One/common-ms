@@ -58,6 +58,20 @@
                 #{detaileddesign.dbOperate}, #{detaileddesign.communicationDesignDescription},
                 #{detaileddesign.complexLogic}, #{detaileddesign.notes})
     </insert>
+    <insert id="insertDemandItem">
+        insert into demanditem (guid, nodeGuid, degreeOfImportance, priority, demandState, funDescription,
+                                preconditions, entry, eventStream, `output`, postconditions, logRecord, otherNotes,
+                                question)
+        values (#{demanditem.guid}, #{demanditem.nodeGuid}, #{demanditem.degreeOfImportance}, #{demanditem.priority},
+                #{demanditem.demandState}, #{demanditem.funDescription}, #{demanditem.preconditions},
+                #{demanditem.entry}, #{demanditem.eventStream}, #{demanditem.output}, #{demanditem.postconditions},
+                #{demanditem.logRecord}, #{demanditem.otherNotes}, #{demanditem.question})
+    </insert>
+    <insert id="addDemandChangeRecord">
+        insert into demandchangerecord (guid, demandGuid, changeName, nodeGuid)
+        values (#{demandchangerecord.guid}, #{demandchangerecord.demandGuid}, #{demandchangerecord.changeName},
+                #{demandchangerecord.nodeGuid})
+    </insert>
     <update id="updateDemandConfirmDetail">
         update demanditem
         set demandConfiemedState=#{demandConfiemedState},
@@ -157,6 +171,38 @@
             `complexLogic`=#{detaileddesign.complexLogic},
             notes=#{detaileddesign.notes}
         where guid = #{detaileddesign.guid}
+    </update>
+    <update id="updateDemandItem">
+        update demanditem
+        set degreeOfImportance=#{demanditem.degreeOfImportance},
+            priority=#{demanditem.priority},
+            demandState=#{demanditem.demandState},
+            funDescription=#{demanditem.funDescription},
+            preconditions=#{demanditem.preconditions},
+            entry=#{demanditem.entry},
+            eventStream=#{demanditem.eventStream},
+            `output`=#{demanditem.output},
+            postconditions=#{demanditem.postconditions},
+            logRecord=#{demanditem.logRecord},
+            otherNotes=#{demanditem.otherNotes},
+            question=#{demanditem.question}
+        where guid = #{demanditem.guid}
+    </update>
+    <update id="clearNodeGuid">
+        update demandtrace set nodeGuid='',demandName=''
+        where guid in (
+        <foreach collection="demandTraceGuids" item="item" index="index" open="" close="" separator=",">
+            #{item}
+        </foreach>
+        ) and nodeGuid=#{nodeGuid}
+    </update>
+    <update id="updateNodeGuid">
+        update demandtrace set nodeGuid=#{nodeGuid},demandName=#{creatUserName}
+        where guid in (
+        <foreach collection="demandTraceGuids" item="item" index="index" open="" close="" separator=",">
+            #{item}
+        </foreach>
+        )
     </update>
     <delete id="deleteteDemandTrace">
         update demandtrace
@@ -436,6 +482,10 @@
         from detaileddesign
         where nodeGuid = #{nodeGuid}
           and deleteFlag = 0
+    </select>
+    <select id="countDemandTrcaeByNodeGuid" resultType="java.lang.Integer">
+        select count(*) from demandtrace dt where dt.nodeGuid = #{nodeGuid} and reviewFlag=false and dt.deleteFlag=0
+
     </select>
 
 </mapper>

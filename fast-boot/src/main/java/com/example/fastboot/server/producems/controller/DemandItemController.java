@@ -1,5 +1,6 @@
 package com.example.fastboot.server.producems.controller;
 
+import com.example.fastboot.server.producems.model.DemandItem;
 import com.example.fastboot.server.producems.model.Detaileddesign;
 import com.example.fastboot.server.producems.model.Nodes;
 import com.example.fastboot.server.producems.model.Producemanage;
@@ -64,6 +65,18 @@ public class DemandItemController {
     @PostMapping("addOrEditDetailDesign")
     public Object addOrEditDetailDesign(Detaileddesign detaileddesign) {
         demandService.addOrEditDetailDesign(detaileddesign);
+        return success("成功");
+    }
+
+    /**
+     * 新增或更新需求分项
+     *
+     * @param demanditem
+     * @return
+     */
+    @PostMapping("addOrEditDemandItem")
+    public Object addOrEditDemandItem(DemandItem demanditem) {
+        demandService.addOrEditDemandItem(demanditem);
         return success("成功");
     }
 }

@@ -8,7 +8,7 @@ import {
     listNodesApi,
     updateDemandApi
 } from "../../common/api/producems/demand";
-import {deepCopy} from "../../utils/table";
+import {deepCopy, deepEqual} from "../../utils/table";
 import {createTreeItem, handleTree} from "../../utils/tree-data";
 import file from "../../static/images/file.png";
 import {useSearchParams} from "react-router-dom";
@@ -20,7 +20,7 @@ import QuestionConfirmed from "../../content/demand-node/question-confirmed";
 import RightMenu from "../../content/right-menu/right-menu";
 import DemandItemContent from "../../content/demand-node/demand-item-content";
 import SoftDetaildesign from "../../content/demand-node/soft-detaildesign";
-import {message, Tabs} from "antd";
+import {Form, message, Modal, Tabs} from "antd";
 
 const DemandEdit = () => {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -35,6 +35,26 @@ const DemandEdit = () => {
     const [demandVisible, setDemandVisible] = useState(false)
     const [demandItem, setDemandItem] = useState({})
     const [softDesignDetail, setSoftDesignDetail] = useState({})
+    const [demandItemForm] = Form.useForm()
+    const [softDesignForm] = Form.useForm()
+
+
+    // beforeunload 事件处理函数
+    const handleBeforeUnload = (event) => {
+        // 设置自定义的离开提示信息（某些浏览器可能忽略自定义信息，只显示默认信息）
+        event.preventDefault();
+        event.returnValue = ''; // 设置 returnValue 可以触发浏览器的默认离开提示
+
+    };
+
+    useEffect(() => {
+        // 添加 beforeunload 事件监听器
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        // 清理函数：移除 beforeunload 事件监听器
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
 
     useEffect(() => {
         listNodes()
@@ -45,27 +65,18 @@ const DemandEdit = () => {
         focusDropdown();
     }, [showMenu]);
 
-    useEffect(() => {
-        setDemandVisible(false)
-
-        //判断是否显示需求节点面板
-        if (activeNode === 'objective' || activeNode === 'demandTerm'
-            || activeNode === 'userFunc' || activeNode === 'func-demand'
-            || activeNode === 'nofunc-demand' || activeNode === 'question-confirmed') {
-            return
-        }
-        let obj = nodeList.find(item => item.guid === activeNode);
-        obj && obj.nodeType && getDemandItemDetail()
-    }, [activeNode])
 
     //获取需求节点的软件设计、需求设计
-    const getDemandItemDetail = async () => {
+    const getDemandItemDetail = async (eElement) => {
         //获取节点信息
-        let response = await getNodesApi({guid: activeNode})
-        setDemandItem(response.data)
-        let res = await getDetailDesignApi({nodeGuid: activeNode})
-        setSoftDesignDetail(res.data)
-        setDemandVisible(true)
+        let response = await getNodesApi({guid: eElement})
+        setDemandItem(deepCopy(response.data))
+        let res = await getDetailDesignApi({nodeGuid: eElement})
+        setSoftDesignDetail(deepCopy(res.data))
+        setTimeout(() => {
+            setDemandVisible(true)
+        }, 200)
+
     }
 
     //获取需求信息
@@ -168,7 +179,18 @@ const DemandEdit = () => {
             <div className={'title'}>需求规格说明目录</div>
             <TreeSearch
                 onSelect={(e, name) => {
-                    setActiveNode(e[0])
+                    console.log(demandItemForm.getFieldsValue())
+                    let eElement = e[0];
+                    //判断是否显示需求节点面板
+                    if (eElement === 'objective' || eElement === 'demandTerm'
+                        || eElement === 'userFunc' || eElement === 'func-demand'
+                        || eElement === 'nofunc-demand' || eElement === 'question-confirmed') {
+                        return
+                    }
+                    setActiveNode(eElement)
+                    setDemandVisible(false)
+                    let obj = nodeList.find(item => item.guid === eElement);
+                    obj && obj.nodeType && getDemandItemDetail(eElement)
                 }}
                 defaultData={treeData}
                 dataList={nodeList}
@@ -192,14 +214,16 @@ const DemandEdit = () => {
                                                 label: '需求功能设计',
                                                 children: <DemandItemContent
                                                     demandItem={{...demandItem, nodeGuid: activeNode}}
-                                                    setDemandItem={setDemandItem}/>,
+                                                    setDemandItem={setDemandItem}
+                                                    demandItemForm={demandItemForm}/>,
                                             },
                                             {
                                                 key: '2',
                                                 label: '开发详细设计',
                                                 children: <SoftDetaildesign
                                                     softDesignDetail={{...softDesignDetail, nodeGuid: activeNode}}
-                                                    setSoftDesignDetail={setSoftDesignDetail}/>,
+                                                    setSoftDesignDetail={setSoftDesignDetail}
+                                                    softDesignForm={softDesignForm}/>,
                                             }]}/> : ''
             }
         </div>

@@ -45,107 +45,102 @@ export const menuConfig = [
 //     label: '首页',
 // },
     {
-    key: '/produce',
-    icon: <MyIcon type={'icon-chanpin'}/>,
-    component: 'Produce',
-    label: '产品列表',
-}, {
-    key: '/project',
-    icon: <MyIcon type={'icon-xiangmu'}/>,
-    component: 'Project',
-    label: '项目列表',
-}, {
-    key: '/demand-develop',
-    icon: <MyIcon type={'icon-icon_xuqiu'}/>,
-    component: 'DemandDevelop',
-    label: '需求开发',
-}, {
-    key: '/demand-edit',
-    icon: <MyIcon type={'icon-main'}/>,
-    component: 'DemandEdit',
-    label: '需求编辑',
-}, {
-    key: '/demand-confirm',
-    icon: <MyIcon type={'icon-xuqiuqueren'}/>,
-    component: 'RequireConfirm',
-    label: '需求确认',
-}, {
-    key: '/software-check',
-    icon: <MyIcon type={'icon-ruanjianceshi'}/>,
-    component: 'SoftCheck',
-    label: '软件测试',
-}, {
-    key: '/demand-trace',
-    icon: <MyIcon type={'icon-xuqiugenzong-copy'}/>,
-    component: 'DemandTrace',
-    label: '需求跟踪',
-}, {
+        key: '/produce',
+        icon: <MyIcon type={'icon-chanpin'}/>,
+        component: 'Produce',
+        label: '产品列表',
+    }, {
+        key: '/project',
+        icon: <MyIcon type={'icon-xiangmu'}/>,
+        component: 'Project',
+        label: '项目列表',
+    }, {
+        key: '/demand-develop',
+        icon: <MyIcon type={'icon-icon_xuqiu'}/>,
+        component: 'DemandDevelop',
+        label: '需求开发',
+    }, {
+        key: '/demand-confirm',
+        icon: <MyIcon type={'icon-xuqiuqueren'}/>,
+        component: 'RequireConfirm',
+        label: '需求确认',
+    }, {
+        key: '/software-check',
+        icon: <MyIcon type={'icon-ruanjianceshi'}/>,
+        component: 'SoftCheck',
+        label: '软件测试',
+    }, {
+        key: '/demand-trace',
+        icon: <MyIcon type={'icon-xuqiugenzong-copy'}/>,
+        component: 'DemandTrace',
+        label: '需求跟踪',
+    }, {
 
-    key: '/appearance-accept',
-    icon: <MyIcon type={'icon-b_by'}/>,
-    component: 'AppearanceAccept',
-    label: '出厂验收',
-}, {
-    key: '/onsitea-accept',
-    icon: <MyIcon type={'icon-xianchangyanshou'}/>,
-    component: 'OnsiteAccept',
-    label: '现场验收',
-}, {
-    key: '/sys',
-    label: '系统管理',
-    icon: <MyIcon type={'icon-setting'}/>,
-    children: [{
-        key: '/sys/dep',
-        label: '单位管理',
-        component: 'Dep',
-        icon: <MyIcon type={'icon-danwei'}/>,
+        key: '/appearance-accept',
+        icon: <MyIcon type={'icon-b_by'}/>,
+        component: 'AppearanceAccept',
+        label: '出厂验收',
     }, {
-        key: '/sys/user',
-        label: '人员管理',
-        component: 'User',
-        icon: <MyIcon type={'icon-renyuan'}/>,
+        key: '/onsitea-accept',
+        icon: <MyIcon type={'icon-xianchangyanshou'}/>,
+        component: 'OnsiteAccept',
+        label: '现场验收',
     }, {
-        key: '/sys/post',
-        label: '岗位管理',
-        component: 'Post',
-        icon: <MyIcon type={'icon-gangwei'}/>,
+        key: '/sys',
+        label: '系统管理',
+        icon: <MyIcon type={'icon-setting'}/>,
+        children: [{
+            key: '/sys/dep',
+            label: '单位管理',
+            component: 'Dep',
+            icon: <MyIcon type={'icon-danwei'}/>,
+        }, {
+            key: '/sys/user',
+            label: '人员管理',
+            component: 'User',
+            icon: <MyIcon type={'icon-renyuan'}/>,
+        }, {
+            key: '/sys/post',
+            label: '岗位管理',
+            component: 'Post',
+            icon: <MyIcon type={'icon-gangwei'}/>,
+        }, {
+            key: '/sys/role',
+            label: '角色管理',
+            component: 'Role',
+            icon: <MyIcon type={'icon-jiaose'}/>,
+        }, {
+            key: '/sys/authority',
+            label: '菜单/权限管理',
+            component: 'Authority',
+            icon: <MyIcon type={'icon-zhanghaoquanxianguanli'}/>,
+        }, {
+            key: '/sys/operatelog',
+            label: '操作日志',
+            component: 'OperateLog',
+            icon: <MyIcon type={'icon-guanlicaozuorizhi'}/>,
+        }, {
+            key: '/sys/loginlog',
+            label: '登录日志',
+            component: 'LoginLog',
+            icon: <MyIcon type={'icon-xitonggongju-denglurizhi'}/>,
+        }]
     }, {
-        key: '/sys/role',
-        label: '角色管理',
-        component: 'Role',
-        icon: <MyIcon type={'icon-jiaose'}/>,
-    }, {
-        key: '/sys/authority',
-        label: '菜单/权限管理',
-        component: 'Authority',
-        icon: <MyIcon type={'icon-zhanghaoquanxianguanli'}/>,
-    }, {
-        key: '/sys/operatelog',
-        label: '操作日志',
-        component: 'OperateLog',
-        icon: <MyIcon type={'icon-guanlicaozuorizhi'}/>,
-    }, {
-        key: '/sys/loginlog',
-        label: '登录日志',
-        component: 'LoginLog',
-        icon: <MyIcon type={'icon-xitonggongju-denglurizhi'}/>,
+        key: '/flowable',
+        label: '流程管理',
+        icon: <MyIcon type={'icon-flowable'}/>,
+        children: [{
+            key: '/flowable/design',
+            label: '流程设计',
+            component: 'Flowable',
+            icon: <MyIcon type={'icon-danwei'}/>,
+        }, {
+            key: '/flowable/form-design',
+            label: '表单设计',
+            component: 'FormDesign',
+            icon: <MyIcon type={'icon-danwei'}/>,
+        }]
     }]
-}, {
-    key: '/flowable',
-    label: '流程管理',
-    icon: <MyIcon type={'icon-flowable'}/>,
-    children: [{
-        key: '/flowable/design',
-        label: '流程设计',
-        component: 'Flowable',
-        icon: <MyIcon type={'icon-danwei'}/>,
-    }, {
-        key: '/flowable/form-design',
-        label: '表单设计',
-        component: 'FormDesign',
-        icon: <MyIcon type={'icon-danwei'}/>,
-    }]
-}]
 //其他页面对应关系
 export const otherMenuConfig = [{
     key: '/home/demand-confirm-detail',
@@ -159,4 +154,8 @@ export const otherMenuConfig = [{
     key: '/home/demand-trace-detail',
     component: 'DemandTraceDetail',
     label: '需求跟踪详情',
+}, {
+    key: '/home/demand-edit',
+    component: 'DemandEdit',
+    label: '需求编辑',
 }]

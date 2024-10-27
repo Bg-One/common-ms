@@ -278,6 +278,7 @@ public interface DemandMapper {
 
     /**
      * 获取软件详细设计
+     *
      * @param nodeGuid
      * @return
      */
@@ -285,13 +286,63 @@ public interface DemandMapper {
 
     /**
      * 新增软件设计详情
+     *
      * @param detaileddesign
      */
     void insertDetaileddesign(@Param("detaileddesign") Detaileddesign detaileddesign);
 
     /**
      * 更新软件设计详情
+     *
      * @param detaileddesign
      */
     void updateDetaileddesign(@Param("detaileddesign") Detaileddesign detaileddesign);
+
+    /**
+     * 新增需求描述
+     *
+     * @param demanditem
+     */
+    void insertDemandItem(@Param("demanditem") DemandItem demanditem);
+
+
+    /**
+     * 更新需求描述
+     *
+     * @param demanditem
+     */
+    void updateDemandItem(@Param("demanditem") DemandItem demanditem);
+
+    /**
+     * 获取需求跟踪的数量根据节点
+     *
+     * @param nodeGuid
+     * @return
+     */
+    int countDemandTrcaeByNodeGuid(String nodeGuid);
+
+    /**
+     * 添加需求变更
+     *
+     * @param demandchangerecord
+     */
+    void addDemandChangeRecord(@Param("demandchangerecord") Demandchangerecord demandchangerecord);
+
+
+    /**
+     * 清理需求变更关联的节点
+     *
+     * @param demandTraceGuids
+     * @param nodeGuid
+     */
+    void clearNodeGuid(@Param("demandTraceGuids") String[] demandTraceGuids, @Param("nodeGuid") String nodeGuid);
+
+    /**
+     * 更新需求跟踪关联的节点
+     *
+     * @param demandTraceGuids
+     * @param nodeGuid
+     * @param creatUserName
+     */
+    void updateNodeGuid(@Param("demandTraceGuids") String[] demandTraceGuids, @Param("nodeGuid") String nodeGuid,@Param("creatUserName") String creatUserName);
 }

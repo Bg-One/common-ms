@@ -28,25 +28,22 @@ const Home = (props) => {
 
     //编辑tab
     const onEdit = (targetKey, action) => {
-        if (action === 'add') {
-            //todo:
-        } else {
-            remove(targetKey);
-        }
+        console.log(targetKey, action)
+        remove(targetKey);
     };
 
     //移除tab
     const remove = (targetKey) => {
         let newActiveKey = getNewActiveKey(targetKey);
-        const newPanes = getNewTabList();
+        const newPanes = getNewTabList(targetKey);
         navigator(newActiveKey)
         dispatch(setActiveKey(newActiveKey))
         dispatch(setTabList(newPanes))
     };
 
     //获取新的tablIst
-    const getNewTabList = () => {
-        return tabList.filter((item) => item.key !== activeKey);
+    const getNewTabList = (targetKey) => {
+        return tabList.filter((item) => item.key !== targetKey);
     }
     //获取新的activeKey
     const getNewActiveKey = (operateKey) => {
@@ -57,7 +54,7 @@ const Home = (props) => {
                 lastIndex = i - 1;
             }
         });
-        const newPanes = getNewTabList();
+        const newPanes = getNewTabList(operateKey);
         if (newPanes.length && newActiveKey === operateKey) {
             if (lastIndex >= 0) {
                 newActiveKey = newPanes[lastIndex].key;

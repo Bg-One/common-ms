@@ -43,3 +43,30 @@ export const checkChanges = (originalData, newData, field) => {
 export const deepCopy = (obj) => {
     return JSON.parse(JSON.stringify(obj))
 }
+export const deepEqual = (objA, objB) => {
+    console.log(objA)
+    console.log(objB)
+    if (objA === objB) {
+        return true;
+    }
+
+    if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+        return false;
+    }
+
+    let keysA = Object.keys(objA);
+    let keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) {
+        return false;
+    }
+
+    for (let key of keysA) {
+        if (!keysB.includes(key) || !deepEqual(objA[key], objB[key])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
