@@ -8,6 +8,7 @@ import AppearanceAccept from "../../pages/appearance-accept";
 import RequireConfirm from "../../pages/demand-confirm";
 import DemandDevelop from "../../pages/demand-develop";
 import DemandEdit from "../../pages/demand-edit";
+import workOrderManage from "../../pages/work-order-manage";
 
 export const componentMap = {
     PageMain: React.lazy(() => import('../../pages/main')),
@@ -31,7 +32,9 @@ export const componentMap = {
     DemandTrace: React.lazy(() => import('../../pages/demand-trace')),
     DemandTraceDetail: React.lazy(() => import('../../pages/demand-trace/require-trace-detail')),
     DemandDevelop: React.lazy(() => import('../../pages/demand-develop')),
-    DemandEdit: React.lazy(() => import('../../pages/demand-edit'))
+    DemandEdit: React.lazy(() => import('../../pages/demand-edit')),
+    WorkOrderManage: React.lazy(() => import('../../pages/work-order-manage')),
+    ReviewManage: React.lazy(() => import('../../pages/review-manage')),
     // 更多组件...
 };
 
@@ -85,6 +88,21 @@ export const menuConfig = [
         icon: <MyIcon type={'icon-xianchangyanshou'}/>,
         component: 'OnsiteAccept',
         label: '现场验收',
+    }, {
+        key: '/order',
+        label: '工作报单',
+        icon: <MyIcon type={'icon-simple'}/>,
+        children: [{
+            key: '/order/work-manage',
+            icon: <MyIcon type={'icon-xianchangyanshou'}/>,
+            component: 'WorkOrderManage',
+            label: '报单管理维护',
+        }, {
+            key: '/order/review-manage',
+            icon: <MyIcon type={'icon-xianchangyanshou'}/>,
+            component: 'ReviewManage',
+            label: '审核逻辑维护',
+        }]
     }, {
         key: '/sys',
         label: '系统管理',

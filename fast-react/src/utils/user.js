@@ -5,7 +5,7 @@ export const getUserTreeData = (depList, userList, depDisabled) => {
         disabled: depDisabled,
         children: userList.filter(i => i.deptGuid === item.deptGuid).map(i => ({
             value: i.userGuid,
-            title: i.userName,
+            title: i.nickName,
         }))
     }))
     return data

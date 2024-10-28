@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.fastboot.server.producems.mapper.WorkOrderMapper">
+
+    <insert id="createWorkOrderType">
+        insert into workordertype (`name`, guid)
+        values (#{name}, #{guid})
+    </insert>
+    <update id="updateWorkOrderType">
+        update workordertype
+        set name =#{name}
+        where guid = #{guid};
+    </update>
+    <delete id="deleteWorkOrderType">
+        delete
+        from workordertype
+        where guid = #{guid}
+    </delete>
+    <select id="listWorkOrderType" resultType="com.example.fastboot.server.producems.model.Workordertype">
+        select guid, `name`
+        from workordertype;
+    </select>
+    <insert id="createWorkOrderCategory">
+        insert into workordercategory (`name`, workOrderTypeGuid, guid)
+        values (#{name}, #{workOrderTypeGuid}, #{guid})
+    </insert>
+
+    <update id="updateWorkOrderCategory">
+        update workordercategory
+        set name =#{name}
+        where guid = #{guid};
+    </update>
+    <delete id="deleteWorkOrderCategory">
+        delete
+        from workordercategory
+        where guid = #{guid}
+    </delete>
+    <select id="listWorkOrderCategory" resultType="com.example.fastboot.server.producems.model.Workordercategory">
+        select guid, `name`, workOrderTypeGuid
+        from workordercategory
+        <where>
+            <if test="workOrderTypeGuid != null and workOrderTypeGuid!=''">
+                workOrderTypeGuid = #{workOrderTypeGuid}
+            </if>
+        </where>
+    </select>
+    <select id="listWorkOrderCategoryByTypeGuid"
+            resultType="com.example.fastboot.server.producems.model.Workordercategory">
+        select id
+        from workordercategory
+        where workOrderTypeGuid = #{typeGuid};
+    </select>
+    <insert id="createWorkOrderItem">
+        insert into workorderitem (`name`, workOrderCategoryGuid, guid)
+        values (#{name}, #{workOrderCategoryGuid}, #{guid})
+
+    </insert>
+    <insert id="insertReviewRelationship">
+        insert into reviewrelationship (userGuid, reviewGuid) VALUE (#{userGuid},#{reviewGuid})
+    </insert>
+    <update id="updateWorkOrderItemderItem">
+        update workorderitem
+        set name =#{name}
+        where guid = #{guid};
+    </update>
+    <update id="updateReviewRelationship">
+        update reviewrelationship
+        set reviewGuid = #{reviewGuid}
+        where userGuid = #{userGuid}
+    </update>
+    <delete id="deleteWorkOrderItem">
+        delete
+        from workorderitem
+        where guid = #{guid}
+    </delete>
+    <select id="listWorkOrderItem" resultType="com.example.fastboot.server.producems.model.Workorderitem">
+        select guid, `name`, workOrderCategoryGuid
+        from workorderitem
+        <where>
+            <if test="workOrderCategoryGuid != null and workOrderCategoryGuid!=''">
+                workOrderCategoryGuid = #{workOrderCategoryGuid}
+            </if>
+        </where>
+    </select>
+    <select id="listReviewRelationship"
+            resultType="com.example.fastboot.server.producems.model.Reviewrelationship">
+        select *
+        from reviewrelationship
+    </select>
+    <select id="getReviewGuid" resultType="java.lang.String">
+        select reviewGuid
+        from reviewrelationship
+        where userGuid = #{userGuid}
+    </select>
+
+</mapper>

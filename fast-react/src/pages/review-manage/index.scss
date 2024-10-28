@@ -1,0 +1,53 @@
+#review-relation-m {
+    .head-title {
+        position: relative;
+        text-indent: 1vh;
+        line-height: 5vh;
+        height: 5vh;
+        width: auto;
+        font-size: 1.2vw;
+        font-weight: bold;
+
+    }
+
+    .ant-table {
+        thead {
+            tr {
+                th {
+                    background: #01A7F0;
+                    text-align: center;
+                    color: #fff;
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                td {
+                    background: none !important;
+                    text-align: center;
+                }
+
+            }
+        }
+
+    }
+
+    .row-edit {
+        background: #f3cdcd;
+    }
+
+    .module-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1vh 2vw 1vh 0;
+
+        .module-title {
+            color: rgb(1, 167, 240);
+            font-weight: bold;
+            font-size: 2rem;
+        }
+    }
+
+}
