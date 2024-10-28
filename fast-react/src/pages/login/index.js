@@ -37,7 +37,7 @@ const Login = (props) => {
             setToken(res.data.access_token)
             setLoadings(false)
             dispatch(setAuthentication(true))
-            navigate('/home/index')
+            navigate('/sys/produce')
         }).catch(() => {
             getCaptchaImage()
             setLoadings(false)

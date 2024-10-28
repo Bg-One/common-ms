@@ -53,6 +53,7 @@ const DemandTraceDetail = () => {
         listDemandTrace({
             currentPage: pageInfo.currentPage,
             pageSize: pageInfo.pageSize,
+            progressStatuss: searchForm.getFieldValue('progressStatuss')
         })
         listProjectByProduceGuid()
     }, [])
@@ -674,7 +675,8 @@ const DemandTraceDetail = () => {
                             }}
                             initialValues={{
                                 demandType: 100,
-                                priority: 100
+                                priority: 100,
+                                progressStatuss: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                             }}
                             onFinish={onSearch}
                             autoComplete="off"
@@ -731,7 +733,6 @@ const DemandTraceDetail = () => {
                             </Form.Item>
                             <Form.Item
                                 name="progressStatuss"
-                                valuePropName="checked"
                             >
                                 <Checkbox.Group>
                                     <Checkbox value={1}>待确认</Checkbox>
