@@ -70,3 +70,19 @@ export const deepEqual = (objA, objB) => {
     return true;
 }
 
+export const multiConditionSort = (arr, sortRules) => {
+    arr.sort((a, b) => {
+        for (let rule of sortRules) {
+            let key = rule.key;
+            let order = rule.order;  // 1 表示升序， -1 表示降序
+
+            if (a[key] < b[key]) {
+                return order === 1 ? -1 : 1;
+            } else if (a[key] > b[key]) {
+                return order === 1 ? 1 : -1;
+            }
+        }
+        return 0;
+    });
+    return arr
+}

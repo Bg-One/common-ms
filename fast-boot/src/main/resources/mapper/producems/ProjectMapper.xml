@@ -154,4 +154,9 @@
             #{item}
         </foreach>
     </select>
+    <select id="listAllProject" resultType="com.example.fastboot.server.producems.model.Project">
+        select *
+        from project
+        where deleteFlag = 0
+    </select>
 </mapper>

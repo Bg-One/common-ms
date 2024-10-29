@@ -65,4 +65,11 @@ public interface IProjectService {
      * @return
      */
     List<Project> listProjectByProduceGuid(String produceGuid);
+
+    /**
+     * 获取全部项目列表
+     *
+     * @return
+     */
+    List<Project> listAllProject();
 }

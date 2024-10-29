@@ -1,17 +1,14 @@
 package com.example.fastboot.server.producems.controller;
 
 import com.alibaba.fastjson2.JSONArray;
-import com.example.fastboot.server.producems.model.Reviewrelationship;
-import com.example.fastboot.server.producems.model.Workordercategory;
-import com.example.fastboot.server.producems.model.Workorderitem;
-import com.example.fastboot.server.producems.model.Workordertype;
+import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.service.IWorkOrderService;
+import com.example.fastboot.server.producems.vo.WorkDurationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static com.example.fastboot.common.response.CommonResult.success;
@@ -146,7 +143,7 @@ public class WorkOrderController {
      */
     @PostMapping("updateWorkOrderItem")
     public Object updateWorkOrderItem(String name, String guid) {
-        workOrderService.updateWorkOrderItemderItem(name, guid);
+        workOrderService.updateWorkOrderItem(name, guid);
         return success("成功");
     }
 
@@ -196,5 +193,29 @@ public class WorkOrderController {
         List<Reviewrelationship> reviewrelationshipList = JSONArray.parseArray(relationshipList, Reviewrelationship.class);
         workOrderService.saveReviewRelationship(reviewrelationshipList);
         return success("成功");
+    }
+
+    /**
+     * 按照项目统计工时
+     *
+     * @param workDurationVo
+     * @return
+     */
+    @PostMapping("statisticProjectWorkDuration")
+    public Object statisticProjectWorkDuration(WorkDurationVo workDurationVo) {
+        List<Workorder> workorderList = workOrderService.statisticProjectWorkDuration(workDurationVo);
+        return success(workorderList);
+    }
+
+    /**
+     * 按照人员统计工时
+     *
+     * @param workDurationVo
+     * @return
+     */
+    @PostMapping("statisticUserWorkDuration")
+    public Object statisticUserWorkDuration(WorkDurationVo workDurationVo) {
+        List<Workorder> workorderList = workOrderService.statisticUserWorkDuration(workDurationVo);
+        return success(workorderList);
     }
 }

@@ -118,4 +118,11 @@ public interface ProjectMapper {
      * @return
      */
     List<Projectmember> listProjectMemberByType(@Param("projectGuid") String projectGuid,@Param("teamResourceList") ArrayList<Integer> teamResourceList);
+
+    /**
+     * 获取全部产品列表
+     * @return
+     */
+    List<Project> listAllProject();
+
 }

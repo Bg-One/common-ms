@@ -108,4 +108,9 @@ public class IProjectServiceImpl implements IProjectService {
     public List<Project> listProjectByProduceGuid(String produceGuid) {
         return projectMapper.listProjectByProduceGuid(produceGuid);
     }
+
+    @Override
+    public List<Project> listAllProject() {
+        return projectMapper.listAllProject();
+    }
 }

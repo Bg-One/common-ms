@@ -35,6 +35,7 @@ export const componentMap = {
     DemandEdit: React.lazy(() => import('../../pages/demand-edit')),
     WorkOrderManage: React.lazy(() => import('../../pages/work-order-manage')),
     ReviewManage: React.lazy(() => import('../../pages/review-manage')),
+    WorkHourStatistics: React.lazy(() => import('../../pages/working-hour-statistics')),
     // 更多组件...
 };
 
@@ -93,6 +94,11 @@ export const menuConfig = [
         label: '工作报单',
         icon: <MyIcon type={'icon-simple'}/>,
         children: [{
+            key: '/order/work-hour-statistics',
+            icon: <MyIcon type={'icon-gongshitongji'}/>,
+            component: 'WorkHourStatistics',
+            label: '工时统计',
+        }, {
             key: '/order/work-manage',
             icon: <MyIcon type={'icon-xianchangyanshou'}/>,
             component: 'WorkOrderManage',

@@ -8,7 +8,7 @@ import {
     deleteWorkOrderTypeApi,
     listWorkOrderCategoryApi,
     listWorkOrderItemApi,
-    listWorkOrderTypeApi, updateWorkOrderTypeApi
+    listWorkOrderTypeApi, updateWorkOrderCategoryApi, updateWorkOrderItemApi, updateWorkOrderTypeApi
 } from "../../common/api/producems/workorder";
 
 const workOrderManage = () => {
@@ -22,7 +22,6 @@ const workOrderManage = () => {
     const [selectValue, setSelectValue] = useState('')
     const [modalObject, setModalObj] = useState({
         open: false,
-        content: '',
         guid: '',
     })
 
@@ -98,9 +97,10 @@ const workOrderManage = () => {
         }
         message.success('保存成功')
         setModalObj({
-            ...modalObject,
+            guid: '',
             open: false
         })
+        form.resetFields()
     }
 
     const updateAction = async () => {
@@ -111,13 +111,13 @@ const workOrderManage = () => {
             })
             listWorkOrderType()
         } else if (activeKey === 'workCategory') {
-            await createWorkOrderCategoryApi({
+            await updateWorkOrderCategoryApi({
                 guid: modalObject.guid,
                 ...form.getFieldsValue()
             })
             listWorkOrderCategory({workOrderTypeGuid: selectValue})
         } else if (activeKey === 'workItem') {
-            await createWorkOrderItemApi({
+            await updateWorkOrderItemApi({
                 guid: modalObject.guid,
                 ...form.getFieldsValue()
             })
@@ -125,9 +125,10 @@ const workOrderManage = () => {
         }
         message.success('保存成功')
         setModalObj({
-            ...modalObject,
+            guid: '',
             open: false
         })
+        form.resetFields()
     }
     let columns = [
         {
@@ -155,9 +156,9 @@ const workOrderManage = () => {
                     <Button type={'link'} onClick={() => {
                         setModalObj({
                             open: true,
-                            content: record.name,
                             guid: record.guid
                         })
+                        form.setFieldValue('name', record.name)
                     }}>修改</Button>
                     <Popconfirm
                         title={`是否删除选中的工作类型？`}
@@ -202,7 +203,6 @@ const workOrderManage = () => {
                 <Button type={'primary'} onClick={() => {
                     setModalObj({
                         open: true,
-                        content: '',
                         guid: ''
                     })
                 }}>新增</Button>
@@ -220,7 +220,8 @@ const workOrderManage = () => {
                 footer={false}
                 centered={true}
                 onCancel={() => {
-                    setModalObj({open: false, content: '', guid: ''})
+                    setModalObj({open: false, guid: ''})
+                    form.resetFields()
                 }}
                 title={'工单维护配置编辑'}
             >
@@ -232,11 +233,10 @@ const workOrderManage = () => {
                     labelCol={{
                         span: 7,
                     }}
-                    initialValues={{name: modalObject.content}}
                     onFinish={modalObject.guid ? updateAction : saveAction}
                     autoComplete="off"
                 >
-                    {activeKey !== 'workType' ? <Form.Item
+                    {activeKey !== 'workType' && modalObject.guid === '' ? <Form.Item
                         label={selectLabel}
                         name={activeKey === 'workCategory' ? 'workOrderTypeGuid' : "workOrderCategoryGuid"}
                         rules={[{required: true, message: '请选择'}]}

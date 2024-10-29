@@ -1,10 +1,9 @@
 package com.example.fastboot.server.producems.mapper;
 
-import com.example.fastboot.server.producems.model.Reviewrelationship;
-import com.example.fastboot.server.producems.model.Workordercategory;
-import com.example.fastboot.server.producems.model.Workorderitem;
-import com.example.fastboot.server.producems.model.Workordertype;
+import com.example.fastboot.server.producems.model.*;
+import com.example.fastboot.server.producems.vo.WorkDurationVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -89,7 +88,7 @@ public interface WorkOrderMapper {
      * @param name
      * @param guid
      */
-    void updateWorkOrderItemderItem(String name, String guid);
+    void updateWorkOrderItem(String name, String guid);
 
     /**
      * 删除工单条目配置
@@ -134,4 +133,12 @@ public interface WorkOrderMapper {
      * @param reviewrelationship
      */
     void updateReviewRelationship(Reviewrelationship reviewrelationship);
+
+    /**
+     * 获取工单统计数据
+     *
+     * @param workDurationVo
+     * @return
+     */
+    List<Workorder> listWorkOrderForWorkDuration(@Param("workDuration") WorkDurationVo workDurationVo);
 }

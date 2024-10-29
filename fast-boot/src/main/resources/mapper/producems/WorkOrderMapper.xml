@@ -60,7 +60,7 @@
     <insert id="insertReviewRelationship">
         insert into reviewrelationship (userGuid, reviewGuid) VALUE (#{userGuid},#{reviewGuid})
     </insert>
-    <update id="updateWorkOrderItemderItem">
+    <update id="updateWorkOrderItem">
         update workorderitem
         set name =#{name}
         where guid = #{guid};
@@ -93,6 +93,61 @@
         select reviewGuid
         from reviewrelationship
         where userGuid = #{userGuid}
+    </select>
+    <select id="listWorkOrderForWorkDuration"
+            resultType="com.example.fastboot.server.producems.model.Workorder">
+        SELECT
+        t1.guid,
+        t2.`name` projectName,
+        t1.createGuid,
+        t6.nick_name createName,
+        t1.projectGuid,
+        t1.workDuration,
+
+        t1.projectDepworkType,
+        t2.projectNo projectNo,
+        t3.`name` workTypeName,
+        t4.`name` workCategoryName,
+        t5.`name` workItemName
+        FROM
+        workorder t1
+        LEFT JOIN project t2 ON t1.projectGuid = t2.guid
+        left join workordertype t3 on t3.guid=t1.workTypeGuid
+        left join workordercategory t4 on t4.guid=t1.workCategoryGuid
+        left join workorderitem t5 on t5.guid=t1.demandItemGuid
+        LEFT JOIN sys_user t6 on t6.user_guid=t1.createGuid
+        <where>
+            t1.createTime between #{workDuration.startTime} and #{workDuration.endTime}
+            <if test="workDuration.createUserGuids!=null and workDuration.createUserGuids!=''">
+                and t1.createGuid in
+                <foreach collection="workDuration.createUserGuids.split(',')" close=")" open="(" separator=","
+                         item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test='workDuration.workTypeGuids!=null and workDuration.workTypeGuids != "100"'>
+                and t1.workTypeGuid in
+                <foreach collection="workDuration.workTypeGuids.split(',')" close=")" open="(" separator=","
+                         item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test='workDuration.projectGuids!=null and workDuration.projectGuids != "100"'>
+                and t1.projectGuid in
+                <foreach collection="workDuration.projectGuids.split(',')" close=")" open="(" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test='workDuration.workCategoryGuids!=null and workDuration.workCategoryGuids != "100"'>
+                and t1.workCategoryGuid in
+                <foreach collection="workDuration.workCategoryGuids.split(',')" close=")" open="(" separator=","
+                         item="item">#{item}
+                </foreach>
+            </if>
+            and t1.status=3
+            order by t1.projectGuid DESC,
+            t1.createGuid DESC
+        </where>
     </select>
 
 </mapper>

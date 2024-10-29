@@ -1,9 +1,7 @@
 package com.example.fastboot.server.producems.service;
 
-import com.example.fastboot.server.producems.model.Reviewrelationship;
-import com.example.fastboot.server.producems.model.Workordercategory;
-import com.example.fastboot.server.producems.model.Workorderitem;
-import com.example.fastboot.server.producems.model.Workordertype;
+import com.example.fastboot.server.producems.model.*;
+import com.example.fastboot.server.producems.vo.WorkDurationVo;
 
 import java.util.List;
 
@@ -85,7 +83,7 @@ public interface IWorkOrderService {
      * @param name
      * @param guid
      */
-    void updateWorkOrderItemderItem(String name, String guid);
+    void updateWorkOrderItem(String name, String guid);
 
     /**
      * 删除工单配置条目
@@ -110,7 +108,24 @@ public interface IWorkOrderService {
 
     /**
      * 保存任务审核关系
+     *
      * @param reviewrelationshipList
      */
     void saveReviewRelationship(List<Reviewrelationship> reviewrelationshipList);
+
+    /**
+     * 按照项目统计工时
+     *
+     * @param workDurationVo
+     * @return
+     */
+    List<Workorder> statisticProjectWorkDuration(WorkDurationVo workDurationVo);
+
+    /**
+     * 按照人员统计工时
+     *
+     * @param workDurationVo
+     * @return
+     */
+    List<Workorder> statisticUserWorkDuration(WorkDurationVo workDurationVo);
 }

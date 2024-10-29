@@ -36,6 +36,14 @@ public class ProjectController {
     }
 
     /**
+     * 获取全部项目列表
+     * @return
+     */
+    @PostMapping("listAllProject")
+    public Object listAllProject() {
+        return success(projectService.listAllProject());
+    }
+    /**
      * 获取项目现场验收列表
      *
      * @param project

@@ -305,8 +305,9 @@
 
     </select>
     <select id="getNodes" resultType="com.example.fastboot.server.producems.model.DemandItem">
-        select demanditem.*,nodes.name demandName
-        from demanditem inner join nodes on demanditem.nodeGuid=nodes.guid
+        select demanditem.*, nodes.name demandName
+        from demanditem
+                 inner join nodes on demanditem.nodeGuid = nodes.guid
         where nodeGuid = #{guid}
     </select>
     <select id="listDemandTraceByProduce" resultType="com.example.fastboot.server.producems.model.Demandtrace">
@@ -368,73 +369,6 @@
             <if test="demandtrace.demandDescription!=null and demandtrace.demandDescription!=''">
                 and demandDescription like concat('%',#{demandtrace.demandDescription},'%')
             </if>
-            and (
-            <if test="progressStatusList!=null and progressStatusList.size>0">
-                <if test='progressStatusList.contains("1")'>
-                    techManager=''
-                    <if test='progressStatusList.contains("2")'>
-                        or
-                    </if>
-                </if>
-                <if test='progressStatusList.contains("2")'>
-                    (techManager != '' and dealState =2)
-                    <if test='progressStatusList.contains("3")'>
-                        or
-                    </if>
-                </if>
-                <if test='progressStatusList.contains("3")'>
-                    (reviewFlag = 1 and reviewName = '')
-                    <if test='progressStatusList.contains("4")'>
-                        or
-                    </if>
-                </if>
-                <if test='progressStatusList.contains("4")'>
-                    (reviewName != '' and developName = '')
-                    <if test='progressStatusList.contains("5")'>
-                        or
-                    </if>
-                </if>
-                <if test='progressStatusList.contains("5")'>
-                    (developName != '' and devlopFinishName = '')
-                    <if test='progressStatusList.contains("6")'>
-                        or
-                    </if>
-                </if>
-                <if test='progressStatusList.contains("6")'>
-                    (devlopFinishName != '' and demandConfirmName = '')
-                    <if test='progressStatusList.contains("7")'>
-                        or
-                    </if>
-                </if>
-                <if test='progressStatusList.contains("7")'>
-                    (checkName = '' and demandConfirmName != '')
-                    <if test='progressStatusList.contains("8")'>
-                        or
-                    </if>
-                </if>
-                <if test='progressStatusList.contains("8")'>
-                    (dealState = 3)
-                    <if test='progressStatusList.contains("9")'>
-                        or
-                    </if>
-                </if>
-                <if test='progressStatusList.contains("9")'>
-                    ( dealState =6)
-                    <if test='progressStatusList.contains("10")'>
-                        or
-                    </if>
-                </if>
-                <if test='progressStatusList.contains("10")'>
-                    ( dealState =5)
-                    <if test='progressStatusList.contains("11")'>
-                        or
-                    </if>
-                </if>
-                <if test='progressStatusList.contains("11")'>
-                    (checkName != '')
-                </if>
-            </if>
-            )
         </where>
         order by createTime desc
     </select>
@@ -475,7 +409,8 @@
         select *
         from issuestobeconfirmed
         where deleteFlag = 0
-          and demandGuid = #{guid} order by id desc
+          and demandGuid = #{guid}
+        order by id desc
     </select>
     <select id="getDetatilDesign" resultType="com.example.fastboot.server.producems.model.Detaileddesign">
         select *
@@ -484,7 +419,11 @@
           and deleteFlag = 0
     </select>
     <select id="countDemandTrcaeByNodeGuid" resultType="java.lang.Integer">
-        select count(*) from demandtrace dt where dt.nodeGuid = #{nodeGuid} and reviewFlag=false and dt.deleteFlag=0
+        select count(*)
+        from demandtrace dt
+        where dt.nodeGuid = #{nodeGuid}
+          and reviewFlag = false
+          and dt.deleteFlag = 0
 
     </select>
 

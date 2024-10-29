@@ -33,8 +33,8 @@ export let updateWorkOrderTypeApi = (obj = {}) => {
 export let updateWorkOrderCategoryApi = (obj = {}) => {
     return http.post('workOrder/updateWorkOrderCategory', obj)
 }
-export let updateWorkOrderItemderItemApi = (obj = {}) => {
-    return http.post('workOrder/updateWorkOrderItemderItem', obj)
+export let updateWorkOrderItemApi = (obj = {}) => {
+    return http.post('workOrder/updateWorkOrderItem', obj)
 }
 
 export let listReviewRelationshipApi = (obj = {}) => {
@@ -42,4 +42,10 @@ export let listReviewRelationshipApi = (obj = {}) => {
 }
 export let saveReviewRelationshipApi = (obj = {}) => {
     return http.post('workOrder/saveReviewRelationship', obj)
+}
+export let statisticUserWorkDurationApi = (obj = {}) => {
+    return http.post('workOrder/statisticUserWorkDuration', obj)
+}
+export let statisticProjectWorkDurationApi = (obj = {}) => {
+    return http.post('workOrder/statisticProjectWorkDuration', obj)
 }
