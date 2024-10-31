@@ -79,7 +79,9 @@ const WorkingHourStatistics = () => {
     return <div id={'work-hour-statistics-area'}>
         {statisticsResultVisible ? <WorkHourStatisticsDetail statisticsByProjectList={statisticsByProjectList}
                                                              statisticsByUserList={statisticsByUserList}
-                                                             setStatisticsResultVisible={setStatisticsResultVisible}/> :
+                                                             setStatisticsResultVisible={setStatisticsResultVisible}
+                                                             startTime={(searchForm.getFieldValue('timerange')[0]).format('YYYY-MM-DD')}
+                                                             endTime={(searchForm.getFieldValue('timerange')[1]).format('YYYY-MM-DD')}/> :
             <Form
                 className={'search-form'}
                 form={searchForm}

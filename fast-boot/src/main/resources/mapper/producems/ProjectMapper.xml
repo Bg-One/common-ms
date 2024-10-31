@@ -159,4 +159,26 @@
         from project
         where deleteFlag = 0
     </select>
+    <select id="listProjectByUser" resultType="com.example.fastboot.server.producems.model.Project">
+
+    </select>
+    <select id="listProjectGuidByUserGuid" resultType="java.lang.String">
+        select distinct(projectGuid)
+        from projectmember
+        where managerGuid = #{creatUserGuid}
+           or FIND_IN_SET(#{creatUserGuid}, REPLACE ( groupMemsGuids, '、', ',' )) > 0;
+
+    </select>
+    <select id="listProjectGuidByProduceGuidList" resultType="java.lang.String">
+        select distinct(guid) from project where produceGuid in
+        <foreach collection="produceGuidByUserGuidList" separator="," item="item" close=")" open="(">
+            #{item}
+        </foreach>
+    </select>
+    <select id="listProjectByProjectGuidList" resultType="com.example.fastboot.server.producems.model.Project">
+        select * from project where guid in
+        <foreach collection="projectGuidList" separator="," item="item" close=")" open="(">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

@@ -72,4 +72,13 @@ public interface IProjectService {
      * @return
      */
     List<Project> listAllProject();
+
+
+    /**
+     * 获取用户相关的项目列表
+     *
+     * @param creatUserGuid
+     * @return
+     */
+    List<Project> listProjectByUserGuid(String creatUserGuid);
 }

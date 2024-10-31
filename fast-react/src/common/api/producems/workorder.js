@@ -49,3 +49,19 @@ export let statisticUserWorkDurationApi = (obj = {}) => {
 export let statisticProjectWorkDurationApi = (obj = {}) => {
     return http.post('workOrder/statisticProjectWorkDuration', obj)
 }
+export let listWorkOrderApi = (obj = {}) => {
+    return http.post('workOrder/listWorkOrder', obj)
+}
+export let deleteWorkOrderApi = (obj = {}) => {
+    return http.post('workOrder/deleteWorkOrder', obj)
+}
+export let getWorkOrderApi = (obj = {}) => {
+    return http.post('workOrder/getWorkOrder', obj)
+}
+export let listProjectDepworkTypeApi = (obj = {}) => {
+    return http.post('workOrder/listProjectDepworkType', obj)
+}
+export let updateWorkOrderStatusApi = (obj = {}) => {
+    return http.post('workOrder/updateWorkOrderStatus', obj)
+}
+

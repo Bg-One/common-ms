@@ -345,4 +345,11 @@ public interface DemandMapper {
      * @param creatUserName
      */
     void updateNodeGuid(@Param("demandTraceGuids") String[] demandTraceGuids, @Param("nodeGuid") String nodeGuid,@Param("creatUserName") String creatUserName);
+
+    /**
+     * 获取项目节点
+     * @param projectGuid
+     * @return
+     */
+    List<Nodes> listNodesByProject(String projectGuid);
 }

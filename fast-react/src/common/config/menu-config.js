@@ -9,6 +9,8 @@ import RequireConfirm from "../../pages/demand-confirm";
 import DemandDevelop from "../../pages/demand-develop";
 import DemandEdit from "../../pages/demand-edit";
 import workOrderManage from "../../pages/work-order-manage";
+import WaitSubmit from "../../pages/work-order-process/wait-submit";
+import WaitChecked from "../../pages/work-order-process/wait-checked";
 
 export const componentMap = {
     PageMain: React.lazy(() => import('../../pages/main')),
@@ -36,6 +38,11 @@ export const componentMap = {
     WorkOrderManage: React.lazy(() => import('../../pages/work-order-manage')),
     ReviewManage: React.lazy(() => import('../../pages/review-manage')),
     WorkHourStatistics: React.lazy(() => import('../../pages/working-hour-statistics')),
+    WaitSubmit: React.lazy(() => import('../../pages/work-order-process/wait-submit')),
+    WaitChecked: React.lazy(() => import('../../pages/work-order-process/wait-checked')),
+    WaitChecking: React.lazy(() => import('../../pages/work-order-process/wait-checking')),
+    WorkOrderQuery: React.lazy(() => import('../../pages/work-order-process/work-order-query'))
+
     // 更多组件...
 };
 
@@ -94,6 +101,26 @@ export const menuConfig = [
         label: '工作报单',
         icon: <MyIcon type={'icon-simple'}/>,
         children: [{
+            key: '/order/work-submit',
+            icon: <MyIcon type={'icon-daitijiao'}/>,
+            component: 'WaitSubmit',
+            label: '待提交',
+        }, {
+            key: '/order/work-wait-checked',
+            icon: <MyIcon type={'icon-daishenhe'}/>,
+            component: 'WaitChecked',
+            label: '待审核',
+        }, {
+            key: '/order/work-wait-checking',
+            icon: <MyIcon type={'icon-gongdanshenhe'}/>,
+            component: 'WaitChecking',
+            label: '我评审的',
+        }, {
+            key: '/order/work-order-query',
+            icon: <MyIcon type={'icon-gongdanchaxun'}/>,
+            component: 'WorkOrderQuery',
+            label: '工单查询',
+        }, {
             key: '/order/work-hour-statistics',
             icon: <MyIcon type={'icon-gongshitongji'}/>,
             component: 'WorkHourStatistics',

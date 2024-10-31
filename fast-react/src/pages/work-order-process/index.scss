@@ -1,0 +1,167 @@
+#work-order-table {
+  .ant-table-cell {
+    text-align: center;
+  }
+
+  .ant-table {
+    font-size: 1rem;
+  }
+}
+
+#wait-checked-order {
+  .ant-table-cell {
+    text-align: center;
+  }
+
+  .ant-table {
+    font-size: 1rem;
+  }
+}
+
+#checking-orde {
+  .ant-table-cell {
+    text-align: center;
+  }
+
+  .ant-table {
+    font-size: 1rem;
+  }
+}
+
+#edit-page {
+
+  .edit-content {
+    position: relative;
+
+    .edit-list {
+      border: 1px solid #999;
+      padding: 1vh 1vw;
+      margin: 0.5vh 0;
+
+      > span {
+        width: 19vw;
+        box-sizing: border-box;
+        margin: 1vh 1vw 0 0;
+        display: inline-flex;
+        align-items: center;
+        word-break: keep-all;
+        justify-content: space-between;
+
+        .ant-select {
+          text-align: left;
+        }
+
+        .ant-input {
+          width: 13vw;
+        }
+
+        .ant-picker {
+          width: 13vw;
+        }
+
+        .ant-select {
+          width: 13vw;
+        }
+      }
+
+      .mini-title {
+        min-width: 11rem;
+        text-align: center;
+      }
+    }
+
+    .create-work-sheet {
+      margin: 1vh 0;
+      display: flex;
+      align-items: center;
+
+      i {
+        margin: 0 0 0 1rem;
+        background: #007EB4;
+        color: #fff;
+        width: 1.9rem;
+        height: 1.9rem;
+        display: inline-flex;
+        cursor: pointer;
+        justify-content: center;
+        align-items: flex-end;
+        border-radius: 0.2rem;
+      }
+    }
+  }
+
+  .bottom-btn {
+    display: flex;
+    justify-content: right;
+    margin: 1vh 0 0 0;
+    align-items: center;
+
+    .ant-btn {
+      color: #fff;
+      margin-left: 2vw;
+    }
+  }
+}
+
+#work-order-list {
+  padding: 1vh 3vh;
+  border: 1px solid;
+  margin: 1vh 0;
+
+  > span {
+    width: 19vw;
+    box-sizing: border-box;
+    margin: 1vh 1vw 0 0;
+    display: inline-flex;
+    align-items: center;
+    word-break: keep-all;
+    justify-content: space-between;
+
+    .ant-select {
+      text-align: left;
+    }
+
+    .ant-input {
+      width: 13vw;
+    }
+
+    .ant-picker {
+      width: 13vw;
+    }
+
+    .ant-select {
+      width: 13vw;
+    }
+
+    .mini-title {
+      min-width: 11rem;
+      text-align: center;
+    }
+
+
+  }
+
+  .workContent {
+    margin: 1vh 0 0 0;
+    justify-content: left;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    > span {
+      width: 6vw;
+
+    }
+
+    .ant-input {
+      width: 73vw;
+    }
+
+    .mini-title {
+      min-width: 11rem;
+      text-align: center;
+    }
+  }
+
+
+}

@@ -4,11 +4,14 @@ import com.example.fastboot.common.aspectj.annotation.SysLog;
 import com.example.fastboot.common.aspectj.enums.BusinessType;
 import com.example.fastboot.server.producems.model.Project;
 import com.example.fastboot.server.producems.service.IProjectService;
+import com.example.fastboot.server.sys.controller.Base;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static com.example.fastboot.common.response.CommonResult.success;
 
@@ -37,12 +40,14 @@ public class ProjectController {
 
     /**
      * 获取全部项目列表
+     *
      * @return
      */
     @PostMapping("listAllProject")
     public Object listAllProject() {
         return success(projectService.listAllProject());
     }
+
     /**
      * 获取项目现场验收列表
      *
@@ -115,5 +120,17 @@ public class ProjectController {
     @PostMapping("listProjectByProduceGuid")
     public Object listProjectByProduceGuid(String produceGuid) {
         return success(projectService.listProjectByProduceGuid(produceGuid));
+    }
+
+    /**
+     * 获取当前登录人所属项目
+     *
+     * @param
+     * @return
+     */
+    @PostMapping("listProjectByUserGuid")
+    public Object listProjectByUserGuid() {
+        List<Project> projectGuidList = projectService.listProjectByUserGuid("c038f991-daf2-43f3-b415-95b1ee13783c");
+        return success(projectGuidList);
     }
 }

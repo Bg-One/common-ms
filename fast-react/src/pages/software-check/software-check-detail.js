@@ -33,7 +33,7 @@ import DemandEventstreamModal from "../../content/soft-check-detail/demand-event
 import {useSearchParams} from "react-router-dom";
 import ImageLargeMask from "../../content/soft-check-detail/image-large-mask";
 import {listProjectByProduceGuidApi} from "../../common/api/producems/project";
-import {createTreeItem, handleTree} from "../../utils/tree-data";
+import {createFuncDemandNode, createTreeItem, handleTree} from "../../utils/tree-data";
 import AddSoftCheckModal from "../../content/soft-check-detail/soft-check-add-modal";
 import {paseImageFile} from "../../utils/upload";
 
@@ -144,16 +144,7 @@ const SoftwareCheckDetail = () => {
             setTreeData(treeData)
         })
     }
-    //创建需求节点
-    const createFuncDemandNode = (item, classType) => {
-        let newNodeList = []
-        item.forEach((i) => {
-            if (i.classType === classType) {
-                newNodeList.push(createTreeItem(i.name, i.guid, '', i.children ? createFuncDemandNode(i.children, classType) : ''))
-            }
-        })
-        return newNodeList;
-    }
+
     //新增或编辑软件测试列表
     const editCheckfeedback = () => {
         let checkResult = checkChanges(orginalCheckFeedbackList, checkFeedbackList, 'guid');

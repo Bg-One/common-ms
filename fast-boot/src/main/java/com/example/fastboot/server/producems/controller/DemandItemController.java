@@ -35,6 +35,17 @@ public class DemandItemController {
     }
 
     /**
+     * 根据项目获取全部的需求节点
+     *
+     * @param projectGuid
+     * @return
+     */
+    @PostMapping("listNodesByProject")
+    public Object listNodesByProject(String projectGuid) {
+        return success(demandService.listNodesByProject(projectGuid));
+    }
+
+    /**
      * 获取需求信息
      *
      * @param guid

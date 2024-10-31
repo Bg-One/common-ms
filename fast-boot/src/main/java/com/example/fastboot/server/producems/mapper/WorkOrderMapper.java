@@ -141,4 +141,44 @@ public interface WorkOrderMapper {
      * @return
      */
     List<Workorder> listWorkOrderForWorkDuration(@Param("workDuration") WorkDurationVo workDurationVo);
+
+    /**
+     * 获取工单列表
+     * @param workorder
+     * @return
+     */
+    List<Workorder> listWorkOrder(Workorder workorder);
+
+    /**
+     * 获取项目部工单类型
+     * @return
+     */
+    List<EngineeringWorkType> listProjectDepworkType();
+
+    /**
+     * 删除工单
+     * @param guid
+     */
+    void deleteWorkOrder(String guid);
+
+    /**
+     * 获取工单详情列表
+     * @param createGuid
+     * @param createTime
+     * @return
+     */
+    List<Workorder> listWorkOrderByCreateParam(String createGuid, String createTime);
+
+    /**
+     * 根据唯一标识列表获取工单
+     * @param guidList
+     * @return
+     */
+    List<Workorder> listWorkOrderByGuidList(List<String> guidList);
+
+    /**
+     * 更新工单状态
+     * @param workorder
+     */
+    void updateWorkOrderStatus(Workorder workorder);
 }

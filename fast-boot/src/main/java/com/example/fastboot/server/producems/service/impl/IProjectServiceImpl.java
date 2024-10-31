@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONArray;
 import com.example.fastboot.common.enums.TeamResourceEnum;
 import com.example.fastboot.common.exception.ServiceException;
 import com.example.fastboot.common.response.PageResponse;
+import com.example.fastboot.server.producems.mapper.ProducemanageMapper;
 import com.example.fastboot.server.producems.mapper.ProjectMapper;
 import com.example.fastboot.server.producems.model.Producemember;
 import com.example.fastboot.server.producems.model.Project;
@@ -11,10 +12,12 @@ import com.example.fastboot.server.producems.model.Projectmember;
 import com.example.fastboot.server.producems.service.IProjectService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import liquibase.pro.packaged.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +31,8 @@ import java.util.UUID;
 public class IProjectServiceImpl implements IProjectService {
     @Autowired
     private ProjectMapper projectMapper;
+    @Autowired
+    private ProducemanageMapper producemanageMapper;
 
     @Override
     public PageResponse listProject(Project project) {
@@ -112,5 +117,30 @@ public class IProjectServiceImpl implements IProjectService {
     @Override
     public List<Project> listAllProject() {
         return projectMapper.listAllProject();
+    }
+
+    @Override
+    public List<Project> listProjectByUserGuid(String creatUserGuid) {
+        ArrayList<String> projectGuidList = new ArrayList<>();
+        List<String> projectGuidByUsetGuid = projectMapper.listProjectGuidByUserGuid(creatUserGuid);
+        List<String> produceGuidByUserGuidList = producemanageMapper.listProduceGuidByUserGuid(creatUserGuid);
+        if (produceGuidByUserGuidList.size() != 0) {
+            List<String> projectGuidListByProduceGuid = projectMapper.listProjectGuidByProduceGuidList(produceGuidByUserGuidList);
+            for (String s : projectGuidListByProduceGuid) {
+                if (!projectGuidList.contains(s)) {
+                    projectGuidList.add(s);
+                }
+            }
+        }
+
+        for (String s : projectGuidByUsetGuid) {
+            if (!projectGuidList.contains(s)) {
+                projectGuidList.add(s);
+            }
+        }
+        if (projectGuidList.size() == 0) {
+            return null;
+        }
+        return projectMapper.listProjectByProjectGuidList(projectGuidList);
     }
 }

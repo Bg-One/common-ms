@@ -66,6 +66,16 @@ export function findParentByKey(tree, targetKey, parent = null) {
 }
 
 //生成tree项
-export const createTreeItem = (title, key, icon, children,) => {
-    return {key, value: key, icon, children, title};
+export const createTreeItem = (title, key, icon, children, disable) => {
+    return {key, value: key, icon, children, title, disabled: !disable};
+}
+//创建需求节点
+export const createFuncDemandNode = (item, classType) => {
+    let newNodeList = []
+    item.forEach((i) => {
+        if (i.classType === classType) {
+            newNodeList.push(createTreeItem(i.name, i.guid, '', i.children ? createFuncDemandNode(i.children, classType) : '', i.nodeType))
+        }
+    })
+    return newNodeList;
 }

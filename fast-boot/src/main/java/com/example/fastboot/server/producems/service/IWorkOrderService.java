@@ -128,4 +128,42 @@ public interface IWorkOrderService {
      * @return
      */
     List<Workorder> statisticUserWorkDuration(WorkDurationVo workDurationVo);
+
+    /**
+     * 获取工单列表
+     *
+     * @param workorder
+     * @return
+     */
+    List<Workorder> listWorkOrder(Workorder workorder);
+
+    /**
+     * 删除工单
+     *
+     * @param guid
+     */
+    void deleteWorkOrder(String guid);
+
+    /**
+     * 获取工单详情
+     *
+     * @param createGuid
+     * @param createTime
+     * @return
+     */
+    List<Workorder> getWorkOrder(String createGuid, String createTime);
+
+    /**
+     * 获取工程部工作类型
+     *
+     * @return
+     */
+    List<EngineeringWorkType> listProjectDepworkType();
+
+
+    /**
+     * 更新工单状态
+     * @param workorder
+     */
+    void updateWorkOrderStatus(Workorder workorder);
 }

@@ -426,5 +426,13 @@
           and dt.deleteFlag = 0
 
     </select>
+    <select id="listNodesByProject" resultType="com.example.fastboot.server.producems.model.Nodes">
+        SELECT t1.*
+        FROM nodes t1
+                 LEFT JOIN demandmanage t2 ON t1.moduleGuid = t2.guid
+                 LEFT JOIN producemanage t3 ON t3.guid = t2.produceGuid
+                 LEFT JOIN project t4 ON t4.produceGuid = t3.guid
+        WHERE t4.guid = #{projectGuid}
+    </select>
 
 </mapper>

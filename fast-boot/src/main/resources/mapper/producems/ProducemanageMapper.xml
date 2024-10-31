@@ -261,4 +261,11 @@
                  INNER JOIN sys_user t2 ON t1.managerGuid = t2.user_guid
         WHERE t1.produceManageGuid = #{produceGuid} and t1.teamResource = #{teamResource}
     </select>
+    <select id="listProduceGuidByUserGuid" resultType="java.lang.String">
+        select distinct(produceManageGuid)
+        from producemember
+        where managerGuid = #{creatUserGuid}
+           or FIND_IN_SET(#{creatUserGuid}, REPLACE(groupMemsGuids, '、', ',')) > 0;
+
+    </select>
 </mapper>

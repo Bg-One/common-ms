@@ -100,12 +100,14 @@ public interface ProjectMapper {
 
     /**
      * 验收/取消验收
+     *
      * @param project
      */
     void onsiteaAccept(Project project);
 
     /**
      * 根据产品标识获取项目列表
+     *
      * @param produceGuid
      * @return
      */
@@ -113,16 +115,49 @@ public interface ProjectMapper {
 
     /**
      * 获取项目成员列表
+     *
      * @param projectGuid
      * @param teamResourceList
      * @return
      */
-    List<Projectmember> listProjectMemberByType(@Param("projectGuid") String projectGuid,@Param("teamResourceList") ArrayList<Integer> teamResourceList);
+    List<Projectmember> listProjectMemberByType(@Param("projectGuid") String projectGuid, @Param("teamResourceList") ArrayList<Integer> teamResourceList);
 
     /**
      * 获取全部产品列表
+     *
      * @return
      */
     List<Project> listAllProject();
 
+    /**
+     * 获取用户相关的项目列表
+     *
+     * @param creatUserGuid
+     * @return
+     */
+    List<Project> listProjectByUser(String creatUserGuid);
+
+    /**
+     * 获取用户锁定项目列表
+     *
+     * @param creatUserGuid
+     * @return
+     */
+    List<String> listProjectGuidByUserGuid(String creatUserGuid);
+
+    /**
+     * 获取项目唯一标识列表
+     *
+     * @param produceGuidByUserGuidList
+     * @return
+     */
+    List<String> listProjectGuidByProduceGuidList(List<String> produceGuidByUserGuidList);
+
+    /**
+     * 根据项目唯一标识获取项目列表
+     *
+     * @param projectGuidList
+     * @return
+     */
+    List<Project> listProjectByProjectGuidList(ArrayList<String> projectGuidList);
 }

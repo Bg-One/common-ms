@@ -192,6 +192,13 @@ public interface ProducemanageMapper {
      * @return
      */
     Producemember getProduceMemberByType(@Param("produceGuid") String produceGuid,@Param("teamResource") int teamResource);
+
+    /**
+     * 获取用户关联的产品列表
+     * @param creatUserGuid
+     * @return
+     */
+    List<String> listProduceGuidByUserGuid(String creatUserGuid);
 }
 
 

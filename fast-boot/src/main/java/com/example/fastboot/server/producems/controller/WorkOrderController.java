@@ -1,6 +1,8 @@
 package com.example.fastboot.server.producems.controller;
 
 import com.alibaba.fastjson2.JSONArray;
+import com.example.fastboot.common.enums.WorkOrderStatusEnum;
+import com.example.fastboot.common.exception.ServiceException;
 import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.service.IWorkOrderService;
 import com.example.fastboot.server.producems.vo.WorkDurationVo;
@@ -9,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.fastboot.common.response.CommonResult.success;
 
@@ -23,6 +27,45 @@ public class WorkOrderController {
 
     @Autowired
     private IWorkOrderService workOrderService;
+
+
+    /**
+     * 获取工单列表
+     *
+     * @param workorder
+     * @return
+     */
+    @PostMapping("listWorkOrder")
+    public Object listWorkOrder(Workorder workorder) {
+        List<Workorder> workorderList = workOrderService.listWorkOrder(workorder);
+        return success(workorderList);
+    }
+
+    /**
+     * 删除工单
+     *
+     * @param guid
+     * @return
+     */
+    @PostMapping("deleteWorkOrder")
+    public Object deleteWorkOrder(String guid) {
+        workOrderService.deleteWorkOrder(guid);
+//        WebSocket.countWorkOrderStatus();
+        return success("成功");
+    }
+
+    /**
+     * 获取工单详情
+     *
+     * @param createGuid
+     * @param createTime
+     * @return
+     */
+    @PostMapping("getWorkOrder")
+    public Object getWorkOrder(String createGuid, String createTime) {
+        List<Workorder> workOrderList = workOrderService.getWorkOrder(createGuid, createTime);
+        return success(workOrderList);
+    }
 
     /**
      * 获取工单类型配置列表
@@ -217,5 +260,29 @@ public class WorkOrderController {
     public Object statisticUserWorkDuration(WorkDurationVo workDurationVo) {
         List<Workorder> workorderList = workOrderService.statisticUserWorkDuration(workDurationVo);
         return success(workorderList);
+    }
+
+    /**
+     * 获取工程部工作类型
+     *
+     * @return
+     */
+    @PostMapping("listProjectDepworkType")
+    public Object listProjectDepworkType() {
+        List<EngineeringWorkType> engineeringWorkTypeList = workOrderService.listProjectDepworkType();
+        return success(engineeringWorkTypeList);
+    }
+
+    /**
+     * 更改工单状态
+     *
+     * @param workorder
+
+     * @return
+     */
+    @PostMapping("updateWorkOrderStatus")
+    public Object updateWorkOrderStatus(Workorder workorder) {
+        workOrderService.updateWorkOrderStatus(workorder);
+        return success("成功");
     }
 }

@@ -70,10 +70,22 @@
         set reviewGuid = #{reviewGuid}
         where userGuid = #{userGuid}
     </update>
+    <update id="updateWorkOrderStatus">
+        update workorder
+        set status = #{status},
+            reason=#{reason}
+        where createGuid = #{createGuid}
+          and createTime like concat(#{createTime}, '%')
+    </update>
     <delete id="deleteWorkOrderItem">
         delete
         from workorderitem
         where guid = #{guid}
+    </delete>
+    <delete id="deleteWorkOrder">
+        delete
+        from workorder
+        where guid = #{guid};
     </delete>
     <select id="listWorkOrderItem" resultType="com.example.fastboot.server.producems.model.Workorderitem">
         select guid, `name`, workOrderCategoryGuid
@@ -148,6 +160,107 @@
             order by t1.projectGuid DESC,
             t1.createGuid DESC
         </where>
+    </select>
+    <select id="listWorkOrder" resultType="com.example.fastboot.server.producems.model.Workorder">
+        select
+        wo.guid,wo.createName,wo.reviewName,wo.workTypeGuid,p.name as projectName,wo.createGuid,wo.projectGuid,
+        wo.workCategoryGuid,wo.workItemGuid,wo.createTime,wo.status,
+        wo.workDuration,wo.content,wi.name workItem,wt.name workType,
+        wc.name workCategory,p.projectNo,wo.projectDepworkType,d.dept_name departmentName
+        from workorder wo
+        left join workorderitem wi on wo.workItemGuid = wi.guid
+        left join workordertype wt on wo.workTypeGuid = wt.guid
+        left join workordercategory wc on wo.workCategoryGuid = wc.guid
+        left join project p on p.guid = wo.projectGuid
+        left join sys_dept d on d.dept_guid = wo.departmentGuid
+        <where>
+
+            <if test="statuss!=null and statuss!='100'">
+                wo.status in
+                <foreach collection="statuss.split('、')" separator="," open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="reviewGuid!=null and reviewGuid!=''">
+                and wo.reviewGuid=#{reviewGuid}
+            </if>
+            <if test="startTime !='' and endTime !='' and startTime!=null and endTime!=null">
+                and wo.createTime between #{startTime} and #{endTime}
+            </if>
+            <if test="projectGuid!=null and projectGuid!='' and projectGuid!='100'">
+                and wo.projectGuid in
+                <foreach collection="projectGuid.split('、')" separator="," open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="createGuid!=null and createGuid!='100'">
+                and wo.createGuid in
+                <foreach collection="createGuid.split('、')" separator="," open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="departmentGuid!=null and departmentGuid!=''">
+                and wo.departmentGuid in
+                <foreach collection="departmentGuid.split('、')" separator="," open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
+
+        </where>
+        order by wo.createTime desc
+
+    </select>
+    <select id="listProjectDepworkType"
+            resultType="com.example.fastboot.server.producems.model.EngineeringWorkType">
+        select *
+        from engineeringworktype
+    </select>
+    <select id="listWorkOrderByCreateParam" resultType="com.example.fastboot.server.producems.model.Workorder">
+        select wo.guid,
+               wo.createName,
+               wo.teamGroup,
+               wo.createGuid,
+               wo.departmentName,
+               wo.content,
+               wo.departmentGuid,
+               wo.workDuration,
+               wo.workTypeGuid,
+               p.name projectName,
+               wo.projectGuid,
+               wo.workCategoryGuid,
+               wo.workItemGuid,
+               wo.demandItemName,
+               wo.demandItemGuid,
+               wo.createTime,
+               wo.reason,
+               wo.status,
+               wo.projectDepworkType,
+               wo.reviewGuid,
+               wo.reviewName,
+               wi.name workItem,
+               wt.name workType,
+               wc.name workCategory
+        from workorder wo
+                 left join  workorderitem wi on wo.workItemGuid = wi.guid
+                 left join workordertype wt on wo.workTypeGuid = wt.guid
+                 left join workordercategory wc on wo.workCategoryGuid = wc.guid
+                 left join project p on wo.projectGuid = p.guid
+        where wo.createGuid = #{createGuid} and wo.createTime like concat(#{createTime},'%')
+    </select>
+    <select id="listWorkOrderByGuidList" resultType="com.example.fastboot.server.producems.model.Workorder">
+        select
+        wo.guid,wo.workTypeGuid,wo.projectGuid,p.name peojectName,wo.workCategoryGuid,wo.workItemGuid,wo.createTime,
+        wo.status,wo.reason,wo.createName,wo.reviewName,wo.workDuration,wo.content,wo.createGuid,
+        wi.name workItem,wt.name workType,wc.name workCategory
+        from workorder wo
+        left join  workorderitem wi on wo.workItemGuid = wi.guid
+        left join workordertype wt on wo.workTypeGuid = wt.guid
+        left join workordercategory wc on wo.workCategoryGuid = wc.guid
+        left join project p on wo.projectGuid = p.guid
+        where wo.guid in
+        <foreach collection="guidList" item="guid" open="(" close=")" separator=",">
+            #{guid}
+        </foreach>
     </select>
 
 </mapper>

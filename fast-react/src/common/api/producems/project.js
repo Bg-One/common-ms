@@ -50,3 +50,10 @@ export const listProjectMemListApi = (data) => {
 export const listProjectByProduceGuidApi = (data) => {
     return http.post('/project/listProjectByProduceGuid', data)
 }
+/**
+ * 根据产品标识获取项目列表
+ * @returns {*}
+ */
+export const listProjectByUserGuidApi = (data) => {
+    return http.post('/project/listProjectByUserGuid', data)
+}

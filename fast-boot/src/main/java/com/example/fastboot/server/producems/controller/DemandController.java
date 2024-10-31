@@ -49,20 +49,11 @@ public class DemandController {
      * 获取需求信息
      */
     @PostMapping("getDemand")
-    public Object getDemand(@NotNull(message = "需求唯一标识不能为空") @NotBlank(message = "厂站id不能为空串")  String guid) {
+    public Object getDemand(@NotNull(message = "需求唯一标识不能为空") @NotBlank(message = "厂站id不能为空串") String guid) {
         return success(demandService.getDemand(guid));
     }
 
-    /**
-     * 获取全部的需求节点
-     *
-     * @param nodes
-     * @return
-     */
-    @PostMapping("listNodes")
-    public Object listNodes(Nodes nodes) {
-        return success(demandService.listNodes(nodes));
-    }
+
 
     /**
      * 更新需求信息

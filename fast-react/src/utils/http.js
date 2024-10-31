@@ -74,7 +74,7 @@ http.interceptors.response.use((response) => {
                     //跳到首页
                     location.href = '/#/login';
                     resolve()
-                }).catch(() => isRelogin.show = false);
+                }).catch();
             },
             onCancel() {
             },

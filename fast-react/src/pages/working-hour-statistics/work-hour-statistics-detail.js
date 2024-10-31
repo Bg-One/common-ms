@@ -1,11 +1,16 @@
 import {Button, Table, Tabs} from "antd";
 import React, {useEffect, useState} from "react";
 import './index.scss'
-import back from '../../static/images/back.png'
-import {useSelector} from "react-redux";
+
 import {ArrowLeftOutlined} from "@ant-design/icons";
 
-const WorkHourStatisticsDetail = ({statisticsByProjectList, statisticsByUserList, setStatisticsResultVisible}) => {
+const WorkHourStatisticsDetail = ({
+                                      statisticsByProjectList,
+                                      statisticsByUserList,
+                                      setStatisticsResultVisible,
+                                      startTime,
+                                      endTime
+                                  }) => {
     const [activeType, setActiveType] = useState('项目')
 
     useEffect(() => {
@@ -50,68 +55,64 @@ const WorkHourStatisticsDetail = ({statisticsByProjectList, statisticsByUserList
     }
     // 按项目
     const statisticsByProjectColumns = [{
-        title: `开始时间:2024-11-11 结束时间 12345679`, children: [{
-            title: '项目编号', dataIndex: 'projectNo', key: 'projectNo', onCell: (record, index) => {
-                return mergeProjectCell(record, 'projectGuid', index)
-            },
-        }, {
-            title: '项目名称', dataIndex: 'projectName', key: 'projectName',
-            onCell: (record, index) => {
-                return mergeProjectCell(record, 'projectGuid', index)
-            },
-        }, {
-            title: '工作类型', dataIndex: 'workTypeName', key: 'workTypeName',
-        }, {
-            title: '工作类目', dataIndex: 'workCategoryName', key: 'workCategoryName',
-        }, {
-            title: '工作条目', dataIndex: 'workItemName', key: 'workItemName',
-        }, , {
-            title: '员工姓名', dataIndex: 'createName', key: 'createName',
-            onCell: (record, index) => {
-                return mergeProjectUserCell(record, index)
-            },
-        }, {
-            title: '工时', dataIndex: 'workDuration', key: 'workDuration',
-        }, {
-            title: '总工时', dataIndex: 'allWorkDuration', key: 'allWorkDuration',
-            onCell: (record, index) => {
-                return mergeProjectUserCell(record, index)
-            },
-        }, {
-            title: '项目部工作', key: 'projectDepworkType',
-        }, {
-            title: '项目部工作工时', dataIndex: 'projectDepworkDuration', key: 'projectDepworkDuration',
-        }, {
-            title: '项目总工时', dataIndex: 'projectWorkDuration', key: 'projectWorkDuration',
-            onCell: (record, index) => {
-                return mergeProjectCell(record, 'projectGuid', index)
-            },
-        }, {
-            title: '项目占比', dataIndex: 'proportion', key: 'proportion',
-            onCell: (record, index) => {
-                return mergeProjectCell(record, 'projectGuid', index)
-            },
-        }]
+        title: '项目编号', dataIndex: 'projectNo', key: 'projectNo', onCell: (record, index) => {
+            return mergeProjectCell(record, 'projectGuid', index)
+        },
+    }, {
+        title: '项目名称', dataIndex: 'projectName', key: 'projectName',
+        onCell: (record, index) => {
+            return mergeProjectCell(record, 'projectGuid', index)
+        },
+    }, {
+        title: '工作类型', dataIndex: 'workTypeName', key: 'workTypeName',
+    }, {
+        title: '工作类目', dataIndex: 'workCategoryName', key: 'workCategoryName',
+    }, {
+        title: '工作条目', dataIndex: 'workItemName', key: 'workItemName',
+    }, , {
+        title: '员工姓名', dataIndex: 'createName', key: 'createName',
+        onCell: (record, index) => {
+            return mergeProjectUserCell(record, index)
+        },
+    }, {
+        title: '工时', dataIndex: 'workDuration', key: 'workDuration',
+    }, {
+        title: '总工时', dataIndex: 'allWorkDuration', key: 'allWorkDuration',
+        onCell: (record, index) => {
+            return mergeProjectUserCell(record, index)
+        },
+    }, {
+        title: '项目部工作', key: 'projectDepworkType',
+    }, {
+        title: '项目部工作工时', dataIndex: 'projectDepworkDuration', key: 'projectDepworkDuration',
+    }, {
+        title: '项目总工时', dataIndex: 'projectWorkDuration', key: 'projectWorkDuration',
+        onCell: (record, index) => {
+            return mergeProjectCell(record, 'projectGuid', index)
+        },
+    }, {
+        title: '项目占比', dataIndex: 'proportion', key: 'proportion',
+        onCell: (record, index) => {
+            return mergeProjectCell(record, 'projectGuid', index)
+        },
     }]
 
 // 按人员
     const statisticsByUserColumns = [{
-        title: `开始时间:2024-11-11 结束时间 12345679`, children: [{
-            title: '成员姓名', dataIndex: 'createName', key: 'createName', onCell: (record, index) => {
-                return mergeUserCell(record, 'createGuid', index)
-            },
-        }, {
-            title: '项目编号', dataIndex: 'projectName', key: 'projectName',
-        }, {
-            title: '项目名称', dataIndex: 'projectName', key: 'projectName',
-        }, {
-            title: '工时', dataIndex: 'projectWorkDuration', key: 'projectWorkDuration',
-        }, {
-            title: '人员总工时', dataIndex: 'allWorkDuration', key: 'allWorkDuration',
-            onCell: (record, index) => {
-                return mergeUserCell(record, 'createGuid', index)
-            },
-        }, {}]
+        title: '成员姓名', dataIndex: 'createName', key: 'createName', onCell: (record, index) => {
+            return mergeUserCell(record, 'createGuid', index)
+        },
+    }, {
+        title: '项目编号', dataIndex: 'projectName', key: 'projectName',
+    }, {
+        title: '项目名称', dataIndex: 'projectName', key: 'projectName',
+    }, {
+        title: '工时', dataIndex: 'projectWorkDuration', key: 'projectWorkDuration',
+    }, {
+        title: '人员总工时', dataIndex: 'allWorkDuration', key: 'allWorkDuration',
+        onCell: (record, index) => {
+            return mergeUserCell(record, 'createGuid', index)
+        },
     }]
     return <div id={'statistics-result-detail'}>
 
@@ -137,6 +138,9 @@ const WorkHourStatisticsDetail = ({statisticsByProjectList, statisticsByUserList
             bordered
             pagination={false}
             rowKey={(record, index) => index}
+            title={() => {
+                return `开始时间：${startTime}结束时间：${endTime}`
+            }}
         />
     </div>
 }

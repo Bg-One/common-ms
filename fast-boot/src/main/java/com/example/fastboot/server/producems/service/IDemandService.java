@@ -232,8 +232,17 @@ public interface IDemandService {
 
     /**
      * 添加需求变更
+     *
      * @param demandchangerecord
      * @return
      */
     void addDemandChangeRecord(Demandchangerecord demandchangerecord);
+
+    /**
+     * 根据项目获取全部的需求节点
+     *
+     * @param projectGuid
+     * @return
+     */
+    List<Nodes> listNodesByProject(String projectGuid);
 }
