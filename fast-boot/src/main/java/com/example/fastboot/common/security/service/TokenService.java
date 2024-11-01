@@ -3,6 +3,8 @@ package com.example.fastboot.common.security.service;
 import com.alibaba.fastjson2.JSON;
 import com.example.fastboot.common.constant.CacheConstants;
 import com.example.fastboot.common.constant.Constants;
+import com.example.fastboot.common.enums.CommonResultEnum;
+import com.example.fastboot.common.exception.ServiceException;
 import com.example.fastboot.common.redis.RedisCache;
 import com.example.fastboot.common.security.LoginUser;
 import com.example.fastboot.common.utils.ip.AddressUtils;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.socket.WebSocketSession;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -73,6 +76,7 @@ public class TokenService {
                 return user;
             } catch (Exception e) {
                 log.error("获取用户信息异常'{}'", e.getMessage());
+                throw new ServiceException(CommonResultEnum.TOKEN_EXPIRED);
             }
         }
         return null;
@@ -176,7 +180,7 @@ public class TokenService {
      * @param token 令牌
      * @return 数据声明
      */
-    private Claims parseToken(String token) {
+    public Claims parseToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
@@ -207,8 +211,20 @@ public class TokenService {
         }
         return token;
     }
-
-    private String getTokenKey(String uuid) {
+    /**
+     * 获取ws请求token
+     *
+     * @param session
+     * @return token
+     */
+    public String getWsToken(WebSocketSession session) {
+        String token = session.getUri().getQuery().split(header + "=")[1];
+        if (StringUtils.isNotEmpty(token) && token.startsWith(Constants.TOKEN_PREFIX)) {
+            token = token.replace(Constants.TOKEN_PREFIX, "");
+        }
+        return token;
+    }
+    public String getTokenKey(String uuid) {
         return CacheConstants.LOGIN_TOKEN_KEY + uuid;
     }
 }

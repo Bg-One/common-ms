@@ -1,19 +1,23 @@
-import {Button, DatePicker, Input, Modal, Select, TreeSelect} from "antd";
+import {Button, DatePicker, Input, message, Modal, Select, TreeSelect} from "antd";
 import moment from "moment";
 import back from '../../static/images/back.png'
 import {useSelector} from "react-redux";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {workOrderEnum} from "../../common/enmus/work-order-enum";
 import WorkOrderContentItem from "./work-order-content-item";
 import {listUserApi} from "../../common/api/sys/use-api";
 import {
+    countWorkOrderStatusApi, getWorkOrderApi,
     listProjectDepworkTypeApi,
-    listReviewRelationshipApi,
     listWorkOrderCategoryApi,
     listWorkOrderItemApi,
-    listWorkOrderTypeApi
+    listWorkOrderTypeApi, updateWorkOrderApi, updateWorkOrderStatusApi
 } from "../../common/api/producems/workorder";
 import {listProjectByUserGuidApi} from "../../common/api/producems/project";
+import {FileAddOutlined} from "@ant-design/icons";
+import {deepCopy} from "../../utils/table";
+import {isDept} from "../../utils/user";
+import TextArea from "antd/es/input/TextArea";
 
 const WorkOrderDetail = ({
                              setWorkorderDetailVisible,
@@ -24,8 +28,6 @@ const WorkOrderDetail = ({
                          }) => {
     const userInfo = useSelector(state => state.user.userInfo)
     const [createGuid] = useState(userInfo.user.userGuid)
-    const [userList, setUserList] = useState([])
-    const [reviewRelationshipList, setReviewRelationshipList] = useState([])
     const [workTypeList, setWorkTypeList] = useState([])
     const [workCategoryList, setWorkCategoryList] = useState([])
     const [workItemList, setWorkItemList] = useState([])
@@ -33,7 +35,6 @@ const WorkOrderDetail = ({
     const [projectByUserList, setProjectByUserList] = useState([])
 
     useEffect(() => {
-        listUserApi().then(res => setUserList(res.data))
         listWorkOrderTypeApi().then(res => setWorkTypeList(res.data))
         listWorkOrderCategoryApi().then(res => setWorkCategoryList(res.data))
         listWorkOrderItemApi().then(res => setWorkItemList(res.data))
@@ -48,9 +49,9 @@ const WorkOrderDetail = ({
         return total
     }
     // 获取工单详情
-    const openSheetInfo = async (record) => {
-    }
-    const pushInitToList = () => {
+    const openSheetInfo = async () => {
+        let obj = initWorkOrder();
+        setWorkorderDetailList([obj, ...deepCopy(workorderDetailList)])
     }
 
 
@@ -66,6 +67,7 @@ const WorkOrderDetail = ({
             workDuration: 0,
             createTime: moment().format('YYYY-MM-DD'),  // 报单日期
             status: 1,
+            content: '',
             projectDepworkTypeId: null,// 项目部工作
         }
         if (temp_workOrderObj.createGuid === nowObj.createGuid) {
@@ -73,6 +75,146 @@ const WorkOrderDetail = ({
         }
         return nowObj
     }
+
+    // 超八小时提醒
+    const workLengthMessage = (workList) => {
+        return new Promise((resolve, reject) => {
+            if (getTotalWorkLength(workList, [workOrderEnum.DRAFT, workOrderEnum.SUBMIT, workOrderEnum.CHECKEN]) > 8) {
+                let warningModal = Modal.confirm({
+                    title: '温馨提示',
+                    content: '您当天的工作时长已超过8小时，请与项目经理确认好工作安排',
+                    onOk: () => {
+                        resolve()
+                        warningModal.destroy()
+                    },
+                    onCancel: () => {
+                        reject()
+                        warningModal.destroy()
+                    }
+                })
+                return
+            }
+            resolve()
+        })
+    }
+    const handleSubmit = async (workListTemp) => {
+        let workList = deepCopy(workListTemp.filter(i => i.status === workOrderEnum.DRAFT))
+        for (let i = 0; i < workList.length; i++) {
+            let selectWorkOrder = workList[i]
+            // 判断逻辑
+            if (!selectWorkOrder.createTime) {
+                message.error('报单日期不能为空', 1)
+                return
+            }
+            if (!selectWorkOrder.reason && moment(selectWorkOrder.createTime).isBefore(moment().subtract(7, 'days'))) {
+                message.error('报单过期，不可提交', 1)
+                return
+            }
+            if (moment(selectWorkOrder.createTime).isAfter(moment())) {
+                message.error('报单不可提前提交', 1)
+                return
+            }
+            if (!selectWorkOrder.workType) {
+                message.error('工作类型不能为空', 1)
+                return
+            }
+            if (!selectWorkOrder.workCategory) {
+                message.error('工作类目不能为空', 1)
+                return
+            }
+            if (selectWorkOrder.workType === '产品项目类' && !selectWorkOrder.workItem) {
+                message.error('工作条目不能为空', 1)
+                return
+            }
+            if (!selectWorkOrder.projectName && selectWorkOrder.workType != '技术勘探研发类') {
+                message.error('项目名称不能为空', 1)
+                return
+            }
+            if (selectWorkOrder.workCategory === '软件开发' && ['前端开发', '后端开发', '服务开发', '缺陷修改'].includes(selectWorkOrder.workItem) && !selectWorkOrder.demandItemName) {
+                message.error('功能点不能为空', 1)
+                return
+            }
+            if (!selectWorkOrder.workDuration) {
+                message.error('工作时长不能为空', 1)
+                return
+            }
+            if (selectWorkOrder.workDuration % 0.5 || selectWorkOrder.workDuration < 0) {
+                message.error('时长填写错误', 1)
+                return
+            }
+            if (isDept(userInfo, '项目部') && !selectWorkOrder.projectDepworkTypeId) {
+                message.error('项目部工作不能为空', 1)
+                return
+            }
+            if (!selectWorkOrder.content) {
+                message.error('工作内容不能为空', 1)
+                return
+            }
+        }
+        if (getTotalWorkLength(workListTemp, [workOrderEnum.DRAFT, workOrderEnum.SUBMIT, workOrderEnum.CHECKEN]) > 24) {
+            message.error('今日累计工作时长超过了24小时，请修改', 1)
+            return
+        }
+
+        // 最后保存
+        await saveWorkOrder()
+    }
+    // 保存草稿 isEdit true为保存为编辑存量信息
+    const saveWorkOrder = async (saveOfDraft) => {
+        let workList = deepCopy(workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT))
+        message.loading({
+            content: '保存中，请稍后',
+            key: 'updateWorkOrder',
+            duration: 0
+        })
+        await updateWorkOrderApi({workOrderList: JSON.stringify(workList)})
+        message.destroy('updateWorkOrder')
+        // 留存编辑记录
+        if (userInfo.user.deptName === '研发部') {
+            localStorage.setItem("workorderInfo", JSON.stringify(workList))
+        }
+        // 如果是存草稿
+        if (saveOfDraft) {
+            message.success('保存成功')
+            // 统计数量
+            let data = await countWorkOrderStatusApi({
+                userGuid: userInfo.user.userGuid
+            })
+            // this.props.saveRedux('workOrderMessageList', data.data)
+            // 报单提交 流转状态
+        } else {
+            await updateWorkOrderStatusApi({
+                createGuid: workList[0].createGuid,
+                createTime: workList[0].createTime,
+                status: workOrderEnum.SUBMIT,
+                reason: '',
+                guids: workList.filter(i => i.status === workOrderEnum.DRAFT).map(i => i.guid).join(','),
+                reviewGuid: '',
+                reviewName: ''//审核人
+            })
+            message.success('保存成功')
+        }
+        // 存到本地一份初始化报单信息
+        localStorage.setItem('temp_workOrder_Obj', JSON.stringify(workorderDetailList[0]))
+        setWorkorderDetailVisible(false)
+    }
+    // 更改工单状态（审核操作 过/不过）
+    const changeWorkOrderStatus = async (type, workList) => {
+        if (!confirm('确认审核通过？')) return
+        // 退单
+        await updateWorkOrderStatusApi({
+            createGuid: workorderDetailList[0].createGuid,
+            createTime: workorderDetailList[0].createTime,
+            status: workOrderEnum.CHECKEN,
+            reason: '',
+            guids: workList.map(item => item.guid).join(','),
+            reviewGuid: userInfo.user.userGuid,
+            reviewName: userInfo.user.nickName//审核人
+        })
+        if (type === 'pass') message.success('审核通过')
+        setWorkorderDetailVisible(false)
+    }
+
 
     return <div id="edit-page">
         <div className="head-title">
@@ -85,9 +227,12 @@ const WorkOrderDetail = ({
         </div>
         <div className="edit-content">
             <div className="edit-list">
-                <span>员工姓名：<Input value={workorderDetailList[0] && workorderDetailList[0].createName}
-                                      disabled/></span>
-                <span>部门：<Input value={workorderDetailList[0]?.departmentName} disabled/></span>
+                <span>员工姓名：<Input
+                    value={workorderDetailList[0] ? workorderDetailList[0].createName : userInfo.user.nickName}
+                    disabled/></span>
+                <span>部门：<Input
+                    value={workorderDetailList[0] ? workorderDetailList[0].departmentName : userInfo.user.deptName}
+                    disabled/></span>
                 <span>报单日期：
                     <DatePicker
                         id="createTime"
@@ -142,43 +287,47 @@ const WorkOrderDetail = ({
             </div>
         </div>
         {(createGuid === workorderDetailList[0]?.createGuid || !isReview) &&
-            <div className="create-work-sheet">新增工作内容<i onClick={pushInitToList}>+</i></div>
+            <Button type={'link'} icon={<FileAddOutlined/>} onClick={openSheetInfo}>新增工作内容</Button>
         }
 
         {workorderDetailList.filter(item => !(isSearch && item.createGuid !== createGuid && item.status !== workOrderEnum.CHECKEN))
             .map((item, index) => {
-                return <WorkOrderContentItem item={item}
-                                             index={index}
-                                             isReview={isReview}
-                                             isSearch={isSearch}
-                                             workTypeList={workTypeList}
-                                             workCategoryList={workCategoryList}
-                                             workItemList={workItemList}
-                                             reviewRelationshipList={reviewRelationshipList}
-                                             userList={userList}
-                                             projectDepworkTypeList={projectDepworkTypeList}
-                                             projectByUserList={projectByUserList}
-                                             workorderDetailList={workorderDetailList}
-                                             setWorkorderDetailList={setWorkorderDetailList}
+                return <WorkOrderContentItem
+                    key={index}
+                    item={item}
+                    index={index}
+                    isReview={isReview}
+                    isSearch={isSearch}
+                    workTypeList={workTypeList}
+                    workCategoryList={workCategoryList}
+                    workItemList={workItemList}
+                    projectDepworkTypeList={projectDepworkTypeList}
+                    projectByUserList={projectByUserList}
+                    workorderDetailList={workorderDetailList}
+                    setWorkorderDetailList={setWorkorderDetailList}
                 />
             })
         }
         {/* 新建报单 按钮区域 */}
         {<div className="bottom-btn">
             {/* 自己的报单显示 保存为草稿/提交 按钮 */}
-            {workorderDetailList?.createGuid === createGuid && <>
-                {workorderDetailList.filter(i => i.status === 1)[0] &&
+            {workorderDetailList[0]?.createGuid === createGuid && <>
+                {workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT)[0] &&
                     <Button onClick={() => {
+                        saveWorkOrder(true)
                     }} style={{background: 'rgb(123, 123, 220)'}}>保存为草稿</Button>
                 }
-                {workorderDetailList.filter(i => i.status === 1)[0] &&
+                {workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT)[0] &&
                     <Button onClick={async () => {
+                        await workLengthMessage(workorderDetailList)
+                        handleSubmit(workorderDetailList)
                     }} style={{background: 'rgb(1, 167, 240)'}}>提交</Button>
                 }
             </>}
             {/* 评审页面 按钮 */}
-            {isReview && workorderDetailList.filter(i => i.status === 2)[0] &&
+            {isReview && workorderDetailList.filter(i => i.status === workOrderEnum.SUBMIT)[0] &&
                 <Button onClick={async () => {
+                    changeWorkOrderStatus('pass', workorderDetailList.filter(item => item.status === workOrderEnum.SUBMIT))
                 }} style={{background: 'green', color: '#fff', margin: '0 0 0 1vw'}}>全部通过</Button>
             }
         </div>

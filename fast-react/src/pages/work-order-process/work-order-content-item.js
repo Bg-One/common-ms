@@ -9,7 +9,12 @@ import {createFuncDemandNode, createTreeItem, handleTree} from "../../utils/tree
 import {deepCopy} from "../../utils/table";
 import pinyinUtil from "../../common/react-pinyin-master";
 import TextArea from "antd/es/input/TextArea";
-import {getWorkOrderApi, listWorkOrderApi, updateWorkOrderStatusApi} from "../../common/api/producems/workorder";
+import {
+    deleteWorkOrderApi,
+    getWorkOrderApi,
+    updateWorkOrderStatusApi
+} from "../../common/api/producems/workorder";
+import {isDept} from "../../utils/user";
 
 const WorkOrderContentItem = ({
                                   item,
@@ -19,24 +24,16 @@ const WorkOrderContentItem = ({
                                   workTypeList,
                                   workCategoryList,
                                   workItemList,
-                                  reviewRelationshipList,
-                                  userList,
                                   projectByUserList,
                                   projectDepworkTypeList,
                                   workorderDetailList,
                                   setWorkorderDetailList
                               }) => {
-    let [workorderForm] = Form.useForm();
     const userInfo = useSelector(state => state.user.userInfo)
-    const [createName] = useState(userInfo.user.nickName)
-    const [deptName] = useState(userInfo.user.dept.deptName)
     const [demandItemTreeData, setDemandItemTreeData] = useState([])
-
     useEffect(() => {
         listNodes(item.projectGuid)
     }, [])
-    //创建需求节点
-
     const listNodes = async (projectGuid) => {
         let res = await listNodesByProjectApi({projectGuid})
         let handleTreeData = handleTree(deepCopy(res.data), "guid", 'name', 'parentNodeGuid');
@@ -56,12 +53,18 @@ const WorkOrderContentItem = ({
         setDemandItemTreeData(treeData)
         return res
     }
+    //删除工单
     const deleteWorkOrder = async (record) => {
-    }
-    // 根据提交报单的人createGuid，获取审核人//
-    const getReViewName = (guid, relaList, userList) => {
-        let reviewGuid = relaList.find(i => i.userGuid === guid)?.reviewGuid
-        return userList.find(i => i.userGuid === reviewGuid)?.nickName
+        if (!confirm('确认删除？')) return
+        message.loading({
+            content: '删除中，请稍后',
+            key: 'deleteWorkOrder',
+            duration: 0
+        })
+        await deleteWorkOrderApi({guid: record.guid})
+        message.destroy('deleteWorkOrder')
+        await getWorkOrder()
+        message.success('删除成功')
     }
     // 更改工单状态（审核操作 过/不过）
     const changeWorkOrderStatus = async (type, workList) => {
@@ -89,62 +92,97 @@ const WorkOrderContentItem = ({
             message.error('请填写退单理由，方可退单')
             return
         }
-        let data = await updateWorkOrderStatusApi({
-            createUserGuid: workorderDetailList[0].createGuid,
-            createTime: this.state.createTime,
+        await updateWorkOrderStatusApi({
+            createGuid: workorderDetailList[0].createGuid,
+            createTime: workorderDetailList[0].createTime,
             status: type === 'pass' ? workOrderEnum.CHECKEN : workOrderEnum.DRAFT,
             reason: reasonContent,
             guids: workList.map(item => item.guid).join(','),
-            reviewGuid: this.state.createGuid       //审核人
+            reviewGuid: userInfo.user.userGuid,
+            reviewName: userInfo.user.nickName//审核人
         })
-        if (data.code !== 1) {
-            message.error(data.message)
-            return
-        }
         if (type === 'pass') message.success('审核通过')
         if (type === 'noPass') {
             reasonModal?.destroy()
             message.success('退单成功')
         }
         // 刷新列表
-        await getWorkOrder({
+        await getWorkOrder()
+    }
+    //获取工单
+    const getWorkOrder = async () => {
+        let res = await getWorkOrderApi({
             createTime: workorderDetailList[0].createTime,
             createGuid: workorderDetailList[0].createGuid,
         })
-    }
-
-
-    const getWorkOrder = async (record) => {
-        let res = await getWorkOrderApi({
-            createTime: record.createTime,
-            createGuid: record.createGuid
-        })
         setWorkorderDetailList(res.data)
     }
-
-    const onValuesChange = async (changedValues, allValues) => {
-        let changeKey = Object.keys(changedValues)[0];
-        if (changeKey === 'workTypeGuid') {
-            allValues.workCategoryGuid = ''
-            allValues.workItemGuid = ''
-        } else if (changeKey === 'workCategoryGuid') {
-            allValues.workItemGuid = ''
-        } else if (changeKey === 'projectGuid') {
-            allValues.demandItemGuid = ''
-            let res = await listNodes(changedValues.projectGuid)
+    const handleSelectChange = async (record, type, value) => {
+        if (record.status !== workOrderEnum.DRAFT) {
+            message.error('禁止修改', 1)
+            return
+        }
+        switch (type) {
+            // 工作类型
+            case 'workType':
+                record.workTypeGuid = value
+                record.workType = workTypeList.find(item => item.guid === value)?.name
+                record.workCategoryGuid = ''
+                record.workCategory = ''
+                record.workItemGuid = ''
+                record.workItem = ''
+                break
+            // 工作类目
+            case 'workCategory':
+                record.workCategoryGuid = value
+                record.workCategory = workCategoryList.find(item => item.guid === value)?.name
+                record.workItemGuid = ''
+                record.workItem = ''
+                break
+            case 'workItem':
+                record.workItemGuid = value
+                record.workItem = workItemList.find(item => item.guid === value)?.name
+                break
+            case 'projectName':
+                record.projectGuid = value
+                break
+            case 'demandItem':
+                record.demandItemGuid = value
+                break
+            case 'projectDepworkTypeId':
+                record.projectDepworkTypeId = value
+                break
+        }
+        // 修改工作类目、项目名称是时，清除旧功能点，获取新功能点列表
+        if (['workCategory', 'projectName'].includes(type) && record.workCategory === '软件开发' && record.projectGuid) {
+            //清除选中的旧功能点
+            record.demandItemGuid = ''
+            record.demandItemName = ''
+            let res = await listNodes(record.projectGuid)
             if (res.data.length === 0) {
-                message.warning('该项目暂无需求')
+                message.warning('暂无需求')
             }
         }
-        workorderForm.setFieldsValue({...allValues})
+        updateWorkOrderDetail(record)
+    }
+    // 修改input内容
+    const handleInputChange = (record, type, value) => {
+        if (record.status !== workOrderEnum.DRAFT) {
+            message.error('禁止修改', 1)
+            return
+        }
+        record[type] = value
+        updateWorkOrderDetail(record)
+    }
+    const updateWorkOrderDetail = (record) => {
         let map = workorderDetailList.map((workorder, i) => {
             if (i === index) {
-                return {...workorder, ...allValues}
+                return {...workorder, ...record}
             }
             return workorder
         });
         setWorkorderDetailList(map)
-    };
+    }
 
     // 撤回审核工单
     const handelWithdraw = async (guids) => {
@@ -154,38 +192,23 @@ const WorkOrderContentItem = ({
             key: 'updateWorkOrderStatus',
             duration: 0
         })
-        let data = await updateWorkOrderStatusApi({
-            createUserGuid: workorderDetailList[0].createGuid,
+        await updateWorkOrderStatusApi({
+            createGuid: workorderDetailList[0].createGuid,
             createTime: workorderDetailList[0].createTime,
             status: workOrderEnum.DRAFT,
             reason: '',
             guids: guids || '',//如果有值，则仅处理这些票的状态，否则处理当天的
-            reviewGuid: ''       //审核人
+            reviewGuid: '',       //审核人
+            reviewName:''
         })
         message.destroy('updateWorkOrderStatus')
-        if (data.code !== 1) {
-            message.error(data.message)
-            return
-        }
-        (guids || '').split(',').map(item => {
-            workorderDetailList.map(i => {
-                if (item === i.guid) {
-                    i.status = workOrderEnum.DRAFT
-                }
-            })
-        })
-        getWorkOrder({
-            createTime: workorderDetailList[0].createTime,
-            createGuid: workorderDetailList[0].createGuid,
-        }) // 重新请求列表
+        getWorkOrder()
         message.success('撤回成功')
     }
-    return <div id="work-order-list" key={'edit-list-item-' + item.guid}
-                style={{
-                    display: isReview && item.status === workOrderEnum.DRAFT ? 'none' : 'block',
-                    background: item.status === workOrderEnum.DRAFT ? '#fff' : item.status === workOrderEnum.SUBMIT ? '#ffc0cb26' : item.status === workOrderEnum.CHECKEN ? '#00800012' : '#fff',
-                }}
-    >
+    return <div id="work-order-list" key={'edit-list-item-' + index} style={{
+        display: isReview && item.status === workOrderEnum.DRAFT ? 'none' : 'block',
+        background: item.status === workOrderEnum.DRAFT ? '#fff' : item.status === workOrderEnum.SUBMIT ? '#ffc0cb26' : item.status === workOrderEnum.CHECKEN ? '#00800012' : '#fff',
+    }}>
         <div>
             <b>当前状态：
                 {item.status === workOrderEnum.DRAFT ? '待提交' : null}
@@ -217,125 +240,114 @@ const WorkOrderContentItem = ({
                 onClick={() => changeWorkOrderStatus('noPass', [item])}
             >退单</Button>}
             {/* 工单查询  审核允许退单  评审中，待实现 提交时间限制*/}
-            {isSearch && item.status === workOrderEnum.CHECKEN && createName === getReViewName(item.createGuid, reviewRelationshipList, userList) &&
+            {isSearch && item.status === workOrderEnum.CHECKEN && item.reviewGuid === userInfo.user.userGuid &&
                 <Button style={{background: 'rgb(255 75 0)', margin: '0 0 0 1vw', color: '#fff'}}
                         onClick={() => changeWorkOrderStatus('noPass', [item])}
                 >退单</Button>}
         </div>
         {/*限制某些情况下禁掉鼠标 */}
-        <Form
-            layout="inline"
-            // onFinish={onSearch}
-            autoComplete="off"
-            initialValues={{
-                ...item
+        <span>
+           <span className="mini-title">工作类型：</span>
+             <Select
+                 value={item.workTypeGuid}
+                 onChange={value => handleSelectChange(item, 'workType', value)}
+                 options={workTypeList.map(item => ({value: item.guid, label: item.name}))}
+             />
+        </span>
+        <span>
+            <span className="mini-title">工作类目：</span>
+            <Select
+                value={item.workCategoryGuid}
+                onChange={value => {
+                    handleSelectChange(item, 'workCategory', value)
+                }}
+                options={workCategoryList.filter(i => i.workOrderTypeGuid === item.workTypeGuid).map(i => {
+                    return {
+                        value: i.guid,
+                        label: i.name
+                    }
+                })}/>
+        </span>
+        <span>
+            <span className="mini-title">工作条目：</span>
+            <Select
+                value={item.workItemGuid} onChange={value => {
+                handleSelectChange(item, 'workItem', value)
             }}
-            form={workorderForm}
-            onValuesChange={onValuesChange}
-        >
-            <Form.Item
-                style={{width: '18vw', margin: '1vh'}}
-                name={'workTypeGuid'}
-                label={'工作类型'}>
-
-                <Select
-                    value={item.workTypeGuid}
-                    options={workTypeList.map(item => ({value: item.guid, label: item.name}))}
-                />
-            </Form.Item>
-            <Form.Item
-                style={{width: '18vw', margin: '1vh'}}
-                name={'workCategoryGuid'}
-                label={'工作类目'}>
-                <Select
-                    options={workCategoryList.filter(i => i.workOrderTypeGuid === item.workTypeGuid).map(i => {
-                        return {
-                            value: i.guid,
-                            label: i.name
-                        }
-                    })}
-                />
-            </Form.Item>
-            <Form.Item
-                style={{width: '18vw', margin: '1vh'}}
-                name={'workItemGuid'}
-                label={'工作条目'}>
-                <Select
-                    options={workItemList.filter(i => i.workOrderCategoryGuid === item.workCategoryGuid).map(i => {
-                        return {
-                            value: i.guid,
-                            label: i.name
-                        }
-                    })}/>
-            </Form.Item>
-            <Form.Item
-                style={{width: '18vw', margin: '1vh'}}
-                name={'projectGuid'}
-                label={'项目名称'}
-            >
-                <Select
+                options={workItemList.filter(i => i.workOrderCategoryGuid === item.workCategoryGuid).map(i => {
+                    return {
+                        value: i.guid,
+                        label: i.name
+                    }
+                })}/>
+        </span>
+        <span>
+            <span className="mini-title">项目名称：</span>
+            <Select
+                value={item.projectGuid}
+                showSearch
+                filterOption={(input, option) => pinyinUtil.getFirstLetter(option.label).indexOf(input.toUpperCase()) !== -1 || option.label.indexOf(input.toUpperCase()) !== -1}
+                onChange={value => handleSelectChange(item, 'projectName', value)}
+                options={projectByUserList.map(i => {
+                    return {
+                        value: i.guid,
+                        label: i.name
+                    }
+                })}
+            />
+        </span>
+        {item.workCategory === '软件开发' && ['前端开发', '后端开发', '服务开发', '缺陷修改'].includes(item.workItem) &&
+            <span>
+                <span className="mini-title">功能点：</span>
+                <TreeSelect
+                    value={item.demandItemGuid}
+                    onChange={value => handleSelectChange(item, 'demandItem', value)}
+                    filterTreeNode={(input, option) => pinyinUtil.getFirstLetter(option.title).indexOf(input.toUpperCase()) !== -1
+                        || option.title.indexOf(input.toUpperCase()) !== -1}
                     showSearch
-                    filterOption={(input, option) => pinyinUtil.getFirstLetter(option.label).indexOf(input.toUpperCase()) !== -1 || option.label.indexOf(input.toUpperCase()) !== -1}
-                    options={projectByUserList.map(i => {
-                        return {
-                            value: i.guid,
-                            label: i.name
-                        }
-                    })}
+                    dropdownStyle={{
+                        maxHeight: 400,
+                        overflow: 'auto',
+                    }}
+                    treeData={demandItemTreeData}
                 />
-            </Form.Item>
-            <Form.Item
-                style={{width: '18vw', margin: '1vh'}}
-                name={'workDuration'}
-                label={'工作时长'}>
-                <Input
-                    type="number"
-                    min={0.5}
-                    max={24}
-                    step={0.5}
-                />
-            </Form.Item>
-            {item.workCategory === '软件开发' && ['前端开发', '后端开发', '服务开发', '缺陷修改'].includes(item.workItem) &&
-                <Form.Item
-                    style={{width: '18vw', margin: '1vh'}}
-                    name={'demandItemGuid'}
-                    label={'   功能点'}>
-                    <TreeSelect
-                        filterTreeNode={(input, option) => pinyinUtil.getFirstLetter(option.title).indexOf(input.toUpperCase()) !== -1
-                            || option.title.indexOf(input.toUpperCase()) !== -1}
-                        showSearch
-                        dropdownStyle={{
-                            maxHeight: 400,
-                            overflow: 'auto',
-                        }}
-                        treeData={demandItemTreeData}
-                    />
-                </Form.Item>}
-            {deptName === '项目部' &&
-                <Form.Item
-                    style={{width: '18vw', margin: '1vh'}}
-                    name={'projectDepworkTypeId'}
-                    label={'项目部工作内容'}>
-                    <Select
-                        options={projectDepworkTypeList.map(i => {
-                            return {
-                                value: i.id,
-                                label: i.name
-                            }
-                        })}
-                    />
-                </Form.Item>
-            }
-            <Form.Item
-                style={{width: '75vw', margin: '1vh'}}
-                name={'content'}
-                label={'工作内容'}>
-                <Input.TextArea
-                    style={{resize: 'none'}}
-                    autoSize={{minRows: 4}}
-                />
-            </Form.Item>
-        </Form>
+            </span>}
+        <span>
+            <span className="mini-title">工作时长：</span>
+            <Input
+                value={item.workDuration}
+                placeholder="0.5的倍数"
+                onChange={e => {
+                    handleInputChange(item, 'workDuration', Number(e.target.value))
+                }}
+                type="number"
+                min={0.5}
+                max={24}
+                step={0.5}
+            />
+        </span>
+        {isDept(userInfo, '项目部') && <span>
+            <span className="mini-title">项目部工作：</span>
+            <Select
+                value={item.projectDepworkTypeId}
+                onChange={(value) => handleSelectChange(item, 'projectDepworkTypeId', value)}
+                options={projectDepworkTypeList.map(i => {
+                    return {
+                        value: i.id,
+                        label: i.name
+                    }
+                })}
+            />
+        </span>}
+        <div className="workContent">
+            <span className="mini-title">工作内容：</span>
+            <Input.TextArea
+                style={{resize: 'none'}}
+                autoSize={{minRows: 4}}
+                value={item.content}
+                onChange={e => handleInputChange(item, 'content', e.target.value)}
+            />
+        </div>
     </div>
 }
 export default WorkOrderContentItem

@@ -70,19 +70,9 @@ export const deepEqual = (objA, objB) => {
     return true;
 }
 
-export const multiConditionSort = (arr, sortRules) => {
-    arr.sort((a, b) => {
-        for (let rule of sortRules) {
-            let key = rule.key;
-            let order = rule.order;  // 1 表示升序， -1 表示降序
-
-            if (a[key] < b[key]) {
-                return order === 1 ? -1 : 1;
-            } else if (a[key] > b[key]) {
-                return order === 1 ? 1 : -1;
-            }
-        }
-        return 0;
-    });
-    return arr
+export const mergesFilter = (arr, record, rules) => {
+    rules.map(item => arr = arr.filter(i => i[item] === record[item]))
+    let dataIndex = arr.findIndex(item => item.guid === record.guid)
+    if (dataIndex === 0) return { rowSpan: arr.length }
+    return { rowSpan: 0 }
 }

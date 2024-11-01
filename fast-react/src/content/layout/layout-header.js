@@ -9,13 +9,19 @@ import {Avatar, Badge, Button, message} from "antd";
 import {useDispatch} from "react-redux";
 import {logoutApi} from "../../common/api/sys/sys-api";
 import {setAuthentication, setLoading, setMenuConfig, setRouters, setUserInfo} from "../../redux/user/user-slice";
-import {removeToken} from "../../utils/auth";
+import {getToken, removeToken} from "../../utils/auth";
 import Websocket from "react-websocket";
 import http from "../../utils/http";
+import {useEffect, useState} from "react";
+import useWebSocket from "../../common/usehooks/useHooks";
 
 const LayoutHeader = ({toggleCollapsed, collapsed}) => {
     let navigate = useNavigate();
     let dispatch = useDispatch();
+    const [message, setMessage] = useState('');
+    const {data, sendMessage} = useWebSocket(`${http.websocketURL}websocket/globalWs?Authorization=Bearer ` + getToken());
+
+
     const logout = () => {
         logoutApi().then(res => {
             message.success('退出成功')
@@ -50,10 +56,10 @@ const LayoutHeader = ({toggleCollapsed, collapsed}) => {
             </div>
             {/*<span onClick={logout}>退出登录</span>*/}
         </div>
-        <Websocket
-            protocol="tcp"
-            url={`${http.websocketURL}globalWs`}
-            reconnect={true} debug={true}/>
+        {/*<Websocket*/}
+        {/*    protocol="tcp"*/}
+        {/*    url={`${http.websocketURL}websocket/globalWs?Authorization=Bearer ` + getToken()}*/}
+        {/*    reconnect={true} debug={true}/>*/}
     </div>
 }
 

@@ -41,3 +41,7 @@ export const changManage = (index, v, option, resourcesList) => {
     newTeamResourcesList[index].groupMemsGuids = groupMemsGuids ? groupMemsGuids : ''
     return newTeamResourcesList
 }
+//所属部门是否为
+export const isDept = (userInfo, deptName) => {
+    return userInfo.user.deptName === deptName
+}

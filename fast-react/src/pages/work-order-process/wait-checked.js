@@ -11,11 +11,10 @@ const WaitChecked = () => {
     const [workorderDetailVisible, setWorkorderDetailVisible] = useState(false)
     const [workorderDetailList, setWorkorderDetailList] = useState([])
     const [dataSource, setDataSource] = useState([])
-    const userInfo = useSelector(state => state.user.userInfo)
 
     useEffect(() => {
-        listWorkOrder()
-    }, [])
+        !workorderDetailVisible&& listWorkOrder()
+    }, [workorderDetailVisible])
 
     const listWorkOrder = async () => {
         let res = await listWorkOrderApi({

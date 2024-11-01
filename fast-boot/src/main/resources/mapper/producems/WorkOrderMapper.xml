@@ -73,9 +73,10 @@
     <update id="updateWorkOrderStatus">
         update workorder
         set status = #{status},
-            reason=#{reason}
-        where createGuid = #{createGuid}
-          and createTime like concat(#{createTime}, '%')
+            reason=#{reason},
+            reviewGuid=#{reviewGuid},
+            reviewName=#{reviewName}
+        where guid=#{guid}
     </update>
     <delete id="deleteWorkOrderItem">
         delete

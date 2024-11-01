@@ -2,6 +2,9 @@ import {Button, message, Table} from "antd";
 import {workOrderEnum} from "../../common/enmus/work-order-enum";
 import './index.scss'
 import {deleteWorkOrderApi, getWorkOrderApi} from "../../common/api/producems/workorder";
+import {mergesFilter} from "../../utils/table";
+import {useSelector} from "react-redux";
+import {isDept} from "../../utils/user";
 
 const WorkOrderTable = ({
                             tableTitle,
@@ -11,6 +14,7 @@ const WorkOrderTable = ({
                             setWorkorderDetailVisible,
                             setWorkorderDetailList
                         }) => {
+    const userInfo = useSelector(state => state.user.userInfo)
 
     const deleteWorkOrder = async (record) => {
         if (!confirm('确认删除？')) return
@@ -46,27 +50,25 @@ const WorkOrderTable = ({
             key: 'departmentName',
             dataIndex: 'departmentName',
         }, {
-            title: '工作类型',
-            dataIndex: 'workType',
-            key: 'workType',
-        }, {
             title: '项目名称',
             dataIndex: 'projectName',
             key: 'projectName',
         }, {
+            title: '工作类型',
+            dataIndex: 'workType',
+            key: 'workType',
+        }, {
             title: '工作类目',
             dataIndex: 'workCategory',
             key: 'workCategory',
-
         }, {
             title: '工作条目',
             dataIndex: 'workItem',
             key: 'workItem',
-        }, {
+        }, isDept(userInfo,'项目部')  && {
             title: '项目部工作',
             key: 'projectDepworkType',
             dataIndex: 'projectDepworkType',
-
         }, {
             title: '工作内容',
             key: 'content',
@@ -97,7 +99,7 @@ const WorkOrderTable = ({
                         <span>待审核</span> : null}
                     {record.status === workOrderEnum.CHECKEN ? <span>已审核</span> : null}
                 </>
-            }
+            },
         }, {
             title: '操作',
             key: 'options',
@@ -122,7 +124,7 @@ const WorkOrderTable = ({
                     }}>查看</Button> : null}
                 </div>
             },
-        }]
+        }].filter(Boolean)
     return <div id={'work-order-table'}>
         <Table
             dataSource={dataSource}

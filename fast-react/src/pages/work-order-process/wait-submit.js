@@ -5,16 +5,17 @@ import {listWorkOrderApi} from "../../common/api/producems/workorder";
 import {workOrderEnum} from "../../common/enmus/work-order-enum";
 import {useSelector} from "react-redux";
 import WorkOrderDetail from "./work-order-detail";
+import moment from "moment";
 
 const WaitSubmit = () => {
     const [dataSource, setDataSource] = useState([])
-    const userInfo = useSelector(state => state.user.userInfo)
     const [workorderDetailVisible, setWorkorderDetailVisible] = useState(false)
     const [workorderDetailList, setWorkorderDetailList] = useState([])
+    const userInfo = useSelector(state => state.user.userInfo)
 
     useEffect(() => {
-        listWorkOrder()
-    }, [])
+        !workorderDetailVisible&& listWorkOrder()
+    }, [workorderDetailVisible])
 
     const listWorkOrder = async () => {
         let res = await listWorkOrderApi({
@@ -31,16 +32,18 @@ const WaitSubmit = () => {
                              setWorkorderDetailList={setWorkorderDetailList}
                              isReview={false}
                              isSearch={false}/> : <>
-                <Button type={'primary'}>新建工单</Button>
+            <Button type={'primary'} onClick={() => {
+                setWorkorderDetailVisible(true)
+            }}>新建工单</Button>
                 <WorkOrderTable
-                    dataSource={dataSource}
-                    tableTitle={'注：被退回的工单工作内容为红色字体'}
-                    isReview={false}
-                    listWorkOrder={listWorkOrder}
-                    setWorkorderDetailVisible={setWorkorderDetailVisible}
-                    setWorkorderDetailList={setWorkorderDetailList}
+                dataSource={dataSource}
+                tableTitle={'注：被退回的工单工作内容为红色字体'}
+                isReview={false}
+                listWorkOrder={listWorkOrder}
+                setWorkorderDetailVisible={setWorkorderDetailVisible}
+                setWorkorderDetailList={setWorkorderDetailList}
                 />
-            </>}
-    </div>
-}
-export default WaitSubmit
+                </>}
+            </div>
+        }
+        export default WaitSubmit

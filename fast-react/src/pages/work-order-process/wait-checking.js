@@ -8,12 +8,11 @@ import WorkOrderDetail from "./work-order-detail";
 const WaitChecking = () => {
 
     const [dataSource, setDataSource] = useState([])
-    const userInfo = useSelector(state => state.user.userInfo)
     const [workorderDetailVisible, setWorkorderDetailVisible] = useState(false)
     const [workorderDetailList, setWorkorderDetailList] = useState([])
     useEffect(() => {
-        listWorkOrder()
-    }, [])
+        !workorderDetailVisible&& listWorkOrder()
+    }, [workorderDetailVisible])
 
     const listWorkOrder = async () => {
         let res = await listWorkOrderApi({

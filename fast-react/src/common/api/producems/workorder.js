@@ -64,4 +64,9 @@ export let listProjectDepworkTypeApi = (obj = {}) => {
 export let updateWorkOrderStatusApi = (obj = {}) => {
     return http.post('workOrder/updateWorkOrderStatus', obj)
 }
-
+export let countWorkOrderStatusApi = (obj = {}) => {
+    return http.post('workOrder/countWorkOrderStatus', obj)
+}
+export let updateWorkOrderApi = (obj = {}) => {
+    return http.post('workOrder/updateWorkOrder', obj)
+}
