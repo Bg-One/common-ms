@@ -2,15 +2,13 @@ package com.example.fastboot.server.sys.controller;
 
 import com.example.fastboot.common.aspectj.annotation.SysLog;
 import com.example.fastboot.common.aspectj.enums.BusinessType;
-import com.example.fastboot.common.enums.BoolEnum;
+
 import com.example.fastboot.common.enums.CommonResultEnum;
 import com.example.fastboot.common.exception.ServiceException;
 import com.example.fastboot.common.response.CommonResult;
 import com.example.fastboot.server.sys.model.SysDept;
 import com.example.fastboot.server.sys.service.ISysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +27,6 @@ public class SysDepController {
     /**
      * 获取部门列表
      */
-    @PreAuthorize("@permission.hasAuthority('system:dept:list')")
     @PostMapping("/listDept")
     public Object listDep(SysDept dept) {
         List<SysDept> depts = iSysDeptService.selectDeptList(dept);
@@ -39,7 +36,6 @@ public class SysDepController {
     /**
      * 新增部门
      */
-    @PreAuthorize("@permission.hasAuthority('system:dept:add')")
     @SysLog(title = "部门管理", businessType = BusinessType.INSERT)
     @PostMapping("/addDept")
     public Object add(SysDept dept) {
@@ -55,7 +51,6 @@ public class SysDepController {
     /**
      * 修改部门
      */
-    @PreAuthorize("@permission.hasAuthority('system:dept:edit')")
     @SysLog(title = "部门管理", businessType = BusinessType.UPDATE)
     @PostMapping("/updateDept")
     public Object updateDept(SysDept dept) {
@@ -73,7 +68,6 @@ public class SysDepController {
     /**
      * 删除部门
      */
-    @PreAuthorize("@permission.hasAuthority('system:dept:remove')")
     @SysLog(title = "部门管理", businessType = BusinessType.DELETE)
     @PostMapping("/deleteDept")
     public Object deleteDept(String deptGuid) {

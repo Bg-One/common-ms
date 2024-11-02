@@ -188,14 +188,14 @@ public class IDemandServiceImpl implements IDemandService {
 
     @Override
     public PageResponse listDemandTrace(Demandtrace demandtrace) {
-        if (demandtrace.getProgressStatuss() == null) {
-            List<Demandtrace> demandtraceList = new ArrayList<>();
-            PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);
-            return new PageResponse<>(demandtracePageInfo);
-        }
-        List<String> progressStatusList = Arrays.asList(demandtrace.getProgressStatuss());
+//        if (demandtrace.getProgressStatuss() == null) {
+//            List<Demandtrace> demandtraceList = new ArrayList<>();
+//            PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);
+//            return new PageResponse<>(demandtracePageInfo);
+//        }
+//        List<String> progressStatusList = Arrays.asList(demandtrace.getProgressStatuss());
         PageHelper.startPage(demandtrace.getCurrentPage(), demandtrace.getPageSize());
-        List<Demandtrace> demandtraceList = demandMapper.listDemandTrace(demandtrace, progressStatusList);
+        List<Demandtrace> demandtraceList = demandMapper.listDemandTrace(demandtrace);
         PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);
         return new PageResponse<>(demandtracePageInfo);
     }
@@ -227,7 +227,7 @@ public class IDemandServiceImpl implements IDemandService {
         Producemanage queryProducemanage = new Producemanage();
         queryProducemanage.setGuid(produceGuid);
         Producemanage producemanage = producemanageMapper.getProduce(queryProducemanage);
-        List<Projectmember> projectmemberList = projectMapper.listProjectMemberByType(produceGuid, typeList);
+        List<Projectmember> projectmemberList = projectMapper.listProjectMemberByType(demandtrace.getProjectGuid(), typeList);
         if (projectmemberList.size() == 0) {
             return;
         }

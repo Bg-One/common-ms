@@ -4,7 +4,6 @@ import com.example.fastboot.common.aspectj.annotation.SysLog;
 import com.example.fastboot.common.aspectj.enums.BusinessType;
 import com.example.fastboot.server.producems.model.Project;
 import com.example.fastboot.server.producems.service.IProjectService;
-import com.example.fastboot.server.sys.controller.Base;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +31,6 @@ public class ProjectController {
      * @param project
      * @return
      */
-    @PreAuthorize("@permission.hasAuthority('producems:project:list')")
     @PostMapping("listProject")
     public Object listProject(Project project) {
         return success(projectService.listProject(project));
@@ -66,7 +64,7 @@ public class ProjectController {
      * @return
      */
     @SysLog(title = "新增项目", businessType = BusinessType.INSERT)
-    @PreAuthorize("@permission.hasAuthority('producems:project:update')")
+    @PreAuthorize("@permission.hasAnyRoles('qa:dept:user,qa:dept:manager')")
     @PostMapping("addOrEditProject")
     public Object addOrEditProject(Project project) {
         projectService.addOrEditProject(project);
@@ -80,7 +78,7 @@ public class ProjectController {
      * @return
      */
     @SysLog(title = "删除项目", businessType = BusinessType.DELETE)
-    @PreAuthorize("@permission.hasAuthority('producems:project:del')")
+    @PreAuthorize("@permission.hasAnyRoles('qa:dept:user,qa:dept:manager')")
     @PostMapping("delProject")
     public Object deleteProject(String guid) {
         projectService.deleteProject(guid);
@@ -95,6 +93,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping("onsiteaAccept")
+    @SysLog(title = "现场验收/取消",businessType = BusinessType.UPDATE)
     public Object onsiteaAccept(Project project) {
         projectService.onsiteaAccept(project);
         return success("成功");

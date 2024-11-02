@@ -10,12 +10,15 @@ import {useSearchParams} from "react-router-dom";
 import {SaveOutlined, SearchOutlined} from "@ant-design/icons";
 import {checkChanges, deepCopy, handleSave} from "../../utils/table";
 import DemandEventstreamModal from "../../content/soft-check-detail/demand-eventstream-modal";
+import {hasRoleOr} from "../../utils/permi";
+import {useSelector} from "react-redux";
 
 const {TextArea} = Input;
 
 
 const ConfirmDetail = () => {
     const [searchForm] = Form.useForm()
+    let userInfo = useSelector(state => state.user.userInfo);
     const [demandConfirmList, setDemandConfirmList] = useState([])
     const [originalDemandConfirmList, setOriginalDemandConfirmList] = useState([]); // 原始数据副本
     const [changedDemandConfirmList, setChangedDemandConfirmList] = useState([]); // 原始数据副本
@@ -159,6 +162,7 @@ const ConfirmDetail = () => {
                             查询
                         </Button>
                         <Button type={'primary'} icon={<SaveOutlined/>}
+                                disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
                                 onClick={updateDemandConfirmDetail}>保存</Button>
                     </Space>
                 </Form.Item>

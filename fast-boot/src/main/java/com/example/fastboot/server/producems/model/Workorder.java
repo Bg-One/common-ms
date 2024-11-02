@@ -192,7 +192,7 @@ public class Workorder implements Serializable {
 
     private String endTime;
 
-    private String statuss;
+    private String workStatus;
 
     private String guids;
 }

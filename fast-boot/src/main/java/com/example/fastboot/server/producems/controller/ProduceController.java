@@ -3,7 +3,6 @@ package com.example.fastboot.server.producems.controller;
 import com.example.fastboot.common.aspectj.annotation.SysLog;
 import com.example.fastboot.common.aspectj.enums.BusinessType;
 import com.example.fastboot.server.producems.model.Producemanage;
-import com.example.fastboot.server.producems.model.Project;
 import com.example.fastboot.server.producems.service.IProduceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +29,6 @@ public class ProduceController {
      * @param producemanage
      * @return
      */
-    @PreAuthorize("@permission.hasAuthority('producems:produce:list')")
     @PostMapping("listProduce")
     public Object listProduce(Producemanage producemanage) {
         return success(producemanageService.listProduce(producemanage));
@@ -42,7 +40,6 @@ public class ProduceController {
      * @param producemanage
      * @return
      */
-    @PreAuthorize("@permission.hasAuthority('producems:produce:list')")
     @PostMapping("listAppearanceAccept")
     public Object listAppearanceAccept(Producemanage producemanage) {
         return success(producemanageService.listAppearanceAccept(producemanage));
@@ -64,7 +61,7 @@ public class ProduceController {
      * @param producemanage
      * @return
      */
-    @PreAuthorize("@permission.hasAuthority('producems:produce:add')")
+    @PreAuthorize("@permission.hasAnyRoles('qa:dept:user,qa:dept:manager')")
     @SysLog(title = "新增产品", businessType = BusinessType.INSERT)
     @PostMapping("addProduce")
     public Object addProduce(Producemanage producemanage) {
@@ -78,8 +75,8 @@ public class ProduceController {
      * @param guid
      * @return
      */
-    @PreAuthorize("@permission.hasAuthority('producems:produce:del')")
     @SysLog(title = "删除产品", businessType = BusinessType.DELETE)
+    @PreAuthorize("@permission.hasAnyRoles('qa:dept:user,qa:dept:manager')")
     @PostMapping("deleteProduce")
     public Object deleteProduce(String guid) {
         producemanageService.deleteProduce(guid);
@@ -117,7 +114,7 @@ public class ProduceController {
      * @param producemanage
      * @return
      */
-    @SysLog(title = "出厂验收/取消验收", businessType = BusinessType.DELETE)
+    @SysLog(title = "出厂验收/取消验收", businessType = BusinessType.UPDATE)
     @PostMapping("appearanceAccept")
     public Object appearanceAccept(Producemanage producemanage) {
         producemanageService.appearanceAccept(producemanage);

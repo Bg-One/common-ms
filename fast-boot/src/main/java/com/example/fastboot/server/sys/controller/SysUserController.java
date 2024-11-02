@@ -10,7 +10,6 @@ import com.example.fastboot.server.sys.model.SysUser;
 import com.example.fastboot.server.sys.service.ISysUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +29,6 @@ public class SysUserController {
     /**
      * 获取用户列表
      */
-    @PreAuthorize("@permission.hasAuthority('system:user:list')")
     @PostMapping("/listUser")
     public Object listUser(SysUser user) {
         List<SysUser> list = iSysUserService.selectUserList(user);
@@ -40,7 +38,6 @@ public class SysUserController {
     /**
      * 新增用户
      */
-    @PreAuthorize("@permission.hasAuthority('system:user:add')")
     @SysLog(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping("/addUser")
     public Object addUser(SysUser user) {
@@ -61,7 +58,6 @@ public class SysUserController {
     /**
      * 修改用户
      */
-    @PreAuthorize("@permission.hasAuthority('system:user:edit')")
     @SysLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PostMapping("/editUser")
     public Object editUser(SysUser sysUser) {
@@ -82,7 +78,6 @@ public class SysUserController {
     /**
      * 删除用户
      */
-    @PreAuthorize("@permission.hasAuthority('system:user:remove')")
     @SysLog(title = "用户管理", businessType = BusinessType.DELETE)
     @PostMapping("/deleteUser")
     public Object deleteUser(SysUser sysUser) {
@@ -100,7 +95,6 @@ public class SysUserController {
     /**
      * 重置密码
      */
-    @PreAuthorize("@permission.hasAuthority('system:user:resetPwd')")
     @SysLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PostMapping("/resetPwd")
     public Object resetPwd(SysUser sysUser) {
@@ -114,7 +108,6 @@ public class SysUserController {
     /**
      * 状态修改
      */
-    @PreAuthorize("@permission.hasAuthority('system:user:edit')")
     @SysLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PostMapping("/changeStatus")
     public Object changeStatus(SysUser sysUser) {

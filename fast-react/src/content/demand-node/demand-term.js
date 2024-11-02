@@ -3,13 +3,15 @@ import {checkChanges, deepCopy, handleSave} from "../../utils/table";
 import {useEffect, useState} from "react";
 import {addOrEditDemandTermApi, deleteDemandTermApi, listDemandTermApi} from "../../common/api/producems/demand";
 import {useSearchParams} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {hasRoleOr} from "../../utils/permi";
 
 const DemandTerm = () => {
     const [searchParams, setSearchParams] = useSearchParams()
-
     const [demandTermList, setDemandTermList] = useState([])
     const [origDemandTermList, setOrigDemandTermList] = useState([])
-
+    let userInfo = useSelector(state => state.user.userInfo);
+    const editFlag = hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])
     useEffect(() => {
         listDemandTermList()
     }, [])
@@ -104,12 +106,12 @@ const DemandTerm = () => {
 
     return <div id="demand-term-area">
         <div>
-            <Button type={'primary'} onClick={() => {
+            <Button disabled={!editFlag} type={'primary'} onClick={() => {
                 let oldDemandTermList = deepCopy(demandTermList)
                 oldDemandTermList.unshift({words: '', explain: ''})
                 setDemandTermList(oldDemandTermList)
             }}>新增</Button>
-            <Button type={'primary'} onClick={saveDemandTerm}>保存</Button>
+            <Button type={'primary'} onClick={saveDemandTerm} disabled={!editFlag}>保存</Button>
         </div>
 
         <Table

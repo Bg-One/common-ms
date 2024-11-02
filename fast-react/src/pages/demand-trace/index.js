@@ -7,13 +7,13 @@ import './index.scss'
 import {countDemandTraceByProduceApi, relatedProduceApi} from "../../common/api/producems/demand";
 import {listNotBindDemandTraceProduceListApi} from "../../common/api/producems/produce";
 import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {componentMap} from "../../common/config/menu-config";
-import {addTab} from "../../redux/tab/tab-slice";
+import {useDispatch, useSelector} from "react-redux";
+import {hasRoleOr} from "../../utils/permi";
+
 
 const DemandTrace = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    let userInfo = useSelector(state => state.user.userInfo);
     const [searchForm] = Form.useForm()
     const [demandTraceList, setDemandTraceList] = useState([])
     const [produceList, setProduceList] = useState([])
@@ -97,9 +97,10 @@ const DemandTrace = () => {
                     wrapperCol={{span: 10, offset: 10,}}>
                     <Space>
                         <Button type={'primary'} htmlType={'submit'}>搜索</Button>
-                        <Button type={'primary'} onClick={() => {
-                            setRelatedVisiBleFlag(true)
-                        }}>关联产品</Button>
+                        <Button type={'primary'} disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
+                                onClick={() => {
+                                    setRelatedVisiBleFlag(true)
+                                }}>关联产品</Button>
                     </Space>
                 </Form.Item>
             </Form>
@@ -283,7 +284,8 @@ const DemandTrace = () => {
                         }
                     />
                 </div>
-                <Button type={'primary'} onClick={relatedProduce}>确认</Button>
+                <Button type={'primary'} onClick={relatedProduce}
+                        disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}>确认</Button>
             </div>
         </Modal>
     </div>

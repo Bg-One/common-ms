@@ -7,8 +7,12 @@ import {
     listIssuesToBeConfirmedApi
 } from "../../common/api/producems/demand";
 import {useSearchParams} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {hasRoleOr} from "../../utils/permi";
 
 const QuestionConfirmed = () => {
+    let userInfo = useSelector(state => state.user.userInfo);
+    const editFlag = hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])
     const [searchParams, setSearchParams] = useSearchParams()
     let [issuestobeconfirmedList, setIssuestobeconfirmedList] = useState([])
     let [originalIssuestobeconfirmedList, setOriginalIssuestobeconfirmedList] = useState([])
@@ -90,20 +94,21 @@ const QuestionConfirmed = () => {
                 onConfirm={(e) => deleteIssuesToBeConfirmed(record.guid, index)}
                 okText="确定"
                 cancelText="取消"
+                disabled={!editFlag}
             >
-                <Button type={'link'}>删除</Button>
+                <Button type={'link'} disabled={!editFlag}>删除</Button>
             </Popconfirm>
         }
     }]
     return <div className="question-confirmed-area">
-        <Button type={'primary'} onClick={() => {
+        <Button disabled={!editFlag} type={'primary'} onClick={() => {
             let oldIssuestobeconfirmedList = deepCopy(issuestobeconfirmedList)
             oldIssuestobeconfirmedList.unshift({issuesContent: ''})
             setIssuestobeconfirmedList(oldIssuestobeconfirmedList)
         }}
         >新增</Button>
 
-        <Button type={'primary'} onClick={saveIssuestobeconfirmed}>保存</Button>
+        <Button type={'primary'} onClick={saveIssuestobeconfirmed} disabled={!editFlag}>保存</Button>
         <Table
             dataSource={issuestobeconfirmedList}
             rowKey={(record, index) => record.guid + index}

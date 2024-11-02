@@ -44,8 +44,6 @@ export const deepCopy = (obj) => {
     return JSON.parse(JSON.stringify(obj))
 }
 export const deepEqual = (objA, objB) => {
-    console.log(objA)
-    console.log(objB)
     if (objA === objB) {
         return true;
     }
@@ -70,6 +68,24 @@ export const deepEqual = (objA, objB) => {
     return true;
 }
 
+export const multiConditionSort = (arr, sortRules) => {
+    arr.sort((a, b) => {
+        for (let rule of sortRules) {
+            let key = rule.key;
+            let order = rule.order;  // 1 表示升序， -1 表示降序
+
+            if (a[key] < b[key]) {
+                return order === 1 ? -1 : 1;
+            } else if (a[key] > b[key]) {
+                return order === 1 ? 1 : -1;
+            }
+        }
+        return 0;
+    });
+    return arr
+}
+
+// 合并单元格
 export const mergesFilter = (arr, record, rules) => {
     rules.map(item => arr = arr.filter(i => i[item] === record[item]))
     let dataIndex = arr.findIndex(item => item.guid === record.guid)

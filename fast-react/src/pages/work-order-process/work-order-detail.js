@@ -11,7 +11,7 @@ import {
     listProjectDepworkTypeApi,
     listWorkOrderCategoryApi,
     listWorkOrderItemApi,
-    listWorkOrderTypeApi, updateWorkOrderApi, updateWorkOrderStatusApi
+    listWorkOrderTypeApi, updateWorkOrderStatusApi, submitWorkOrderApi
 } from "../../common/api/producems/workorder";
 import {listProjectByUserGuidApi} from "../../common/api/producems/project";
 import {FileAddOutlined} from "@ant-design/icons";
@@ -53,8 +53,6 @@ const WorkOrderDetail = ({
         let obj = initWorkOrder();
         setWorkorderDetailList([obj, ...deepCopy(workorderDetailList)])
     }
-
-
 // 初始化报单模板
     const initWorkOrder = () => {
         let temp_workOrderObj = localStorage.getItem('temp_workOrder_Obj') && JSON.parse(localStorage.getItem('temp_workOrder_Obj')) || {}
@@ -62,16 +60,22 @@ const WorkOrderDetail = ({
             // 每个小报单
             createName: userInfo.user.nickName,
             createGuid: userInfo.user.userGuid,
-            departmentName: userInfo.user.deptName,
+            departmentName: userInfo.user.dept.deptName,
             departmentGuid: userInfo.user.deptGuid,
             workDuration: 0,
+            workTypeGuid: '',
+            projectGuid: '',
+            workCategoryGuid: '',
+            workItemGuid: '',
+            demandItemGuid: '',
             createTime: moment().format('YYYY-MM-DD'),  // 报单日期
+            content: '',  // 工作内容
             status: 1,
-            content: '',
-            projectDepworkTypeId: null,// 项目部工作
+            projectDepWorkType: '',// 项目部工作
         }
         if (temp_workOrderObj.createGuid === nowObj.createGuid) {
-            nowObj.workType = temp_workOrderObj.workType, nowObj.workTypeGuid = temp_workOrderObj.workTypeGuid, nowObj.workCategory = temp_workOrderObj.workCategory, nowObj.workCategoryGuid = temp_workOrderObj.workCategoryGuid, nowObj.workItem = temp_workOrderObj.workItem, nowObj.workItemGuid = temp_workOrderObj.workItemGuid, nowObj.projectName = temp_workOrderObj.projectName, nowObj.projectGuid = temp_workOrderObj.projectGuid
+            nowObj.workTypeGuid = temp_workOrderObj.workTypeGuid, nowObj.workCategoryGuid = temp_workOrderObj.workCategoryGuid,
+                nowObj.workItemGuid = temp_workOrderObj.workItemGuid, nowObj.projectGuid = temp_workOrderObj.projectGuid
         }
         return nowObj
     }
@@ -98,6 +102,10 @@ const WorkOrderDetail = ({
         })
     }
     const handleSubmit = async (workListTemp) => {
+        if (getTotalWorkLength(workListTemp, [workOrderEnum.DRAFT, workOrderEnum.SUBMIT, workOrderEnum.CHECKEN]) > 24) {
+            message.error('今日累计工作时长超过了24小时，请修改', 1)
+            return
+        }
         let workList = deepCopy(workListTemp.filter(i => i.status === workOrderEnum.DRAFT))
         for (let i = 0; i < workList.length; i++) {
             let selectWorkOrder = workList[i]
@@ -114,11 +122,11 @@ const WorkOrderDetail = ({
                 message.error('报单不可提前提交', 1)
                 return
             }
-            if (!selectWorkOrder.workType) {
+            if (!selectWorkOrder.workTypeGuid) {
                 message.error('工作类型不能为空', 1)
                 return
             }
-            if (!selectWorkOrder.workCategory) {
+            if (!selectWorkOrder.workCategoryGuid) {
                 message.error('工作类目不能为空', 1)
                 return
             }
@@ -126,11 +134,11 @@ const WorkOrderDetail = ({
                 message.error('工作条目不能为空', 1)
                 return
             }
-            if (!selectWorkOrder.projectName && selectWorkOrder.workType != '技术勘探研发类') {
+            if (!selectWorkOrder.projectGuid) {
                 message.error('项目名称不能为空', 1)
                 return
             }
-            if (selectWorkOrder.workCategory === '软件开发' && ['前端开发', '后端开发', '服务开发', '缺陷修改'].includes(selectWorkOrder.workItem) && !selectWorkOrder.demandItemName) {
+            if (selectWorkOrder.workCategory === '软件开发' && ['前端开发', '后端开发', '服务开发', '缺陷修改'].includes(selectWorkOrder.workItem) && !selectWorkOrder.demandItemGuid) {
                 message.error('功能点不能为空', 1)
                 return
             }
@@ -142,7 +150,7 @@ const WorkOrderDetail = ({
                 message.error('时长填写错误', 1)
                 return
             }
-            if (isDept(userInfo, '项目部') && !selectWorkOrder.projectDepworkTypeId) {
+            if (isDept(userInfo, '项目部') && !selectWorkOrder.projectDepWorkType) {
                 message.error('项目部工作不能为空', 1)
                 return
             }
@@ -151,54 +159,24 @@ const WorkOrderDetail = ({
                 return
             }
         }
-        if (getTotalWorkLength(workListTemp, [workOrderEnum.DRAFT, workOrderEnum.SUBMIT, workOrderEnum.CHECKEN]) > 24) {
-            message.error('今日累计工作时长超过了24小时，请修改', 1)
-            return
-        }
-
-        // 最后保存
-        await saveWorkOrder()
-    }
-    // 保存草稿 isEdit true为保存为编辑存量信息
-    const saveWorkOrder = async (saveOfDraft) => {
-        let workList = deepCopy(workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT))
-        message.loading({
-            content: '保存中，请稍后',
-            key: 'updateWorkOrder',
-            duration: 0
-        })
-        await updateWorkOrderApi({workOrderList: JSON.stringify(workList)})
-        message.destroy('updateWorkOrder')
-        // 留存编辑记录
-        if (userInfo.user.deptName === '研发部') {
-            localStorage.setItem("workorderInfo", JSON.stringify(workList))
-        }
-        // 如果是存草稿
-        if (saveOfDraft) {
-            message.success('保存成功')
-            // 统计数量
-            let data = await countWorkOrderStatusApi({
-                userGuid: userInfo.user.userGuid
-            })
-            // this.props.saveRedux('workOrderMessageList', data.data)
-            // 报单提交 流转状态
-        } else {
-            await updateWorkOrderStatusApi({
-                createGuid: workList[0].createGuid,
-                createTime: workList[0].createTime,
-                status: workOrderEnum.SUBMIT,
-                reason: '',
-                guids: workList.filter(i => i.status === workOrderEnum.DRAFT).map(i => i.guid).join(','),
-                reviewGuid: '',
-                reviewName: ''//审核人
-            })
-            message.success('保存成功')
-        }
+        workList.forEach(item => item.status = workOrderEnum.SUBMIT)
+        await submitWorkOrderApi({workOrderList: JSON.stringify(workList)})
+        message.success('保存成功')
         // 存到本地一份初始化报单信息
         localStorage.setItem('temp_workOrder_Obj', JSON.stringify(workorderDetailList[0]))
         setWorkorderDetailVisible(false)
     }
-    // 更改工单状态（审核操作 过/不过）
+    // 保存工单
+    const saveWorkOrder = async () => {
+        let workList = deepCopy(workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT))
+        await submitWorkOrderApi({workOrderList: JSON.stringify(workList)})
+        // 留存编辑记录
+        message.success('保存成功')
+        // 存到本地一份初始化报单信息
+        localStorage.setItem('temp_workOrder_Obj', JSON.stringify(workorderDetailList[0]))
+        setWorkorderDetailVisible(false)
+    }
+    // 全部通过
     const changeWorkOrderStatus = async (type, workList) => {
         if (!confirm('确认审核通过？')) return
         // 退单
@@ -215,7 +193,6 @@ const WorkOrderDetail = ({
         setWorkorderDetailVisible(false)
     }
 
-
     return <div id="edit-page">
         <div className="head-title">
             <img src={back} style={{width: '1.5vw', verticalAlign: 'text-bottom'}}/>
@@ -231,7 +208,7 @@ const WorkOrderDetail = ({
                     value={workorderDetailList[0] ? workorderDetailList[0].createName : userInfo.user.nickName}
                     disabled/></span>
                 <span>部门：<Input
-                    value={workorderDetailList[0] ? workorderDetailList[0].departmentName : userInfo.user.deptName}
+                    value={workorderDetailList[0] ? workorderDetailList[0].departmentName : userInfo.user.dept.deptName}
                     disabled/></span>
                 <span>报单日期：
                     <DatePicker
@@ -314,7 +291,7 @@ const WorkOrderDetail = ({
             {workorderDetailList[0]?.createGuid === createGuid && <>
                 {workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT)[0] &&
                     <Button onClick={() => {
-                        saveWorkOrder(true)
+                        saveWorkOrder()
                     }} style={{background: 'rgb(123, 123, 220)'}}>保存为草稿</Button>
                 }
                 {workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT)[0] &&

@@ -5,6 +5,7 @@ import {handleSave} from "../../utils/table";
 import {useSelector} from "react-redux";
 import moment from "moment";
 import {addOrEditDemandItemApi, addOrEditDetailDesignApi} from "../../common/api/producems/demand";
+import {hasRoleOr} from "../../utils/permi";
 
 const {TextArea} = Input;
 const SoftDetaildesign = ({softDesignDetail, setSoftDesignDetail, softDesignForm}) => {
@@ -28,7 +29,7 @@ const SoftDetaildesign = ({softDesignDetail, setSoftDesignDetail, softDesignForm
     return (<div style={{height: '79vh', overflowY: 'auto'}}>
             <Form
                 layout="horizontal"
-                // disabled={true}
+                disabled={!hasRoleOr(userInfo, ['rd:dept:user', 'rd:dept:manager'])}
                 labelAlign={'right'}
                 labelCol={{
                     span: 2,
@@ -86,7 +87,9 @@ const SoftDetaildesign = ({softDesignDetail, setSoftDesignDetail, softDesignForm
                 </Form.Item>
                 <Form.Item>
                     <div style={{textAlign: 'center'}}>
-                        <Button type={'primary'} htmlType={'submit'} onClick={addOrEditDetailDesign}>保存</Button>
+                        <Button type={'primary'} htmlType={'submit'} onClick={addOrEditDetailDesign}
+                                disabled={!hasRoleOr(userInfo, ['rd:dept:user', 'rd:dept:manager'])}
+                        >保存</Button>
                     </div>
                 </Form.Item>
             </Form>

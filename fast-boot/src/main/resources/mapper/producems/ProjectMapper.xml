@@ -10,6 +10,7 @@
         <if test="createTime != null ">createTime,</if>
         <if test="executionStatus != null ">executionStatus,</if>
         <if test="acceptReportLink != null and acceptReportLink!=''">acceptReportLink,</if>
+        <if test="produceGuid != null and produceGuid!=''">produceGuid,</if>
         guid
         )values(
         <if test="name != null and name != ''">#{name},</if>
@@ -17,11 +18,12 @@
         <if test="createTime != null ">#{createTime},</if>
         <if test="executionStatus != null ">#{executionStatus},</if>
         <if test="acceptReportLink != null and acceptReportLink!=''">#{acceptReportLink},</if>
+        <if test="produceGuid != null and produceGuid!=''">#{produceGuid},</if>
         #{guid})
     </insert>
     <insert id="insertProjectMember">
         INSERT INTO projectmember(projectGuid,teamResource,managerGuid,groupMemsGuids) VALUES
-        <foreach collection="producememberList" separator="," item="item">
+        <foreach collection="projectmemberList" separator="," item="item">
             (#{projectGuid},#{item.teamResource},#{item.managerGuid},#{item.groupMemsGuids})
         </foreach>
     </insert>
@@ -47,11 +49,11 @@
             </if>
         </set>
         <where>
-            <if test="`projectmember.produceManageGuid` != null and `projectmember.produceManageGuid` != ''">
-                produceManageGuid =
-                #{projectmember.produceManageGuid}
+            <if test="`projectmember.projectGuid` != null and `projectmember.projectGuid` != ''">
+                projectGuid =
+                #{projectmember.projectGuid}
             </if>
-            <if test="`projectmember.produceManageGuid` != null and `projectmember.produceManageGuid` != ''">
+            <if test="`projectmember.teamResource` != null">
                 and teamResource = #{projectmember.teamResource}
             </if>
         </where>
@@ -124,7 +126,7 @@
             </if>
         </where>
     </select>
-    <select id="listProjectMemList" resultType="com.example.fastboot.server.producems.model.Producemember">
+    <select id="listProjectMemList" resultType="com.example.fastboot.server.producems.model.Projectmember">
         select *
         from projectmember
         where projectGuid = #{guid}

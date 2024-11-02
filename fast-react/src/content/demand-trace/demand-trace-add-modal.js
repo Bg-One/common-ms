@@ -8,7 +8,7 @@ import {useSearchParams} from "react-router-dom";
 const DemandTraceAddModal = ({addModalFlag, setAddModalFlag, projectList, addDemandTrace}) => {
     const userInfo = useSelector(state => state.user.userInfo);
     const [searchParams, setSearchParams] = useSearchParams()
-
+    let [form] = Form.useForm();
     return <Modal
         open={addModalFlag}
         centered={true}
@@ -24,18 +24,20 @@ const DemandTraceAddModal = ({addModalFlag, setAddModalFlag, projectList, addDem
             labelCol={{
                 span: 7,
             }}
+            form={form}
             autoComplete="off"
             initialValues={{
                 priority: 0
             }}
-            onFinish={(values) => {
-                addDemandTrace({
+            onFinish={async (values) => {
+                await addDemandTrace({
                     ...values,
                     submitName: userInfo.user.nickName,
                     proposer: userInfo.user.nickName,
                     submitTime: moment().format("YYYY-MM-DD"),
                     produceGuid: searchParams.get('produceGuid')
                 })
+                form.resetFields()
             }}
         > <Form.Item
             label="项目名称"
@@ -131,6 +133,7 @@ const DemandTraceAddModal = ({addModalFlag, setAddModalFlag, projectList, addDem
                 <Space>
                     <Button type={'primary'} onClick={() => {
                         setAddModalFlag(false)
+                        form.resetFields()
                     }}>关闭</Button>
                     <Button type={'primary'} htmlType={'submit'}>保存</Button>
                 </Space>

@@ -60,6 +60,22 @@
     <insert id="insertReviewRelationship">
         insert into reviewrelationship (userGuid, reviewGuid) VALUE (#{userGuid},#{reviewGuid})
     </insert>
+    <insert id="createWorkOrder">
+        insert into workorder (guid, teamGroup, status, createGuid, departmentGuid,
+        workDuration, workTypeGuid, projectGuid,
+        workCategoryGuid, workItemGuid, demandItemGuid, createTime, reviewGuid, content, projectDepworkType)
+        values
+        <foreach collection="workOrderList" item="workorder" separator=",">
+            (#{workorder.guid}, #{workorder.teamGroup}, #{workorder.status}
+            , #{workorder.createGuid}, #{workorder.departmentGuid}
+            , #{workorder.workDuration}
+            , #{workorder.workTypeGuid}, #{workorder.projectGuid},
+            #{workorder.workCategoryGuid}, #{workorder.workItemGuid}
+            , #{workorder.demandItemGuid}, #{workorder.createTime}, #{workorder.reviewGuid}
+            , #{workorder.content}, #{workorder.projectDepWorkType})
+        </foreach>
+
+    </insert>
     <update id="updateWorkOrderItem">
         update workorderitem
         set name =#{name}
@@ -77,6 +93,22 @@
             reviewGuid=#{reviewGuid},
             reviewName=#{reviewName}
         where guid=#{guid}
+    </update>
+    <update id="updateWorkOrder">
+        update workorder
+        set workDuration=#{workorder.workDuration}
+          , teamGroup=#{workorder.teamGroup}
+          , workTypeGuid=#{workorder.workTypeGuid}
+          , projectGuid=#{workorder.projectGuid}
+          , workCategoryGuid=#{workorder.workCategoryGuid}
+          , workItemGuid=#{workorder.workItemGuid}
+          , demandItemGuid=#{workorder.demandItemGuid}
+          , createTime=#{workorder.createTime}
+          , content=#{workorder.content}
+          , reviewGuid=#{workorder.reviewGuid}
+          , projectDepworkType=#{workorder.projectDepWorkType}
+          , status=#{workorder.status}
+        where guid = #{workorder.guid};
     </update>
     <delete id="deleteWorkOrderItem">
         delete
@@ -176,9 +208,9 @@
         left join sys_dept d on d.dept_guid = wo.departmentGuid
         <where>
 
-            <if test="statuss!=null and statuss!='100'">
+            <if test="workStatus!=null and workStatus!='100'">
                 wo.status in
-                <foreach collection="statuss.split('、')" separator="," open="(" close=")" item="item">
+                <foreach collection="workStatus.split('、')" separator="," open="(" close=")" item="item">
                     #{item}
                 </foreach>
             </if>
@@ -262,6 +294,16 @@
         <foreach collection="guidList" item="guid" open="(" close=")" separator=",">
             #{guid}
         </foreach>
+    </select>
+    <select id="listWorkOrderGuidByUserGuid" resultType="java.lang.String">
+        select guid
+        FROM workorder
+        WHERE createGuid = #{userGuid}
+    </select>
+    <select id="getReviewUser" resultType="com.example.fastboot.server.sys.model.SysUser">
+        select t2.*
+        from reviewrelationship t1 left join sys_user t2 on t1.reviewGuid = t2.user_guid
+        where userGuid = #{creatUserGuid}
     </select>
 
 </mapper>

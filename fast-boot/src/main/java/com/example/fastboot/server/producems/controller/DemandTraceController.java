@@ -1,10 +1,13 @@
 package com.example.fastboot.server.producems.controller;
 
+import com.example.fastboot.common.aspectj.annotation.SysLog;
+import com.example.fastboot.common.aspectj.enums.BusinessType;
 import com.example.fastboot.server.producems.model.Demandtrace;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.service.IDemandService;
 import liquibase.pro.packaged.S;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +43,8 @@ public class DemandTraceController {
      * @return
      */
     @PostMapping("relatedProduce")
+    @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
+    @SysLog(title = "关联产品", businessType = BusinessType.INSERT)
     public Object relatedProduce(String produceGuid) {
         demandService.relatedProduce(produceGuid);
         return success("成功");
@@ -64,6 +69,7 @@ public class DemandTraceController {
      * @return
      */
     @PostMapping("updateDemandTraceDetailDes")
+    @SysLog(title = "更新需求变更详细描述", businessType = BusinessType.UPDATE)
     public Object updateDemandTraceDetailDes(String guid, String detailDescription) {
         demandService.updateDemandTraceDetailDes(guid, detailDescription);
         return success("成功");
@@ -76,6 +82,7 @@ public class DemandTraceController {
      * @return
      */
     @PostMapping("deleteteDemandTrace")
+    @SysLog(title = "删除需求跟踪记录", businessType = BusinessType.DELETE)
     public Object deleteteDemandTrace(String guid) {
         demandService.deleteteDemandTrace(guid);
         return success("成功");
@@ -88,18 +95,20 @@ public class DemandTraceController {
      * @return
      */
     @PostMapping("addDemandTrace")
+    @SysLog(title = "新增需求跟踪", businessType = BusinessType.INSERT)
     public Object addDemandTrace(Demandtrace demandtrace) {
         demandService.addDemandTrace(demandtrace);
         return success("成功");
     }
 
     /**
-     * 更新需求跟踪记录
+     * 更新需求跟踪
      *
      * @param demandTraceList
      * @return
      */
     @PostMapping("editDemandTrace")
+    @SysLog(title = "新增需求跟踪", businessType = BusinessType.UPDATE)
     public Object editDemandTrace(String demandTraceList) {
         demandService.editDemandTrace(demandTraceList);
         return success("成功");

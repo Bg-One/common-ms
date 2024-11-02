@@ -8,6 +8,8 @@ import com.example.fastboot.server.producems.mapper.WorkOrderMapper;
 import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.service.IWorkOrderService;
 import com.example.fastboot.server.producems.vo.WorkDurationVo;
+import com.example.fastboot.server.sys.controller.Base;
+import com.example.fastboot.server.sys.model.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -174,17 +176,7 @@ public class IWorkOrderServiceImpl implements IWorkOrderService {
 
     @Override
     public List<Workorder> listWorkOrder(Workorder workorder) {
-        List<Workorder> workorderList = workOrderMapper.listWorkOrder(workorder);
-        List<EngineeringWorkType> engineeringWorkTypeList = workOrderMapper.listProjectDepworkType();
-        for (Workorder workOrderItem : workorderList) {
-            if (!workOrderItem.getProjectDepWorkType().equals("")) {
-                List<EngineeringWorkType> collect = engineeringWorkTypeList.stream().filter(item -> item.getName().equals(workorder.getProjectDepWorkType())).collect(Collectors.toList());
-                workOrderItem.setProjectDepworkTypeId(collect.size() > 0 ? collect.get(0).getId() : null);
-            } else {
-                workOrderItem.setProjectDepworkTypeId(null);
-            }
-        }
-        return workorderList;
+        return workOrderMapper.listWorkOrder(workorder);
     }
 
     @Override
@@ -234,6 +226,23 @@ public class IWorkOrderServiceImpl implements IWorkOrderService {
 
         }
 //        WebSocket.countWorkOrderStatus();
+    }
+
+    @Override
+    public void submitWorkOrder(List<Workorder> workOrderList) {
+        SysUser sysUser = workOrderMapper.getReviewUser(Base.getCreatUserGuid());
+        for (Workorder workorder : workOrderList) {
+            if (workorder.getGuid() == null || workorder.getGuid().equals("")) {
+                workorder.setGuid(UUID.randomUUID().toString());
+                workorder.setReviewGuid(sysUser.getUserGuid());
+                workorder.setReviewName(sysUser.getNickName());
+                ArrayList<Workorder> workorders = new ArrayList<>();
+                workorders.add(workorder);
+                workOrderMapper.createWorkOrder(workorders);
+            } else {
+                workOrderMapper.updateWorkOrder(workorder);
+            }
+        }
     }
 
     /**

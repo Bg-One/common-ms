@@ -42,7 +42,10 @@ public class Constants {
     public static final String LOGIN_FAIL = "Error";
 
     public static final String ALL_PERMISSION = "*:*:*";
-
+    /**
+     * 管理员角色权限标识
+     */
+    public static final String SUPER_ADMIN = "admin";
     /**
      * 是否菜单外链（是）
      */

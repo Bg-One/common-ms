@@ -11,17 +11,18 @@ import {
 } from "../../common/api/producems/project";
 import {listAllProduceApi, listProduceMemListApi} from "../../common/api/producems/produce";
 import {AppstoreAddOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
-import {hasPermi} from "../../utils/permi";
+import {hasPermi, hasRoleOr} from "../../utils/permi";
 import {changeGroupMems, changManage, getUserGiudsByDepGuids, getUserTreeData} from "../../utils/user";
 import {listUserApi} from "../../common/api/sys/use-api";
 import {listDeptApi} from "../../common/api/sys/deptinfo-api";
 import {projectExecutionStatusEnum} from "../../common/enmus/project-exe-status-enum";
+import {useSelector} from "react-redux";
 
 
 const Project = (props) => {
     const [formInstance] = Form.useForm()
     const [searchForm] = Form.useForm()
-
+    let userInfo = useSelector(state => state.user.userInfo);
     const [projectList, setProjectList] = useState([])
     const [produceList, setProduceList] = useState([])
 
@@ -225,7 +226,7 @@ const Project = (props) => {
                             重置
                         </Button>
                         <Button type="primary" htmlType="button"
-                            // disabled={!hasPermi(userInfo, "producems:produce:add")}
+                                disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
                                 icon={<AppstoreAddOutlined/>}
                                 onClick={() => {
                                     setAddModalOpen(true)
@@ -264,7 +265,8 @@ const Project = (props) => {
             }, {
                 title: '操作', key: 'action', render: (text, record, index) => {
                     return <div className='actionlist'>
-                        <Button type={'link'} onClick={(e) => {
+                        <Button disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
+                                type={'link'} onClick={(e) => {
                             setAddModalOpen(true)
                             getProjectInfo(record)
                         }} size="small">编辑</Button>
@@ -273,8 +275,10 @@ const Project = (props) => {
                             onConfirm={() => asynDelProject(record.guid)}
                             okText="确定"
                             cancelText="取消"
+                            disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
                         >
-                            <Button type={'link'} size="small">删除</Button>
+                            <Button disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
+                                    type={'link'} size="small">删除</Button>
                         </Popconfirm>
                     </div>
                 }
@@ -428,7 +432,8 @@ const Project = (props) => {
                 }}
                 pagination={false}
             />
-            <Button type={'primary'} onClick={saveOrEditProject}>保存</Button>
+            <Button type={'primary'} disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
+                    onClick={saveOrEditProject}>保存</Button>
         </Modal>
     </div>
 }

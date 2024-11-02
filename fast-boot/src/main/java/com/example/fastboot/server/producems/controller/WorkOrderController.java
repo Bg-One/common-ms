@@ -1,8 +1,6 @@
 package com.example.fastboot.server.producems.controller;
 
 import com.alibaba.fastjson2.JSONArray;
-import com.example.fastboot.common.enums.WorkOrderStatusEnum;
-import com.example.fastboot.common.exception.ServiceException;
 import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.service.IWorkOrderService;
 import com.example.fastboot.server.producems.vo.WorkDurationVo;
@@ -11,9 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.fastboot.common.response.CommonResult.success;
 
@@ -277,7 +274,6 @@ public class WorkOrderController {
      * 更改工单状态
      *
      * @param workorder
-
      * @return
      */
     @PostMapping("updateWorkOrderStatus")
@@ -285,4 +281,17 @@ public class WorkOrderController {
         workOrderService.updateWorkOrderStatus(workorder);
         return success("成功");
     }
+
+    /**
+     * 提交工单
+     *
+     * @param workOrderList
+     * @return
+     */
+    @PostMapping("submitWorkOrder")
+    public Object updateWorkOrder(String workOrderList) {
+        workOrderService.submitWorkOrder(JSONArray.parseArray(workOrderList, Workorder.class));
+        return success("成功");
+    }
+
 }

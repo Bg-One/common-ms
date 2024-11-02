@@ -41,31 +41,49 @@ const WorkOrderTable = ({
             title: '报单时间',
             dataIndex: 'createTime',
             key: 'createTime',
+            onCell: (record, index) => mergesFilter(dataSource, record, ['createTime'])
+
         }, {
             title: '员工姓名',
             dataIndex: 'createName',
             key: 'createName',
+            onCell: (record, index) => mergesFilter(dataSource, record, ['createTime', 'createName'])
         }, {
             title: '部门',
             key: 'departmentName',
             dataIndex: 'departmentName',
-        }, {
-            title: '项目名称',
-            dataIndex: 'projectName',
-            key: 'projectName',
+            onCell: (record, index) => {
+                return mergesFilter(dataSource, record, ['createTime', 'createName', 'departmentName'])
+            }
         }, {
             title: '工作类型',
             dataIndex: 'workType',
             key: 'workType',
+            onCell: (record, index) => {
+                return mergesFilter(dataSource, record, ['createTime', 'createName', 'departmentName', 'workType'])
+            }
+        }, {
+            title: '项目名称',
+            dataIndex: 'projectName',
+            key: 'projectName',
+            onCell: (record, index) => {
+                return mergesFilter(dataSource, record, ['createTime', 'createName', 'departmentName', 'workType', 'projectName'])
+            }
         }, {
             title: '工作类目',
             dataIndex: 'workCategory',
             key: 'workCategory',
+            onCell: (record, index) => {
+                return mergesFilter(dataSource, record, ['createTime', 'createName', 'departmentName', 'workType', 'projectName', 'workCategory'])
+            }
         }, {
             title: '工作条目',
             dataIndex: 'workItem',
             key: 'workItem',
-        }, isDept(userInfo,'项目部')  && {
+            onCell: (record, index) => {
+                return mergesFilter(dataSource, record, ['createTime', 'createName', 'departmentName', 'workType', 'projectName', 'workCategory', 'workItem'])
+            }
+        }, isDept(userInfo, '项目部') && {
             title: '项目部工作',
             key: 'projectDepworkType',
             dataIndex: 'projectDepworkType',
@@ -89,6 +107,7 @@ const WorkOrderTable = ({
         }, {
             title: '状态',
             key: 'status',
+            onCell: (record, index) => mergesFilter(dataSource, record, ['createTime', 'createName']),
             render: (text, record, index) => {
                 return <>
                     {record.status === workOrderEnum.DRAFT ?
@@ -103,6 +122,7 @@ const WorkOrderTable = ({
         }, {
             title: '操作',
             key: 'options',
+            onCell: (record, index) => mergesFilter(dataSource, record, ['createTime', 'createName']),
             render: (text, record, index) => {
                 return <div className="option-btn">
                     {record.status === workOrderEnum.DRAFT ? <>

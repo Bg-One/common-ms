@@ -2,6 +2,7 @@ package com.example.fastboot.server.producems.mapper;
 
 import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.vo.WorkDurationVo;
+import com.example.fastboot.server.sys.model.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -144,6 +145,7 @@ public interface WorkOrderMapper {
 
     /**
      * 获取工单列表
+     *
      * @param workorder
      * @return
      */
@@ -151,18 +153,21 @@ public interface WorkOrderMapper {
 
     /**
      * 获取项目部工单类型
+     *
      * @return
      */
     List<EngineeringWorkType> listProjectDepworkType();
 
     /**
      * 删除工单
+     *
      * @param guid
      */
     void deleteWorkOrder(String guid);
 
     /**
      * 获取工单详情列表
+     *
      * @param createGuid
      * @param createTime
      * @return
@@ -171,6 +176,7 @@ public interface WorkOrderMapper {
 
     /**
      * 根据唯一标识列表获取工单
+     *
      * @param guidList
      * @return
      */
@@ -178,7 +184,37 @@ public interface WorkOrderMapper {
 
     /**
      * 更新工单状态
+     *
      * @param workorder
      */
     void updateWorkOrderStatus(Workorder workorder);
+
+    /**
+     * 根据用户唯一标识获取工单
+     *
+     * @param userGuid
+     * @return
+     */
+    List<String> listWorkOrderGuidByUserGuid(String userGuid);
+
+    /**
+     * 更新工单
+     *
+     * @param workorder
+     */
+    void updateWorkOrder(@Param("workorder") Workorder workorder);
+
+    /**
+     * 新增工单
+     *
+     * @param workOrderList
+     */
+    void createWorkOrder(@Param("workOrderList") List<Workorder> workOrderList);
+
+    /**
+     * 获取审核人员
+     * @param creatUserGuid
+     * @return
+     */
+    SysUser getReviewUser(@Param("creatUserGuid") String creatUserGuid);
 }

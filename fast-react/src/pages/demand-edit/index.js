@@ -179,15 +179,14 @@ const DemandEdit = () => {
             <div className={'title'}>需求规格说明目录</div>
             <TreeSearch
                 onSelect={(e, name) => {
-                    console.log(demandItemForm.getFieldsValue())
                     let eElement = e[0];
+                    setActiveNode(eElement)
                     //判断是否显示需求节点面板
                     if (eElement === 'objective' || eElement === 'demandTerm'
                         || eElement === 'userFunc' || eElement === 'func-demand'
                         || eElement === 'nofunc-demand' || eElement === 'question-confirmed') {
                         return
                     }
-                    setActiveNode(eElement)
                     setDemandVisible(false)
                     let obj = nodeList.find(item => item.guid === eElement);
                     obj && obj.nodeType && getDemandItemDetail(eElement)

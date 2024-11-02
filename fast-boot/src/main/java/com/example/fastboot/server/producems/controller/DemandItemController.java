@@ -1,11 +1,14 @@
 package com.example.fastboot.server.producems.controller;
 
+import com.example.fastboot.common.aspectj.annotation.SysLog;
+import com.example.fastboot.common.aspectj.enums.BusinessType;
 import com.example.fastboot.server.producems.model.DemandItem;
 import com.example.fastboot.server.producems.model.Detaileddesign;
 import com.example.fastboot.server.producems.model.Nodes;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.service.IDemandService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -74,6 +77,8 @@ public class DemandItemController {
      * @return
      */
     @PostMapping("addOrEditDetailDesign")
+    @PreAuthorize("@permission.hasAnyRoles('rd:dept:user,rd:dept:manager')")
+    @SysLog(title = "新增或修改详细设计", businessType = BusinessType.UPDATE)
     public Object addOrEditDetailDesign(Detaileddesign detaileddesign) {
         demandService.addOrEditDetailDesign(detaileddesign);
         return success("成功");
@@ -86,6 +91,8 @@ public class DemandItemController {
      * @return
      */
     @PostMapping("addOrEditDemandItem")
+    @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
+    @SysLog(title = "新增或更新需求分项", businessType = BusinessType.UPDATE)
     public Object addOrEditDemandItem(DemandItem demanditem) {
         demandService.addOrEditDemandItem(demanditem);
         return success("成功");

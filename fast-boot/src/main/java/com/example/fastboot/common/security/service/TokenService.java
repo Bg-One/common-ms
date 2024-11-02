@@ -6,6 +6,7 @@ import com.example.fastboot.common.constant.Constants;
 import com.example.fastboot.common.enums.CommonResultEnum;
 import com.example.fastboot.common.exception.ServiceException;
 import com.example.fastboot.common.redis.RedisCache;
+import com.example.fastboot.common.response.CommonFun;
 import com.example.fastboot.common.security.LoginUser;
 import com.example.fastboot.common.utils.ip.AddressUtils;
 import com.example.fastboot.common.utils.ip.IpUtils;
@@ -76,7 +77,8 @@ public class TokenService {
                 return user;
             } catch (Exception e) {
                 log.error("获取用户信息异常'{}'", e.getMessage());
-                throw new ServiceException(CommonResultEnum.TOKEN_EXPIRED);
+//                CommonFun.outputException(e, log);
+//                throw new ServiceException(CommonResultEnum.TOKEN_EXPIRED);
             }
         }
         return null;

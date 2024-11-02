@@ -145,9 +145,11 @@ const WorkOrderContentItem = ({
                 break
             case 'projectName':
                 record.projectGuid = value
+                record.projectName = projectByUserList.find(item => item.guid === value).name
                 break
             case 'demandItem':
                 record.demandItemGuid = value
+                record.demandItemGuid = workItemList.find(item => item.guid === value).name
                 break
             case 'projectDepworkTypeId':
                 record.projectDepworkTypeId = value
@@ -199,7 +201,7 @@ const WorkOrderContentItem = ({
             reason: '',
             guids: guids || '',//如果有值，则仅处理这些票的状态，否则处理当天的
             reviewGuid: '',       //审核人
-            reviewName:''
+            reviewName: ''
         })
         message.destroy('updateWorkOrderStatus')
         getWorkOrder()

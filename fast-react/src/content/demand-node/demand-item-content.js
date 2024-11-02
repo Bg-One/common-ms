@@ -3,10 +3,13 @@ import TinymceEditor from "../tinymce";
 import React, {useEffect, useState} from "react";
 import {addOrEditDemandItemApi, listDemandTraceApi} from "../../common/api/producems/demand";
 import {useSearchParams} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {hasRoleOr} from "../../utils/permi";
 
 const {TextArea} = Input;
 const DemandItemContent = ({demandItem, setDemandItem, demandItemForm}) => {
     const [searchParams, setSearchParams] = useSearchParams()
+    let userInfo = useSelector(state => state.user.userInfo);
     const [demandTraceList, setDemandTraceList] = useState([])
     // useEffect(() => {
     //     return () => {
@@ -46,7 +49,7 @@ const DemandItemContent = ({demandItem, setDemandItem, demandItemForm}) => {
     return <div style={{height: '79vh', overflowY: 'auto'}}>
         <Form
             layout="horizontal"
-            // disabled={true}
+            disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
             labelAlign={'right'}
             labelCol={{
                 span: 2,
@@ -176,9 +179,12 @@ const DemandItemContent = ({demandItem, setDemandItem, demandItemForm}) => {
             </Form.Item>
             <Form.Item>
                 <div style={{textAlign: 'center'}}>
-                    <Button type={'primary'}>研发明确</Button>
-                    <Button type={'primary'}>研发完成</Button>
-                    <Button type={'primary'} onClick={addOrEditDemandItem}>保存</Button>
+                    <Button type={'primary'}
+                            disabled={!hasRoleOr(userInfo, ['rd:dept:user', 'rd:dept:manager'])}>研发明确</Button>
+                    <Button type={'primary'}
+                            disabled={!hasRoleOr(userInfo, ['rd:dept:user', 'rd:dept:manager'])}>研发完成</Button>
+                    <Button type={'primary'} onClick={addOrEditDemandItem}
+                            disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}>保存</Button>
                 </div>
             </Form.Item>
         </Form>

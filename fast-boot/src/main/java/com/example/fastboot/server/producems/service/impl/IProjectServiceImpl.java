@@ -56,7 +56,7 @@ public class IProjectServiceImpl implements IProjectService {
 
     @Override
     public void addOrEditProject(Project project) {
-        List<Projectmember> projectmemberList = JSONArray.parseArray(project.getTeamReasourcesList(), Projectmember.class);
+        List<Projectmember> projectmemberList = JSONArray.parseArray(project.getProjectMemberList(), Projectmember.class);
         String guid = project.getGuid();
         if (guid == null || guid.isEmpty()) {
             //检验产品名和产品编号是否唯一

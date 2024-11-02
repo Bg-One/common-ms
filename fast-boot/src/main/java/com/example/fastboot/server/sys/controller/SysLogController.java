@@ -42,7 +42,6 @@ public class SysLogController {
      * @param guids 唯一标识
      * @return
      */
-    @PreAuthorize("@permission.hasAuthority('monitor:logininfor:remove')")
     @SysLog(title = "登录日志", businessType = BusinessType.DELETE)
     @PostMapping("/removeLoginLogByGuids")
     public Object removeLoginLogByGuids(String[] guids) {
@@ -55,7 +54,6 @@ public class SysLogController {
      *
      * @return
      */
-    @PreAuthorize("@permission.hasAuthority('monitor:logininfor:remove')")
     @SysLog(title = "登录日志", businessType = BusinessType.CLEAN)
     @PostMapping("/cleanLoginLog")
     public Object cleanLoginLog() {
@@ -69,7 +67,6 @@ public class SysLogController {
      * @param operLog
      * @return
      */
-    @PreAuthorize("@permission.hasAuthority('monitor:operlog:list')")
     @PostMapping("/listOperLog")
     public Object listOperateLog(SysOperLog operLog) {
         return CommonResult.success(operLogService.selectOperLogList(operLog));
@@ -82,7 +79,6 @@ public class SysLogController {
      * @return
      */
     @SysLog(title = "操作日志", businessType = BusinessType.DELETE)
-    @PreAuthorize("@permission.hasAuthority('monitor:operlog:remove')")
     @PostMapping("/removeOperLogByGuids")
     public Object removeOperLogByGuids(String[] operGuids) {
         operLogService.deleteOperLogByGuids(operGuids);
@@ -95,7 +91,6 @@ public class SysLogController {
      * @return
      */
     @SysLog(title = "操作日志", businessType = BusinessType.CLEAN)
-    @PreAuthorize("@permission.hasAuthority('monitor:operlog:remove')")
     @PostMapping("/cleanOperLog")
     public Object cleanOperLog() {
         operLogService.cleanOperLog();

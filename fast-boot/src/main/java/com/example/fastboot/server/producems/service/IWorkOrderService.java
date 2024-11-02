@@ -163,7 +163,17 @@ public interface IWorkOrderService {
 
     /**
      * 更新工单状态
+     *
      * @param workorder
      */
     void updateWorkOrderStatus(Workorder workorder);
+
+    /**
+     * 工单提交
+     *
+     * @param workOrderList
+     */
+    void submitWorkOrder(List<Workorder> workOrderList);
+
+
 }

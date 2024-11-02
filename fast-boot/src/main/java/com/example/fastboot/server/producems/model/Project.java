@@ -43,5 +43,5 @@ public class Project {
 
     private String projectManagerName;
 
-    private String teamReasourcesList;
+    private String projectMemberList;
 }

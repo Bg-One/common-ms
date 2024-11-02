@@ -15,8 +15,6 @@ import com.example.fastboot.server.sys.model.SysUser;
 import com.example.fastboot.server.sys.service.ISysRoleService;
 import com.example.fastboot.server.sys.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +41,6 @@ public class SysRoleController {
     @Autowired
     private SysPermissionService sysPermissionService;
 
-    @PreAuthorize("@permission.hasAuthority('system:role:list')")
     @PostMapping("/listRole")
     public Object list(SysRole role) {
         List<SysRole> list = iSysRoleService.selectRoleList(role);
@@ -53,7 +50,6 @@ public class SysRoleController {
     /**
      * 新增角色
      */
-    @PreAuthorize("@permission.hasAuthority('system:role:add')")
     @SysLog(title = "角色管理", businessType = BusinessType.INSERT)
     @PostMapping("/addRole")
     public Object addRole(SysRole role) {
@@ -71,7 +67,6 @@ public class SysRoleController {
     /**
      * 修改保存角色
      */
-    @PreAuthorize("@permission.hasAuthority('system:role:edit')")
     @SysLog(title = "角色管理", businessType = BusinessType.UPDATE)
     @PostMapping("/editRole")
     public Object editRole(SysRole role) {
@@ -99,7 +94,6 @@ public class SysRoleController {
     /**
      * 删除角色
      */
-    @PreAuthorize("@permission.hasAuthority('system:role:remove')")
     @SysLog(title = "角色管理", businessType = BusinessType.DELETE)
     @PostMapping("/deleteRole")
     public Object remove(SysRole sysRole) {
@@ -116,7 +110,6 @@ public class SysRoleController {
     /**
      * 查询已分配/未分配用户角色列表
      */
-    @PreAuthorize("@permission.hasAuthority('system:role:list')")
     @PostMapping("/allocatedList")
     public Object allocatedList(SysUser sysUser) {
         JSONObject jsonObject = new JSONObject();
@@ -134,7 +127,6 @@ public class SysRoleController {
     /**
      * 取消授权用户
      */
-    @PreAuthorize("@permission.hasAuthority('system:role:edit')")
     @SysLog(title = "角色管理", businessType = BusinessType.GRANT)
     @PostMapping("/cancelCuthUser")
     public Object cancelCuthUser(String roleGuid, String[] userGuids) {
@@ -145,7 +137,6 @@ public class SysRoleController {
     /**
      * 用户授权
      */
-    @PreAuthorize("@permission.hasAuthority('system:role:edit')")
     @SysLog(title = "角色管理", businessType = BusinessType.GRANT)
     @PostMapping("/authUser")
     public Object authUser(String roleGuid, String[] userGuids) {

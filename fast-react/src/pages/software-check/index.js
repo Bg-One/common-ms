@@ -5,14 +5,13 @@ import pinyinUtil from '../../common/react-pinyin-master/pinyinUtil'
 import './index.scss'
 import {countCheckFeedbackByProduceApi, relatedProduceApi} from "../../common/api/producems/softcheck";
 import {listNotBindSoftwareCheckProduceListApi} from "../../common/api/producems/produce";
-import {componentMap} from "../../common/config/menu-config";
-import {addTab} from "../../redux/tab/tab-slice";
 import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {hasRoleOr} from "../../utils/permi";
 
 const SoftwareCheck = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    let userInfo = useSelector(state => state.user.userInfo);
     const [searchForm] = Form.useForm()
     const [notBindCheckProduceList, setNotBindCheckProduceList] = useState([])
     const [relatedVisiBleFlag, setRelatedVisiBleFlag] = useState(false)
@@ -100,7 +99,9 @@ const SoftwareCheck = () => {
                     wrapperCol={{span: 10, offset: 10,}}>
                     <Space>
                         <Button type={'primary'} htmlType={'submit'}>搜索</Button>
-                        <Button type={'primary'} onClick={() => {
+                        <Button type={'primary'}
+                                disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
+                                onClick={() => {
                             setRelatedVisiBleFlag(true)
                         }}>关联产品</Button>
                     </Space>

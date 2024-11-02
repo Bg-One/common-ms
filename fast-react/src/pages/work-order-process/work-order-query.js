@@ -9,7 +9,9 @@ import withdraw from '../../static/images/withdraw.png'
 import {getWorkOrderApi, listWorkOrderApi} from "../../common/api/producems/workorder";
 import moment from "moment";
 import WorkOrderDetail from "./work-order-detail";
+import dayjs from "dayjs";
 
+const {RangePicker} = DatePicker
 const WorkOrderQuery = () => {
     const [searchForm] = Form.useForm();
     const [userList, setUserList] = useState([])
@@ -40,9 +42,9 @@ const WorkOrderQuery = () => {
     }
     const onFinish = async (values) => {
         await listWorkOrder({
-            statuss: values.statuss,
+            workStatus: values.workStatus,
             createGuid: values.createGuid,
-            departmentGuid: values.departmentGuid.join("、"),
+            departmentGuid: values.departmentGuid,
             projectGuid: values.projectGuid,
             startTime: values.timerange[0].format('YYYY-MM-DD'),
             endTime: values.timerange[1].format('YYYY-MM-DD')
@@ -65,14 +67,12 @@ const WorkOrderQuery = () => {
             title: '审核人',
             key: 'reviewName',
             dataIndex: 'reviewName',
-            width: '5vw',
         }, {
             title: '工作类型',
             dataIndex: 'workType',
             key: 'workType',
             render: (text, record, index) => {
-                return record.status === '1' && record.reason ? <div><img src={withdraw} style={{
-                    width: '25px',
+                return record.status === workOrderEnum.DRAFT && record.reason ? <div><img src={withdraw} style={{
                     position: 'absolute',
                     left: '5px'
                 }}/>{text}</div> : text
@@ -81,7 +81,6 @@ const WorkOrderQuery = () => {
             title: '项目名称',
             dataIndex: 'projectName',
             key: 'projectName',
-            width: '15vw',
         }, {
             title: '工作类目',
             dataIndex: 'workCategory',
@@ -98,12 +97,10 @@ const WorkOrderQuery = () => {
             title: '时长',
             key: 'workDuration',
             dataIndex: 'workDuration',
-            width: '3vw',
         }, {
             title: '工作内容',
             key: 'content',
             dataIndex: 'content',
-            width: '20%',
         }, {
             title: '状态',
             key: 'status',
@@ -145,8 +142,7 @@ const WorkOrderQuery = () => {
                 </div>
             }
         }]
-    return <div>
-
+    return <div id={'query-workorder'}>
         {workorderDetailVisible ?
             <WorkOrderDetail setWorkorderDetailVisible={setWorkorderDetailVisible}
                              workorderDetailList={workorderDetailList}
@@ -161,7 +157,8 @@ const WorkOrderQuery = () => {
                         departmentGuid: userInfo.user.deptGuid,
                         createGuid: '100',
                         projectGuid: '100',
-                        statuss: '100',
+                        workStatus: '100',
+                        timerange: [dayjs(moment().startOf('month').format('YYYY-MM-DD')), dayjs(moment().format('YYYY-MM-DD'))]
                     }}
 
                     onFinish={onFinish}
@@ -171,7 +168,6 @@ const WorkOrderQuery = () => {
                             style={{width: '8vw'}}
                             showSearch
                             mode="multiple"
-                            showArrow
                             onChange={(v) => {
                                 setSelectDepGuid(v)
                             }}
@@ -203,11 +199,12 @@ const WorkOrderQuery = () => {
                         />
                     </Form.Item>
                     <Form.Item label="选择时间：" name={'timerange'}>
-                        <DatePicker.RangePicker
-                            style={{width: '15vw'}}
+                        <RangePicker
+                            style={{width: '18vw'}}
+                            format={'YYYY-MM-DD'}
                         />
                     </Form.Item>
-                    <Form.Item label={'工单状态'} name={'statuss'}>
+                    <Form.Item label={'工单状态'} name={'workStatus'}>
                         <Select
                             style={{width: '5vw'}}
                             options={[{value: '100', label: '全选'}, {value: '1', label: '待提交'}, {

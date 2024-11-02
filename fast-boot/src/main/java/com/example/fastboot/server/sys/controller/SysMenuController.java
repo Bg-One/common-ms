@@ -10,7 +10,6 @@ import com.example.fastboot.common.security.LoginUser;
 import com.example.fastboot.server.sys.model.SysMenu;
 import com.example.fastboot.server.sys.service.ISysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +27,6 @@ public class SysMenuController {
     @Autowired
     private ISysMenuService iSysMenuService;
 
-    @PreAuthorize("@permission.hasAuthority('system:role:list')")
     @PostMapping("/listMenu")
     public Object list(SysMenu sysMenu) {
         LoginUser loginUser = (LoginUser) Base.getCreatUserDetails();
@@ -39,7 +37,6 @@ public class SysMenuController {
     /**
      * 删除菜单
      */
-    @PreAuthorize("@permission.hasAuthority('system:menu:remove')")
     @SysLog(title = "菜单管理", businessType = BusinessType.DELETE)
     @PostMapping("/deleteSysMenu")
     public Object deleteSysMenu(String menuGuid) {
@@ -56,7 +53,6 @@ public class SysMenuController {
     /**
      * 新增菜单
      */
-    @PreAuthorize("@permission.hasAuthority('system:menu:add')")
     @SysLog(title = "菜单管理", businessType = BusinessType.INSERT)
     @PostMapping("/addMenu")
     public Object addMenu(SysMenu menu) {
@@ -72,7 +68,6 @@ public class SysMenuController {
     /**
      * 修改菜单
      */
-    @PreAuthorize("@permission.hasAuthority('system:menu:edit')")
     @SysLog(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PostMapping("/editMenu")
     public Object editMenu(SysMenu menu) {

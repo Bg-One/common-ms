@@ -24,7 +24,7 @@ import {listUserApi} from "../../common/api/sys/use-api";
 import {changeGroupMems, changManage, getUserGiudsByDepGuids, getUserTreeData} from "../../utils/user";
 import {listDeptApi} from "../../common/api/sys/deptinfo-api";
 import pinyinUtil from "../../common/react-pinyin-master";
-import {hasPermi} from '../../utils/permi'
+import {hasPermi, hasRole, hasRoleOr} from '../../utils/permi'
 import {useSelector} from "react-redux";
 
 
@@ -184,13 +184,14 @@ const Produce = (props) => {
                         }}>
                             重置
                         </Button>
-                        <Button type="primary" htmlType="button"
-                                disabled={!hasPermi(userInfo, "producems:produce:add")}
-                                icon={<AppstoreAddOutlined/>}
-                                onClick={() => {
-                                    setAddModalOpen(true)
-                                    setAddFlag(true)
-                                }}>
+                        <Button
+                            disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
+                            type="primary" htmlType="button"
+                            icon={<AppstoreAddOutlined/>}
+                            onClick={() => {
+                                setAddModalOpen(true)
+                                setAddFlag(true)
+                            }}>
                             新增
                         </Button>
                     </Space>
@@ -252,14 +253,14 @@ const Produce = (props) => {
                     render: (text, record, index) => {
                         return <>
                             <Button
-                                disabled={!hasPermi(userInfo, "producems:produce:update")}
+                                disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
                                 type={'link'} size="small"
                                 onClick={() => {
                                     setAddModalOpen(true)
                                     getProduceInfo(record)
                                 }}>编辑</Button>
                             <Popconfirm
-                                disabled={!hasPermi(userInfo, "producems:produce:del")}
+                                disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
                                 title={`您确认删除${record.name}产品吗？`}
                                 onConfirm={(e) => deleteProduceApi({guid: record.guid})
                                     .then(() => {
@@ -272,8 +273,9 @@ const Produce = (props) => {
                                 okText="确定"
                                 cancelText="取消"
                             >
-                                <Button disabled={!hasPermi(userInfo, "producems:produce:del")}
-                                        type={'link'} size="small">删除</Button>
+                                <Button type={'link'} size="small"
+                                        disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
+                                >删除</Button>
                             </Popconfirm>
                         </>
                     }
@@ -415,7 +417,10 @@ const Produce = (props) => {
                                 treeCheckable={true} //
                                 showCheckedStrategy={TreeSelect.SHOW_PARENT}
                                 showSearch
-                                filterTreeNode={(input, option) => pinyinUtil.getFirstLetter(option.title).indexOf(input.toUpperCase()) !== -1 || option.title.indexOf(input.toUpperCase()) !== -1}
+                                filterTreeNode={(input, option) => {
+                                    let title = option.title?.props?.children || option.title
+                                    return pinyinUtil.getFirstLetter(title).indexOf(input.toUpperCase()) !== -1 || title.indexOf(input.toUpperCase()) !== -1
+                                }}
                             />
                         }
                     }
@@ -426,7 +431,8 @@ const Produce = (props) => {
                 }}
                 pagination={false}
             />
-            <Button type={'primary'} onClick={addProduce}>保存</Button>
+            <Button type={'primary'} disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
+                    onClick={addProduce}>保存</Button>
         </Modal>
     </div>
 }

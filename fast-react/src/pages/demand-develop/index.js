@@ -14,13 +14,14 @@ import {documentStatusEnum} from "../../common/enmus/document-status-enum";
 import {componentMap} from "../../common/config/menu-config";
 import {addTab} from "../../redux/tab/tab-slice";
 import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {hasRoleOr} from "../../utils/permi";
 
 const {TextArea} = Input;
 
 const DemandDevelop = () => {
+    let userInfo = useSelector(state => state.user.userInfo);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const [searchForm] = Form.useForm()
     const [demandList, setDemandList] = useState([])
     const [produceList, setProduceList] = useState([])
@@ -125,24 +126,17 @@ const DemandDevelop = () => {
         }
         await addDemandApi({produceGuid: selectProduceGuid})
         setAddModalVisible(false)
-        this.props.history.push('/home/demand-edit' + '?guid=' + this.state.demandGuid + '&edit=true')
-
+        listDemand({
+            currentPage: pageInfo.currentPage,
+            pageSize: pageInfo.pageSize,
+            ...searchForm.getFieldsValue(),
+            staus: documentStatus
+        })
     }
 
     //查看
     const getDetail = (record) => {
         navigate('/home/demand-edit' + '?produceGuid=' + record.produceGuid + "&demandGuid=" + record.guid)
-        setTimeout(() => {
-            const Component = componentMap.DemandEdit;
-            dispatch(addTab({
-                label: `${record.produceName}需求详情`,
-                children: <React.Suspense fallback={<div>Loading...</div>}>
-                    <Component/>
-                </React.Suspense>
-                ,
-                key: '/home/demand-edit' + '?produceGuid=' + record.produceGuid + "&demandGuid=" + record.guid,
-            }))
-        }, 200)
     }
 
     //删除所选的需求规格
@@ -258,18 +252,20 @@ const DemandDevelop = () => {
             key: 'action',
             render: (text, record, index) => {
                 return <div className='actionlist'>
-                    <Button type={'link'} onClick={() => getDetail(record)}>查看</Button>
-                    <Button style={{display: record.staus !== 3 ? 'block' : 'none'}} type="link">编辑</Button>
+                    <Button type={'link'} onClick={() => getDetail(record)}>编辑</Button>
                     <Popconfirm
                         title={`您确认送审吗？`}
                         onConfirm={(e) => statusTransfer(documentStatusEnum.REVIEW, record.guid)}
                         okText="确定"
                         cancelText="取消"
+                        disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
                     >
-                        <Button style={{display: record.staus === 1 ? 'block' : 'none'}}
+                        <Button disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
+                                style={{display: record.staus === documentStatusEnum.EDIT ? 'block' : 'none'}}
                                 type={'link'}>送审</Button>
                     </Popconfirm>
                     <Button type={'link'}
+                            disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
                             style={{display: record.staus === 3 ? 'block' : 'none'}}>需求变更</Button>
                     <Button type={'link'} style={{display: record.staus === 2 ? 'block' : 'none'}}
                             onClick={() => {
@@ -285,9 +281,11 @@ const DemandDevelop = () => {
                         onConfirm={(e) => statusTransfer(documentStatusEnum.EDIT, record.guid)}
                         okText="确定"
                         cancelText="取消"
+                        disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
                     >
                         <Button
-                            style={{display: record.staus === 2 ? 'block' : 'none'}}
+                            disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
+                            style={{display: record.staus === documentStatusEnum.REVIEW ? 'block' : 'none'}}
                             type={'link'}>撤回</Button>
                     </Popconfirm>
                 </div>
@@ -359,15 +357,19 @@ const DemandDevelop = () => {
                                 htmlType={"submit"}
                                 style={{display: documentStatus === documentStatusEnum.ALL ? 'block' : 'none'}}
                         >搜索</Button>
-                        <Button type={'primary'} onClick={listNoDemandProduce}>新增</Button>
+                        <Button type={'primary'} onClick={listNoDemandProduce}
+                                disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}>新增</Button>
                         <Button type={'primary'}>导出</Button>
                         <Popconfirm
                             title={`您确认删除吗？`}
                             onConfirm={deleteDemand}
                             okText="确定"
                             cancelText="取消"
+                            disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
                         >
                             <Button
+                                disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
+                                type={'primary'}
                                 style={{display: documentStatus === documentStatusEnum.ALL || documentStatus === documentStatusEnum.EDIT ? 'block' : 'none'}}
                             >删除</Button>
                         </Popconfirm>
@@ -384,6 +386,7 @@ const DemandDevelop = () => {
                             cancelText="取消"
                         >
                             <Button
+                                disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
                                 style={{display: documentStatus === documentStatusEnum.REVIEW ? 'block' : 'none'}}
                                 type={'primary'}>定版</Button>
                         </Popconfirm>
@@ -456,9 +459,12 @@ const DemandDevelop = () => {
                         }
                     />
                 </div>
-                <Button type={'primary'} onClick={(e) => {
-                    addHandleSure(e)
-                }}>确定</Button>
+                <Button
+                    disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
+                    type={'primary'}
+                    onClick={(e) => {
+                        addHandleSure(e)
+                    }}>确定</Button>
             </div>
         </Modal>
 

@@ -18,8 +18,8 @@
         </association>
     </resultMap>
     <insert id="insertDemandtrace">
-        INSERT INTO `demandtrace`(guid, produceGuid)
-        VALUES (#{guid}, #{produceGuid}, 1);
+        INSERT INTO `demandtrace`(guid, produceGuid, dealState)
+        VALUES (#{guid}, #{produceGuid}, 0);
     </insert>
     <insert id="addDemandtraceAll">
         INSERT INTO `demandtrace`(guid, projectGuid, produceGuid,
@@ -100,13 +100,13 @@
         <if test="demandtrace.finishTime!=null">
             finishTime=#{demandtrace.finishTime},
         </if>
-        <if test="demandtrace.finishTime=null">
+        <if test="demandtrace.finishTime==null">
             finishTime='1970-01-01 00:00:00',
         </if>
         <if test="demandtrace.submitTime!=null">
             submitTime=#{demandtrace.submitTime},
         </if>
-        <if test="demandtrace.submitTime=null">
+        <if test="demandtrace.submitTime==null">
             submitTime='1970-01-01 00:00:00',
         </if>
         guid=#{demandtrace.guid},

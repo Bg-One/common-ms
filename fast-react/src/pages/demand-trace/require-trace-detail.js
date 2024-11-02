@@ -30,6 +30,7 @@ import {demandTraceDealstateEnum} from "../../common/enmus/demand-trace-dealstat
 import {listProjectByProduceGuidApi} from "../../common/api/producems/project";
 import DemandTraceDetailcontent from "../../content/demand-trace/demand-trace-detailcontent";
 import DemandTraceAddModal from "../../content/demand-trace/demand-trace-add-modal";
+import {hasRoleOr} from "../../utils/permi";
 
 const {TextArea} = Input;
 
@@ -53,10 +54,20 @@ const DemandTraceDetail = () => {
         listDemandTrace({
             currentPage: pageInfo.currentPage,
             pageSize: pageInfo.pageSize,
-            progressStatuss: searchForm.getFieldValue('progressStatuss')
+            // progressStatuss: searchForm.getFieldValue('progressStatuss')
         })
         listProjectByProduceGuid()
     }, [])
+
+    useEffect(() => {
+        if (!detailDescriptionFlag) {
+            listDemandTrace({
+                currentPage: pageInfo.currentPage,
+                pageSize: pageInfo.pageSize,
+                // progressStatuss: searchForm.getFieldValue('progressStatuss')
+            })
+        }
+    }, [detailDescriptionFlag])
     useEffect(() => {
         // 检查是否是首次渲染（通过状态或 ref）
         if (isInitialRender) {
@@ -113,11 +124,6 @@ const DemandTraceDetail = () => {
         await updateDemandTraceDetailDesApi({
             guid: selectDemandTraceGuid,
             detailDescription: detailDescription
-        })
-        listDemandTrace({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
-            ...searchForm.getFieldsValue()
         })
         message.success('保存成功')
     }
@@ -214,15 +220,15 @@ const DemandTraceDetail = () => {
     }
 
     //新增需求跟踪
-    const addDemandTrace = (values) => {
-        addDemandTraceApi({...values}).then(() => {
-            listDemandTrace({
-                currentPage: pageInfo.currentPage,
-                pageSize: pageInfo.pageSize,
-                ...searchForm.getFieldsValue(),
-            })
-            message.success('新增成功', 1)
+    const addDemandTrace = async (values) => {
+        await addDemandTraceApi({...values, dealState: demandTraceDealstateEnum.NEW_ADD})
+        listDemandTrace({
+            currentPage: pageInfo.currentPage,
+            pageSize: pageInfo.pageSize,
+            ...searchForm.getFieldsValue()
         })
+        message.success('新增成功', 1)
+        setAddModalFlag(false)
     }
 
 
@@ -676,7 +682,7 @@ const DemandTraceDetail = () => {
                             initialValues={{
                                 demandType: 100,
                                 priority: 100,
-                                progressStatuss: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                                // progressStatuss: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                             }}
                             onFinish={onSearch}
                             autoComplete="off"
@@ -731,23 +737,23 @@ const DemandTraceDetail = () => {
                                     placeholder="请输入需求关键字"
                                 />
                             </Form.Item>
-                            <Form.Item
-                                name="progressStatuss"
-                            >
-                                <Checkbox.Group>
-                                    <Checkbox value={1}>待确认</Checkbox>
-                                    <Checkbox value={2}>待编制</Checkbox>
-                                    <Checkbox value={3}>待评审</Checkbox>
-                                    <Checkbox value={4}>开发待确认</Checkbox>
-                                    <Checkbox value={5}>开发待完成</Checkbox>
-                                    <Checkbox value={6}>需求待确认</Checkbox>
-                                    <Checkbox value={7}>待测试</Checkbox>
-                                    <Checkbox value={8}>已完结</Checkbox>
-                                    <Checkbox value={9}>挂起</Checkbox>
-                                    <Checkbox value={10}>暂缓</Checkbox>
-                                    <Checkbox value={11}>作废</Checkbox>
-                                </Checkbox.Group>
-                            </Form.Item>
+                            {/*<Form.Item*/}
+                            {/*    name="progressStatuss"*/}
+                            {/*>*/}
+                            {/*    <Checkbox.Group>*/}
+                            {/*        <Checkbox value={1}>待确认</Checkbox>*/}
+                            {/*        <Checkbox value={2}>待编制</Checkbox>*/}
+                            {/*        <Checkbox value={3}>待评审</Checkbox>*/}
+                            {/*        <Checkbox value={4}>开发待确认</Checkbox>*/}
+                            {/*        <Checkbox value={5}>开发待完成</Checkbox>*/}
+                            {/*        <Checkbox value={6}>需求待确认</Checkbox>*/}
+                            {/*        <Checkbox value={7}>待测试</Checkbox>*/}
+                            {/*        <Checkbox value={8}>已完结</Checkbox>*/}
+                            {/*        <Checkbox value={9}>挂起</Checkbox>*/}
+                            {/*        <Checkbox value={10}>暂缓</Checkbox>*/}
+                            {/*        <Checkbox value={11}>作废</Checkbox>*/}
+                            {/*    </Checkbox.Group>*/}
+                            {/*</Form.Item>*/}
                             <Form.Item
                                 wrapperCol={{
                                     span: 10,

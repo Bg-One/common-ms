@@ -5,8 +5,6 @@ import {AppstoreAddOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/i
 import {countDemandConfirmApi} from "../../common/api/producems/demand";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {useDispatch} from "react-redux";
-import {addTab} from "../../redux/tab/tab-slice";
-import {componentMap, menuConfig} from "../../common/config/menu-config";
 
 
 const RequireConfirm = () => {

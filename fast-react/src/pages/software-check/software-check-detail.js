@@ -36,6 +36,7 @@ import {listProjectByProduceGuidApi} from "../../common/api/producems/project";
 import {createFuncDemandNode, createTreeItem, handleTree} from "../../utils/tree-data";
 import AddSoftCheckModal from "../../content/soft-check-detail/soft-check-add-modal";
 import {paseImageFile} from "../../utils/upload";
+import {hasRoleOr} from "../../utils/permi";
 
 
 const {TextArea} = Input;
@@ -241,7 +242,7 @@ const SoftwareCheckDetail = () => {
     //获取需求描述
     const getNode = (nodeGuid) => {
         getNodesApi({guid: nodeGuid}).then(res => {
-            if (res.data.eventStream === '') {
+            if (res.data == null || res.data.eventStream === '') {
                 message.warning('暂无需求描述')
                 return
             }
@@ -592,18 +593,17 @@ const SoftwareCheckDetail = () => {
             fixed: 'right',
             render: (text, record, index) => {
                 return <div className='actionlist'>
-                    <Button type={'link'}
-                            onClick={() => {
-                                // this.props.history.push('/home/demand-edit' + '?guid=' + record.demandGuid + '&nodeGuid=' + record.nodeGuid + '&edit=false&tabKey=3')
-                            }}
-                    >查看用例</Button>
+                    {/*<Button type={'link'}*/}
+                    {/*        onClick={() => {*/}
+                    {/*            // this.props.history.push('/home/demand-edit' + '?guid=' + record.demandGuid + '&nodeGuid=' + record.nodeGuid + '&edit=false&tabKey=3')*/}
+                    {/*        }}*/}
+                    {/*>查看用例</Button>*/}
                     <Button type={'link'}
                             onClick={() => {
                                 getNode(record.nodeGuid)
                             }}
                     >查看需求</Button>
                     <Button
-                        // disabled={getItem('checkUserFlag') === 'false'}
                         type={'link'}
                         onClick={() => {
                             getCheckChangNote(record.guid)

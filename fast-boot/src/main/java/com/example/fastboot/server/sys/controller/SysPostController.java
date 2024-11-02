@@ -9,7 +9,6 @@ import com.example.fastboot.common.response.CommonResult;
 import com.example.fastboot.server.sys.model.SysPost;
 import com.example.fastboot.server.sys.service.ISysPostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +26,6 @@ public class SysPostController {
     /**
      * 获取岗位列表
      */
-    @PreAuthorize("@permission.hasAuthority('system:post:list')")
     @PostMapping("/listSysPost")
     public Object listSysPost(SysPost sysPost) {
         return CommonResult.success(iSysPostService.selectPostList(sysPost));
@@ -37,7 +35,6 @@ public class SysPostController {
     /**
      * 新增岗位
      */
-    @PreAuthorize("@permission.hasAuthority('system:post:add')")
     @SysLog(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping("addSysPost")
     public Object addSysPost(SysPost sysPost) {
@@ -54,7 +51,6 @@ public class SysPostController {
     /**
      * 修改岗位
      */
-    @PreAuthorize("@permission.hasAuthority('system:post:edit')")
     @SysLog(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PostMapping("updateSysPost")
     public Object updateSysPost( SysPost post) {
@@ -71,7 +67,6 @@ public class SysPostController {
     /**
      * 删除岗位
      */
-    @PreAuthorize("@permission.hasAuthority('system:post:remove')")
     @SysLog(title = "岗位管理", businessType = BusinessType.DELETE)
     @PostMapping("/delSysPost")
     public Object delSysPost(String[] postGuids) {

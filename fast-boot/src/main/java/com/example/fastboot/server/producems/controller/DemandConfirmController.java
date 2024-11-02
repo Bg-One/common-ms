@@ -1,9 +1,12 @@
 package com.example.fastboot.server.producems.controller;
 
+import com.example.fastboot.common.aspectj.annotation.SysLog;
+import com.example.fastboot.common.aspectj.enums.BusinessType;
 import com.example.fastboot.server.producems.model.Producemanage;
 import com.example.fastboot.server.producems.service.IDemandService;
 import com.example.fastboot.server.producems.vo.DemandConfirmDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,6 +54,8 @@ public class DemandConfirmController {
      * @return
      */
     @PostMapping("updateDemandConfirmDetail")
+    @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
+    @SysLog(title = "修改需求确认详情", businessType = BusinessType.UPDATE)
     public Object updateDemandConfirmDetail(String demandConfirmList, String demandGuid, String produceGuid) {
         demandService.updateDemandConfirmDetail(demandConfirmList, demandGuid, produceGuid);
         return success("成功");
