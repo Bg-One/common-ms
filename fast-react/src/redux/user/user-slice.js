@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import MyIcon from "../../content/custom-icon";
 import {menuTypeEnum} from "../../common/enmus/menu-type-enum";
 import {menuConfig} from "../../common/config/menu-config";
+import {useSelector} from "react-redux";
 
 export const fetchDataAndDoSomething = () => async (dispatch) => {
     //获取用户信息
@@ -28,6 +29,7 @@ export const userSlice = createSlice({
         userInfo: {},
         routers: [],
         menuConfig: [],
+        finalMenuConfig: []
     },
     reducers: {
         setAuthentication: (state, action) => {
@@ -44,6 +46,16 @@ export const userSlice = createSlice({
         },
         setMenuConfig: (state, action) => {
             state.menuConfig = action.payload;
+        },
+        clearUserInfo: (state, action) => {
+            state.isAuthenticated = false;
+            state.userInfo = {};
+            state.isLoading = true;
+            state.routers = [];
+            state.menuConfig = []
+        },
+        changeMenuConfig: (state, action) => {
+            state.finalMenuConfig = action.payload;
         },
     },
 });
@@ -130,5 +142,13 @@ const createMenuConfigByRes = (routers) => {
     return menuConfigDefine
 }
 
-export const {setAuthentication, setRouters, setMenuConfig, setLoading, setUserInfo} = userSlice.actions;
+export const {
+    setAuthentication,
+    setRouters,
+    setMenuConfig,
+    setLoading,
+    setUserInfo,
+    clearUserInfo,
+    changeMenuConfig
+} = userSlice.actions;
 export default userSlice.reducer;

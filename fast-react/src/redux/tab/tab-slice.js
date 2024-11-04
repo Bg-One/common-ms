@@ -36,8 +36,13 @@ export const tabSlice = createSlice({
         },
         setActiveKey: (state, action) => {
             state.activeKey = action.payload;
-        }
+        },
+        cleanTab: (state, action) => {
+            state.tabList = [];
+            state.activeKey = ['1'];
+            state.reloadTabObj = {}
+        },
     },
 });
-export const {addTab, removeTab, removeAllTab, removeOtherTab, setActiveKey, setTabList} = tabSlice.actions;
+export const {addTab, removeTab, removeAllTab, removeOtherTab, setActiveKey, setTabList,cleanTab} = tabSlice.actions;
 export default tabSlice.reducer;

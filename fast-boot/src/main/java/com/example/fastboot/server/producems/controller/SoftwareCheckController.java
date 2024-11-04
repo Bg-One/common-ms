@@ -43,7 +43,7 @@ public class SoftwareCheckController {
      * @return
      */
     @PostMapping("relatedProduce")
-    @SysLog(title = "关联产品", businessType = BusinessType.INSERT)
+    @SysLog(title = "产品测试管理", businessType = BusinessType.INSERT)
     @PreAuthorize("@permission.hasAnyRoles('qa:dept:user,qa:dept:manager')")
     public Object relatedProduce(String produceGuid) {
         softwareCheckService.relatedProduce(produceGuid);
@@ -69,7 +69,7 @@ public class SoftwareCheckController {
      * @return
      */
     @PostMapping("editCheckfeedback")
-    @SysLog(title = "更新测试反馈", businessType = BusinessType.UPDATE)
+    @SysLog(title = "产品测试管理", businessType = BusinessType.UPDATE)
     public Object editCheckfeedback(String checkFeedbackList) {
         softwareCheckService.editCheckfeedback(checkFeedbackList);
         return success("成功");
@@ -82,7 +82,7 @@ public class SoftwareCheckController {
      * @return
      */
     @PostMapping("addCheckfeedback")
-    @SysLog(title = "新增测试反馈", businessType = BusinessType.INSERT)
+    @SysLog(title = "产品测试管理", businessType = BusinessType.INSERT)
     public Object addCheckfeedback(Checkfeedback checkfeedback) {
         softwareCheckService.addCheckfeedback(checkfeedback);
         return success("成功");
@@ -105,7 +105,7 @@ public class SoftwareCheckController {
      * @param checkchangnotes
      * @return
      */
-    @SysLog(title = "新增测试反馈", businessType = BusinessType.INSERT)
+    @SysLog(title = "产品测试管理", businessType = BusinessType.INSERT)
     @PostMapping("addOrEditCheckChangNote")
     public Object addOrEditCheckChangNote(Checkchangnotes checkchangnotes) {
         softwareCheckService.addOrEditCheckChangNote(checkchangnotes);
@@ -119,7 +119,7 @@ public class SoftwareCheckController {
      * @return
      */
     @PostMapping("deleteCheckFeedback")
-    @SysLog(title = "删除测试反馈", businessType = BusinessType.DELETE)
+    @SysLog(title = "产品测试管理", businessType = BusinessType.DELETE)
     public Object deleteCheckFeedback(String guid) {
         softwareCheckService.deleteCheckFeedback(guid);
         return success("成功");

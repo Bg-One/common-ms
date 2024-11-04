@@ -27,7 +27,10 @@ const WorkOrderContentItem = ({
                                   projectByUserList,
                                   projectDepworkTypeList,
                                   workorderDetailList,
-                                  setWorkorderDetailList
+                                  setWorkorderDetailList,
+                                  createTime,
+                                  setCreateTime,
+                                  workOrderUserGuid,
                               }) => {
     const userInfo = useSelector(state => state.user.userInfo)
     const [demandItemTreeData, setDemandItemTreeData] = useState([])
@@ -93,13 +96,11 @@ const WorkOrderContentItem = ({
             return
         }
         await updateWorkOrderStatusApi({
-            createGuid: workorderDetailList[0].createGuid,
-            createTime: workorderDetailList[0].createTime,
+            createTime: createTime,
             status: type === 'pass' ? workOrderEnum.CHECKEN : workOrderEnum.DRAFT,
             reason: reasonContent,
             guids: workList.map(item => item.guid).join(','),
             reviewGuid: userInfo.user.userGuid,
-            reviewName: userInfo.user.nickName//审核人
         })
         if (type === 'pass') message.success('审核通过')
         if (type === 'noPass') {
@@ -112,8 +113,8 @@ const WorkOrderContentItem = ({
     //获取工单
     const getWorkOrder = async () => {
         let res = await getWorkOrderApi({
-            createTime: workorderDetailList[0].createTime,
-            createGuid: workorderDetailList[0].createGuid,
+            createTime: createTime,
+            createGuid: workOrderUserGuid,
         })
         setWorkorderDetailList(res.data)
     }
@@ -195,8 +196,7 @@ const WorkOrderContentItem = ({
             duration: 0
         })
         await updateWorkOrderStatusApi({
-            createGuid: workorderDetailList[0].createGuid,
-            createTime: workorderDetailList[0].createTime,
+            createTime: createTime,
             status: workOrderEnum.DRAFT,
             reason: '',
             guids: guids || '',//如果有值，则仅处理这些票的状态，否则处理当天的

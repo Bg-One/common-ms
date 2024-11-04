@@ -18,3 +18,5 @@ export let editUserApi = (obj = {}) => {
 export let resetPwdApi = (obj = {}) => {
     return http.post('user/resetPwd', obj)
 }
+
+

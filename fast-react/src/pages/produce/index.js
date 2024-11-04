@@ -20,7 +20,7 @@ import {
     listProduceMemListApi, updateLockProduceToUserApi
 } from "../../common/api/producems/produce";
 import {teamresourceEnum} from "../../common/enmus/teamresource-enum";
-import {listUserApi} from "../../common/api/sys/use-api";
+import {listUserApi} from "../../common/api/sys/user-api";
 import {changeGroupMems, changManage, getUserGiudsByDepGuids, getUserTreeData} from "../../utils/user";
 import {listDeptApi} from "../../common/api/sys/deptinfo-api";
 import pinyinUtil from "../../common/react-pinyin-master";

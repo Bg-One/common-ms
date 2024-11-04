@@ -62,7 +62,7 @@ public class ProduceController {
      * @return
      */
     @PreAuthorize("@permission.hasAnyRoles('qa:dept:user,qa:dept:manager')")
-    @SysLog(title = "新增产品", businessType = BusinessType.INSERT)
+    @SysLog(title = "产品管理", businessType = BusinessType.INSERT)
     @PostMapping("addProduce")
     public Object addProduce(Producemanage producemanage) {
         producemanageService.addProduce(producemanage);
@@ -75,7 +75,7 @@ public class ProduceController {
      * @param guid
      * @return
      */
-    @SysLog(title = "删除产品", businessType = BusinessType.DELETE)
+    @SysLog(title = "产品管理", businessType = BusinessType.DELETE)
     @PreAuthorize("@permission.hasAnyRoles('qa:dept:user,qa:dept:manager')")
     @PostMapping("deleteProduce")
     public Object deleteProduce(String guid) {
@@ -100,7 +100,7 @@ public class ProduceController {
      * @param produceGuids
      * @return
      */
-    @SysLog(title = "新增项目锁定关系", businessType = BusinessType.INSERT)
+    @SysLog(title = "产品管理", businessType = BusinessType.INSERT)
     @PostMapping("updateLockProduceToUser")
     public Object updateLockProduceToUser(String[] produceGuids) {
         producemanageService.updateLockProduceToUser(produceGuids);
@@ -114,7 +114,7 @@ public class ProduceController {
      * @param producemanage
      * @return
      */
-    @SysLog(title = "出厂验收/取消验收", businessType = BusinessType.UPDATE)
+    @SysLog(title = "产品管理", businessType = BusinessType.UPDATE)
     @PostMapping("appearanceAccept")
     public Object appearanceAccept(Producemanage producemanage) {
         producemanageService.appearanceAccept(producemanage);

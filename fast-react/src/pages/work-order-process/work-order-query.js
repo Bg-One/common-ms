@@ -1,7 +1,7 @@
 import {Button, DatePicker, Form, Select, Space, Table, TimePicker} from "antd";
 import {workOrderEnum} from "../../common/enmus/work-order-enum";
 import {useEffect, useState} from "react";
-import {listUserApi} from "../../common/api/sys/use-api";
+import {listUserApi} from "../../common/api/sys/user-api";
 import {listDeptApi} from "../../common/api/sys/deptinfo-api";
 import {listAllProjectApi} from "../../common/api/producems/project";
 import {useSelector} from "react-redux";
@@ -10,6 +10,8 @@ import {getWorkOrderApi, listWorkOrderApi} from "../../common/api/producems/work
 import moment from "moment";
 import WorkOrderDetail from "./work-order-detail";
 import dayjs from "dayjs";
+import WorkOrderTable from "./work-order-table";
+import {multiConditionSort} from "../../utils/table";
 
 const {RangePicker} = DatePicker
 const WorkOrderQuery = () => {
@@ -32,16 +34,13 @@ const WorkOrderQuery = () => {
         listAllProjectApi().then((res) => {
             setProjectList(res.data)
         })
-
     }, [])
-    const listWorkOrder = async (values) => {
+    useEffect(() => {
+        !workorderDetailVisible && listWorkOrder()
+    }, [workorderDetailVisible])
+    const listWorkOrder = async () => {
+        let values = searchForm.getFieldsValue();
         let res = await listWorkOrderApi({
-            ...values
-        })
-        setDataSource(res.data)
-    }
-    const onFinish = async (values) => {
-        await listWorkOrder({
             workStatus: values.workStatus,
             createGuid: values.createGuid,
             departmentGuid: values.departmentGuid,
@@ -49,99 +48,21 @@ const WorkOrderQuery = () => {
             startTime: values.timerange[0].format('YYYY-MM-DD'),
             endTime: values.timerange[1].format('YYYY-MM-DD')
         })
+        setDataSource(multiConditionSort(res.data, [
+            {key: "createTime", order: -1},
+            {key: "createName", order: 1},
+            {key: "departmentName", order: 1},
+            {key: "workType", order: 1},
+            {key: "projectName", order: 1},
+            {key: "workCategory", order: 1},
+            {key: "workItem", order: 1},
+            {key: "content", order: 1},
+            {key: "workDuration", order: -1}
+        ]))
     }
-    const editWorkOrder = async (record) => {
-        let res = await getWorkOrderApi({
-            createTime: record.createTime,
-            createGuid: record.createGuid
-        })
-        setWorkorderDetailVisible(true)
-        setWorkorderDetailList(res.data)
+    const onFinish = async () => {
+        await listWorkOrder()
     }
-    const columns = [
-        {
-            title: '员工姓名',
-            dataIndex: 'createName',
-            key: 'createName'
-        }, {
-            title: '审核人',
-            key: 'reviewName',
-            dataIndex: 'reviewName',
-        }, {
-            title: '工作类型',
-            dataIndex: 'workType',
-            key: 'workType',
-            render: (text, record, index) => {
-                return record.status === workOrderEnum.DRAFT && record.reason ? <div><img src={withdraw} style={{
-                    position: 'absolute',
-                    left: '5px'
-                }}/>{text}</div> : text
-            }
-        }, {
-            title: '项目名称',
-            dataIndex: 'projectName',
-            key: 'projectName',
-        }, {
-            title: '工作类目',
-            dataIndex: 'workCategory',
-            key: 'workCategory',
-        }, {
-            title: '工作条目',
-            dataIndex: 'workItem',
-            key: 'workItem',
-        }, {
-            title: '报单时间',
-            dataIndex: 'createTime',
-            key: 'createTime',
-        }, {
-            title: '时长',
-            key: 'workDuration',
-            dataIndex: 'workDuration',
-        }, {
-            title: '工作内容',
-            key: 'content',
-            dataIndex: 'content',
-        }, {
-            title: '状态',
-            key: 'status',
-            render: (text, record, index) => {
-                return <>
-                    {record.status === workOrderEnum.DRAFT ? <span>待提交</span> : null}
-                    {record.status === workOrderEnum.SUBMIT ? <span>待审核</span> : null}
-                    {record.status === workOrderEnum.CHECKEN ? <span>已审核</span> : null}
-                </>
-            }
-        }, {
-            title: '操作',
-            key: 'options',
-            render: (text, record, index) => {
-                return <div className="option-btn">
-                    {/* 待提交的，自己的票可以操作 */}
-                    {record.status === workOrderEnum.DRAFT && record.createGuid === userInfo.user.userGuid && <>
-                        <Button type={'link'} onClick={() => {
-                            editWorkOrder(record)
-                        }}>编辑</Button>
-                        <Button type={'link'} onClick={() => {
-                        }}>删除</Button>
-                    </>
-                    }
-                    {/*待审核*/}
-                    {record.status === workOrderEnum.SUBMIT && <><Button type={'link'} onClick={() => {
-                        editWorkOrder(record)
-                    }}>查看</Button>
-                        {/* 自己的票可以撤回 */}
-                        {record.createGuid === userInfo.user.userGuid ? <Button type={'link'} onClick={() => {
-                        }}>撤回</Button> : null}
-                    </>
-                    }
-                    {/* 已审核通过 */}
-                    {record.status === workOrderEnum.CHECKEN && <Button type={'link'} onClick={() => {
-                        editWorkOrder(record)
-                    }}>查看</Button>
-                    }
-                </div>
-            }
-        }]
     return <div id={'query-workorder'}>
         {workorderDetailVisible ?
             <WorkOrderDetail setWorkorderDetailVisible={setWorkorderDetailVisible}
@@ -160,7 +81,6 @@ const WorkOrderQuery = () => {
                         workStatus: '100',
                         timerange: [dayjs(moment().startOf('month').format('YYYY-MM-DD')), dayjs(moment().format('YYYY-MM-DD'))]
                     }}
-
                     onFinish={onFinish}
                 >
                     <Form.Item label="选择部门：" name={'departmentGuid'}>
@@ -185,7 +105,6 @@ const WorkOrderQuery = () => {
                                 label: i.nickName,
                                 value: i.userGuid
                             })))}
-
                         />
                     </Form.Item>
                     <Form.Item label="选择项目：" name={'projectGuid'}>
@@ -222,14 +141,13 @@ const WorkOrderQuery = () => {
                         </Space>
                     </Form.Item>
                 </Form>
-
-                <Table
-                    rowKey={record => record.guid}
-                    columns={columns}
+                <WorkOrderTable
                     dataSource={dataSource}
-                    pagination={{
-                        pageSize: 50,
-                    }}
+                    tableTitle={'注：被退回的工单工作内容为红色字体'}
+                    isReview={false}
+                    listWorkOrder={listWorkOrder}
+                    setWorkorderDetailVisible={setWorkorderDetailVisible}
+                    setWorkorderDetailList={setWorkorderDetailList}
                 />
             </>
         }

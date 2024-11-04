@@ -25,7 +25,7 @@ const WaitChecking = () => {
     const onFinish = async (values) => {
         listWorkOrder()
     }
-    const listWorkOrder = async (values) => {
+    const listWorkOrder = async () => {
         let times = searchForm.getFieldValue('timerange');
         let res = await listWorkOrderApi({
             reviewGuid: userInfo.user.userGuid,

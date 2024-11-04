@@ -41,7 +41,24 @@ export const checkChanges = (originalData, newData, field) => {
 
 //深拷贝
 export const deepCopy = (obj) => {
-    return JSON.parse(JSON.stringify(obj))
+    let result;
+    let toString = Object.prototype.toString
+    if (toString.call(obj) === '[object Array]') {
+        result = []
+        for (let i = 0; i < obj.length; i++) {
+            result[i] = deepCopy(obj[i])
+        }
+    } else if (toString.call(obj) === '[object Object]') {
+        result = {};
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                result[key] = deepCopy(obj[key])
+            }
+        }
+    } else {
+        return obj
+    }
+    return result
 }
 export const deepEqual = (objA, objB) => {
     if (objA === objB) {

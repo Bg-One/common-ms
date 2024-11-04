@@ -44,7 +44,7 @@ public class DemandTraceController {
      */
     @PostMapping("relatedProduce")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "关联产品", businessType = BusinessType.INSERT)
+    @SysLog(title = "需求跟踪管理", businessType = BusinessType.INSERT)
     public Object relatedProduce(String produceGuid) {
         demandService.relatedProduce(produceGuid);
         return success("成功");
@@ -69,7 +69,7 @@ public class DemandTraceController {
      * @return
      */
     @PostMapping("updateDemandTraceDetailDes")
-    @SysLog(title = "更新需求变更详细描述", businessType = BusinessType.UPDATE)
+    @SysLog(title = "需求跟踪管理", businessType = BusinessType.UPDATE)
     public Object updateDemandTraceDetailDes(String guid, String detailDescription) {
         demandService.updateDemandTraceDetailDes(guid, detailDescription);
         return success("成功");
@@ -82,7 +82,7 @@ public class DemandTraceController {
      * @return
      */
     @PostMapping("deleteteDemandTrace")
-    @SysLog(title = "删除需求跟踪记录", businessType = BusinessType.DELETE)
+    @SysLog(title = "需求跟踪管理", businessType = BusinessType.DELETE)
     public Object deleteteDemandTrace(String guid) {
         demandService.deleteteDemandTrace(guid);
         return success("成功");
@@ -95,7 +95,7 @@ public class DemandTraceController {
      * @return
      */
     @PostMapping("addDemandTrace")
-    @SysLog(title = "新增需求跟踪", businessType = BusinessType.INSERT)
+    @SysLog(title = "需求跟踪管理", businessType = BusinessType.INSERT)
     public Object addDemandTrace(Demandtrace demandtrace) {
         demandService.addDemandTrace(demandtrace);
         return success("成功");
@@ -108,7 +108,7 @@ public class DemandTraceController {
      * @return
      */
     @PostMapping("editDemandTrace")
-    @SysLog(title = "新增需求跟踪", businessType = BusinessType.UPDATE)
+    @SysLog(title = "需求跟踪管理", businessType = BusinessType.UPDATE)
     public Object editDemandTrace(String demandTraceList) {
         demandService.editDemandTrace(demandTraceList);
         return success("成功");

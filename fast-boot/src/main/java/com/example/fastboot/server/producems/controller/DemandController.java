@@ -61,7 +61,7 @@ public class DemandController {
      */
     @PostMapping("updateDemand")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "更新需求信息", businessType = BusinessType.UPDATE)
+    @SysLog(title = "需求管理", businessType = BusinessType.UPDATE)
     public Object updateDemand(Demandmanage demandmanage) {
         demandService.updateDemand(demandmanage);
         return success("成功");
@@ -77,7 +77,7 @@ public class DemandController {
      */
     @PostMapping("statusTransfer")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "需求流转", businessType = BusinessType.UPDATE)
+    @SysLog(title = "需求管理", businessType = BusinessType.UPDATE)
     public Object statusTransfer(String[] guids, int staus) {
         demandService.statusTransfer(guids, staus);
         return success("成功");
@@ -91,7 +91,7 @@ public class DemandController {
      */
     @PostMapping("deleteDemand")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "删除需求", businessType = BusinessType.DELETE)
+    @SysLog(title = "需求管理", businessType = BusinessType.DELETE)
     public Object deleteDemand(String[] guids) {
         demandService.deleteDemand(guids);
         return success("成功");
@@ -105,7 +105,7 @@ public class DemandController {
      */
     @PostMapping("addDemand")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "新增需求", businessType = BusinessType.INSERT)
+    @SysLog(title = "需求管理", businessType = BusinessType.INSERT)
     public Object addDemand(String produceGuid) {
         demandService.addDemand(produceGuid);
         return success("成功");
@@ -141,7 +141,7 @@ public class DemandController {
      */
     @PostMapping("addOrEditDemandTerm")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "新增或编辑需求术语", businessType = BusinessType.UPDATE)
+    @SysLog(title = "需求管理", businessType = BusinessType.UPDATE)
     public Object addOrEditDemandTerm(String demandTermList) {
         demandService.addOrEditDemandTerm(demandTermList);
         return success("成功");
@@ -155,7 +155,7 @@ public class DemandController {
      */
     @PostMapping("deleteDemandTerm")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "删除需求术语", businessType = BusinessType.DELETE)
+    @SysLog(title = "需求管理", businessType = BusinessType.DELETE)
     public Object deleteDemandTerm(String guid) {
         demandService.deleteDemandTerm(guid);
         return success("成功");
@@ -180,7 +180,7 @@ public class DemandController {
      */
     @PostMapping("addOrEditIssuesToConfirm")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "新增或更新待确认问题列表", businessType = BusinessType.UPDATE)
+    @SysLog(title = "需求管理", businessType = BusinessType.UPDATE)
     public Object addOrEditIssuesToConfirm(String issuesToConfirmList) {
         demandService.addOrEditIssuesToConfirm(issuesToConfirmList);
         return success("成功");
@@ -194,7 +194,7 @@ public class DemandController {
      */
     @PostMapping("deleteIssuesToBeConfirmed")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "删除待确认问题列表", businessType = BusinessType.DELETE)
+    @SysLog(title = "需求管理", businessType = BusinessType.DELETE)
     public Object deleteIssuesToBeConfirmed(String guid) {
         demandService.deleteIssuesToBeConfirmed(guid);
         return success("成功");

@@ -2,6 +2,7 @@ package com.example.fastboot.server.producems.service;
 
 import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.vo.WorkDurationVo;
+import com.example.fastboot.server.producems.vo.WorkorderCountVo;
 
 import java.util.List;
 
@@ -175,5 +176,11 @@ public interface IWorkOrderService {
      */
     void submitWorkOrder(List<Workorder> workOrderList);
 
+    /**
+     * 统计各个状态工单状态
+     *
+     * @return
+     */
+    WorkorderCountVo countWorkOrderStatus();
 
 }

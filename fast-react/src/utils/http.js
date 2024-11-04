@@ -67,7 +67,10 @@ http.interceptors.response.use((response) => {
             title: '会话提醒',
             content: '无效的会话，或者会话已过期，请重新登录。',
             cancelButtonProps: {
-                disabled: true
+                disabled: true,
+                style: {
+                    display: 'none'
+                }
             },
             onOk() {
                 return new Promise((resolve, reject) => {

@@ -217,4 +217,18 @@ public interface WorkOrderMapper {
      * @return
      */
     SysUser getReviewUser(@Param("creatUserGuid") String creatUserGuid);
+
+    /**
+     * 根据用户唯一标识获取工单
+     * @param userGuid
+     * @return
+     */
+    List<Workorder> listWorkOrderByUserGuid(String userGuid);
+
+    /**
+     * 获取审核人工单数量
+     * @param userGuid
+     * @return
+     */
+    int listUserGuidByReviewGuid(String userGuid);
 }

@@ -1,9 +1,12 @@
 package com.example.fastboot.server.producems.controller;
 
 import com.alibaba.fastjson2.JSONArray;
+import com.example.fastboot.common.aspectj.annotation.SysLog;
+import com.example.fastboot.common.aspectj.enums.BusinessType;
 import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.service.IWorkOrderService;
 import com.example.fastboot.server.producems.vo.WorkDurationVo;
+import com.example.fastboot.server.producems.vo.WorkorderCountVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +48,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("deleteWorkOrder")
+    @SysLog(title = "工单管理", businessType = BusinessType.DELETE)
     public Object deleteWorkOrder(String guid) {
         workOrderService.deleteWorkOrder(guid);
 //        WebSocket.countWorkOrderStatus();
@@ -83,6 +87,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("updateWorkOrderType")
+    @SysLog(title = "工单管理", businessType = BusinessType.UPDATE)
     public Object updateWorkOrderType(String name, String guid) {
         workOrderService.updateWorkOrderType(name, guid);
         return success("成功");
@@ -96,6 +101,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("deleteWorkOrderType")
+    @SysLog(title = "工单管理", businessType = BusinessType.DELETE)
     public Object deleteWorkOrderType(String guid) {
         workOrderService.deleteWorkOrderType(guid);
         return success("成功");
@@ -108,6 +114,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("createWorkOrderType")
+    @SysLog(title = "工单管理", businessType = BusinessType.INSERT)
     public Object createWorkOrderType(Workordertype workordertype) {
         workOrderService.createWorkOrderType(workordertype);
         return success("成功");
@@ -133,6 +140,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("updateWorkOrderCategory")
+    @SysLog(title = "工单管理", businessType = BusinessType.UPDATE)
     public Object updateWorkOrderCategory(String name, String guid) {
         workOrderService.updateWorkOrderCategory(name, guid);
         return success("成功");
@@ -146,6 +154,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("deleteWorkOrderCategory")
+    @SysLog(title = "工单管理", businessType = BusinessType.DELETE)
     public Object deleteWorkOrderCategory(String guid) {
         workOrderService.deleteWorkOrderCategory(guid);
         return success("成功");
@@ -158,6 +167,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("createWorkOrderCategory")
+    @SysLog(title = "工单管理", businessType = BusinessType.INSERT)
     public Object createWorkOrderCategory(Workordercategory workordercategory) {
         workOrderService.createWorkOrderCategory(workordercategory);
         return success("成功");
@@ -182,6 +192,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("updateWorkOrderItem")
+    @SysLog(title = "工单管理", businessType = BusinessType.UPDATE)
     public Object updateWorkOrderItem(String name, String guid) {
         workOrderService.updateWorkOrderItem(name, guid);
         return success("成功");
@@ -194,6 +205,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("deleteWorkOrderItem")
+    @SysLog(title = "工单管理", businessType = BusinessType.DELETE)
     public Object deleteWorkOrderItem(String guid) {
         workOrderService.deleteWorkOrderItem(guid);
         return success("成功");
@@ -206,6 +218,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("createWorkOrderItem")
+    @SysLog(title = "工单管理", businessType = BusinessType.INSERT)
     public Object createWorkOrderItem(Workorderitem workorderitem) {
         workOrderService.createWorkOrderItem(workorderitem);
         return success("成功");
@@ -229,6 +242,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("saveReviewRelationship")
+    @SysLog(title = "工单管理", businessType = BusinessType.INSERT)
     public Object saveReviewRelationship(String relationshipList) {
         List<Reviewrelationship> reviewrelationshipList = JSONArray.parseArray(relationshipList, Reviewrelationship.class);
         workOrderService.saveReviewRelationship(reviewrelationshipList);
@@ -277,6 +291,7 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("updateWorkOrderStatus")
+    @SysLog(title = "工单管理", businessType = BusinessType.UPDATE)
     public Object updateWorkOrderStatus(Workorder workorder) {
         workOrderService.updateWorkOrderStatus(workorder);
         return success("成功");
@@ -289,9 +304,20 @@ public class WorkOrderController {
      * @return
      */
     @PostMapping("submitWorkOrder")
+    @SysLog(title = "工单管理", businessType = BusinessType.INSERT)
     public Object updateWorkOrder(String workOrderList) {
         workOrderService.submitWorkOrder(JSONArray.parseArray(workOrderList, Workorder.class));
         return success("成功");
     }
 
+    /**
+     * 统计工单数量
+     *
+     * @return
+     */
+    @PostMapping("countWorkOrderStatus")
+    public Object countWorkOrderStatus() {
+        WorkorderCountVo workorderCountVo = workOrderService.countWorkOrderStatus();
+        return success(workorderCountVo);
+    }
 }

@@ -63,7 +63,7 @@ public class ProjectController {
      * @param project
      * @return
      */
-    @SysLog(title = "新增项目", businessType = BusinessType.INSERT)
+    @SysLog(title = "项目管理", businessType = BusinessType.INSERT)
     @PreAuthorize("@permission.hasAnyRoles('qa:dept:user,qa:dept:manager')")
     @PostMapping("addOrEditProject")
     public Object addOrEditProject(Project project) {
@@ -77,7 +77,7 @@ public class ProjectController {
      * @param guid
      * @return
      */
-    @SysLog(title = "删除项目", businessType = BusinessType.DELETE)
+    @SysLog(title = "项目管理", businessType = BusinessType.DELETE)
     @PreAuthorize("@permission.hasAnyRoles('qa:dept:user,qa:dept:manager')")
     @PostMapping("delProject")
     public Object deleteProject(String guid) {
@@ -93,7 +93,7 @@ public class ProjectController {
      * @return
      */
     @PostMapping("onsiteaAccept")
-    @SysLog(title = "现场验收/取消",businessType = BusinessType.UPDATE)
+    @SysLog(title = "项目管理",businessType = BusinessType.UPDATE)
     public Object onsiteaAccept(Project project) {
         projectService.onsiteaAccept(project);
         return success("成功");

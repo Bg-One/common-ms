@@ -88,11 +88,10 @@
     </update>
     <update id="updateWorkOrderStatus">
         update workorder
-        set status = #{status},
+        set status    = #{status},
             reason=#{reason},
-            reviewGuid=#{reviewGuid},
-            reviewName=#{reviewName}
-        where guid=#{guid}
+            reviewGuid=#{reviewGuid}
+        where guid = #{guid}
     </update>
     <update id="updateWorkOrder">
         update workorder
@@ -196,7 +195,7 @@
     </select>
     <select id="listWorkOrder" resultType="com.example.fastboot.server.producems.model.Workorder">
         select
-        wo.guid,wo.createName,wo.reviewName,wo.workTypeGuid,p.name as projectName,wo.createGuid,wo.projectGuid,
+        wo.guid,t2.nick_name createName,t3.nick_name reviewName,wo.workTypeGuid,p.name as projectName,wo.createGuid,wo.projectGuid,
         wo.workCategoryGuid,wo.workItemGuid,wo.createTime,wo.status,
         wo.workDuration,wo.content,wi.name workItem,wt.name workType,
         wc.name workCategory,p.projectNo,wo.projectDepworkType,d.dept_name departmentName
@@ -206,6 +205,8 @@
         left join workordercategory wc on wo.workCategoryGuid = wc.guid
         left join project p on p.guid = wo.projectGuid
         left join sys_dept d on d.dept_guid = wo.departmentGuid
+        LEFT JOIN sys_user t2 ON wo.createGuid = t2.user_guid
+        LEFT JOIN sys_user t3 ON wo.reviewGuid = t3.user_guid
         <where>
 
             <if test="workStatus!=null and workStatus!='100'">
@@ -250,10 +251,9 @@
     </select>
     <select id="listWorkOrderByCreateParam" resultType="com.example.fastboot.server.producems.model.Workorder">
         select wo.guid,
-               wo.createName,
                wo.teamGroup,
                wo.createGuid,
-               wo.departmentName,
+               d.dept_name departmentName,
                wo.content,
                wo.departmentGuid,
                wo.workDuration,
@@ -269,15 +269,18 @@
                wo.status,
                wo.projectDepworkType,
                wo.reviewGuid,
-               wo.reviewName,
                wi.name workItem,
                wt.name workType,
-               wc.name workCategory
+               wc.name workCategory,
+               t2.nick_name createName,t3.nick_name reviewName
         from workorder wo
                  left join  workorderitem wi on wo.workItemGuid = wi.guid
                  left join workordertype wt on wo.workTypeGuid = wt.guid
                  left join workordercategory wc on wo.workCategoryGuid = wc.guid
                  left join project p on wo.projectGuid = p.guid
+                 LEFT JOIN sys_user t2 ON wo.createGuid = t2.user_guid
+                 LEFT JOIN sys_user t3 ON wo.reviewGuid = t3.user_guid
+                 left join sys_dept d on d.dept_guid = wo.departmentGuid
         where wo.createGuid = #{createGuid} and wo.createTime like concat(#{createTime},'%')
     </select>
     <select id="listWorkOrderByGuidList" resultType="com.example.fastboot.server.producems.model.Workorder">
@@ -304,6 +307,16 @@
         select t2.*
         from reviewrelationship t1 left join sys_user t2 on t1.reviewGuid = t2.user_guid
         where userGuid = #{creatUserGuid}
+    </select>
+    <select id="listWorkOrderByUserGuid" resultType="com.example.fastboot.server.producems.model.Workorder">
+        select *
+        from workorder
+        where createGuid = #{userGuid}
+    </select>
+    <select id="listUserGuidByReviewGuid" resultType="java.lang.Integer">
+        select count(*)
+        from workorder
+        where reviewGuid = #{userGuid}
     </select>
 
 </mapper>

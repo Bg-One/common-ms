@@ -78,7 +78,7 @@ public class DemandItemController {
      */
     @PostMapping("addOrEditDetailDesign")
     @PreAuthorize("@permission.hasAnyRoles('rd:dept:user,rd:dept:manager')")
-    @SysLog(title = "新增或修改详细设计", businessType = BusinessType.UPDATE)
+    @SysLog(title = "需求描述管理", businessType = BusinessType.UPDATE)
     public Object addOrEditDetailDesign(Detaileddesign detaileddesign) {
         demandService.addOrEditDetailDesign(detaileddesign);
         return success("成功");
@@ -92,7 +92,7 @@ public class DemandItemController {
      */
     @PostMapping("addOrEditDemandItem")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "新增或更新需求分项", businessType = BusinessType.UPDATE)
+    @SysLog(title = "需求描述管理", businessType = BusinessType.UPDATE)
     public Object addOrEditDemandItem(DemandItem demanditem) {
         demandService.addOrEditDemandItem(demanditem);
         return success("成功");

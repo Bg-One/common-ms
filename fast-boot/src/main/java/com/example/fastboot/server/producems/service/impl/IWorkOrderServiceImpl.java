@@ -8,6 +8,7 @@ import com.example.fastboot.server.producems.mapper.WorkOrderMapper;
 import com.example.fastboot.server.producems.model.*;
 import com.example.fastboot.server.producems.service.IWorkOrderService;
 import com.example.fastboot.server.producems.vo.WorkDurationVo;
+import com.example.fastboot.server.producems.vo.WorkorderCountVo;
 import com.example.fastboot.server.sys.controller.Base;
 import com.example.fastboot.server.sys.model.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,7 +236,6 @@ public class IWorkOrderServiceImpl implements IWorkOrderService {
             if (workorder.getGuid() == null || workorder.getGuid().equals("")) {
                 workorder.setGuid(UUID.randomUUID().toString());
                 workorder.setReviewGuid(sysUser.getUserGuid());
-                workorder.setReviewName(sysUser.getNickName());
                 ArrayList<Workorder> workorders = new ArrayList<>();
                 workorders.add(workorder);
                 workOrderMapper.createWorkOrder(workorders);
@@ -243,6 +243,33 @@ public class IWorkOrderServiceImpl implements IWorkOrderService {
                 workOrderMapper.updateWorkOrder(workorder);
             }
         }
+    }
+
+    @Override
+    public WorkorderCountVo countWorkOrderStatus() {
+        String userGuid = Base.getCreatUserGuid();
+        List<Workorder> workorderList = workOrderMapper.listWorkOrderByUserGuid(userGuid);
+        int waitSubmitCount = 0;//待提交
+        int checkFaildCount = 0;//审核失败
+        int waitCheckCount = 0;//待审核
+        //我评审的
+        int checkCount = workOrderMapper.listUserGuidByReviewGuid(userGuid);
+        for (Workorder workorder : workorderList) {
+            int status = workorder.getStatus();
+            if (status == WorkOrderStatusEnum.WAIT_SUBMIT.getCode() && workorder.getReason().equals("")) {
+                waitSubmitCount += 1;
+            } else if (status == WorkOrderStatusEnum.WAIT_CHECHED.getCode()) {
+                waitCheckCount += 1;
+            } else if (status != WorkOrderStatusEnum.CHECHED.getCode()) {
+                checkFaildCount += 1;
+            }
+        }
+        WorkorderCountVo workorderCountVo = new WorkorderCountVo();
+        workorderCountVo.setWaitSubmitCount(waitSubmitCount);
+        workorderCountVo.setWaitCheckCount(waitCheckCount);
+        workorderCountVo.setCheckFaildCount(checkFaildCount);
+        workorderCountVo.setCheckCount(checkCount);
+        return workorderCountVo;
     }
 
     /**

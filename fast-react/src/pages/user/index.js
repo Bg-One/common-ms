@@ -12,7 +12,7 @@ import {
     insertUserApi,
     listUserApi,
     resetPwdApi
-} from '../../common/api/sys/use-api'
+} from '../../common/api/sys/user-api'
 import {DownloadOutlined, PlusOutlined, UploadOutlined, ReloadOutlined, SearchOutlined} from "@ant-design/icons";
 import UserInfoDrawer from "../../content/user/user-info-drawer";
 import './index.scss'

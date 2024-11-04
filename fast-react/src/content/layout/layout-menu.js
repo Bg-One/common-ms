@@ -9,6 +9,7 @@ import {addTab, setActiveKey} from "../../redux/tab/tab-slice";
 
 const LayoutMenu = ({collapsed}) => {
     const navigator = useNavigate();
+    const finalMenuConfig = useSelector(state => state.user.finalMenuConfig)
     const menuConfig = useSelector(state => state.user.menuConfig)
     const location = useLocation()
     const dispatch = useDispatch();
@@ -40,11 +41,11 @@ const LayoutMenu = ({collapsed}) => {
         <Menu
             className={collapsed ? "layout-menu-content" : ""}
             selectedKeys={[location.pathname]}
-            defaultOpenKeys={findLabelsByKey(menuConfig, location.pathname).map(item => item.key)}
+            defaultOpenKeys={findLabelsByKey(finalMenuConfig, location.pathname).map(item => item.key)}
             mode="inline"
             theme="dark"
             inlineCollapsed={collapsed}
-            items={menuConfig}
+            items={finalMenuConfig}
             onClick={(record) => {
                 navigator(record.key)
                 addTabAction(record.key)

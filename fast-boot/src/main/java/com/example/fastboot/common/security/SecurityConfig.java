@@ -2,6 +2,7 @@ package com.example.fastboot.common.security;
 
 import com.example.fastboot.common.security.filter.JwtAuthenticationTokenFilter;
 import com.example.fastboot.common.security.handle.AuthenticationEntryPointImpl;
+import com.example.fastboot.common.security.handle.LogoutSuccessHandlerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,6 +51,9 @@ public class SecurityConfig {
      */
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
+    @Autowired
+    private LogoutSuccessHandlerImpl logoutSuccessHandler;
 
 
 //    /**
@@ -104,13 +108,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> {
 //                    permitAllUrl.getUrls().forEach(url -> requests.antMatchers(url).permitAll());
                     // 对于登录login 注册register 验证码captchaImage 允许匿名访问
-                    requests.antMatchers("/sys/login", "/captchaImage", "/common/uploads","/common/download","/common/download/resource").permitAll()
+                    requests.antMatchers("/test/testMsg","/websocket/**","/sys/login", "/captchaImage", "/common/uploads","/common/download","/common/download/resource").permitAll()
                             // 静态资源，可匿名访问
                             .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
                             .antMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
                             // 除上面外的所有请求全部需要鉴权认证
                             .anyRequest().authenticated();
                 })
+                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler))
                 // 添加JWT filter
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 // 添加CORS filter

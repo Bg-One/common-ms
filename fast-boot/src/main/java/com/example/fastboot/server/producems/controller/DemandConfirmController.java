@@ -55,7 +55,7 @@ public class DemandConfirmController {
      */
     @PostMapping("updateDemandConfirmDetail")
     @PreAuthorize("@permission.hasAnyRoles('pro:dept:user,pro:dept:manager')")
-    @SysLog(title = "修改需求确认详情", businessType = BusinessType.UPDATE)
+    @SysLog(title = "需求确认管理", businessType = BusinessType.UPDATE)
     public Object updateDemandConfirmDetail(String demandConfirmList, String demandGuid, String produceGuid) {
         demandService.updateDemandConfirmDetail(demandConfirmList, demandGuid, produceGuid);
         return success("成功");

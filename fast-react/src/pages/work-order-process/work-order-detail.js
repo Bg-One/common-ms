@@ -5,7 +5,6 @@ import {useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {workOrderEnum} from "../../common/enmus/work-order-enum";
 import WorkOrderContentItem from "./work-order-content-item";
-import {listUserApi} from "../../common/api/sys/use-api";
 import {
     countWorkOrderStatusApi, getWorkOrderApi,
     listProjectDepworkTypeApi,
@@ -17,7 +16,7 @@ import {listProjectByUserGuidApi} from "../../common/api/producems/project";
 import {FileAddOutlined} from "@ant-design/icons";
 import {deepCopy} from "../../utils/table";
 import {isDept} from "../../utils/user";
-import TextArea from "antd/es/input/TextArea";
+import dayjs from "dayjs";
 
 const WorkOrderDetail = ({
                              setWorkorderDetailVisible,
@@ -33,8 +32,12 @@ const WorkOrderDetail = ({
     const [workItemList, setWorkItemList] = useState([])
     const [projectDepworkTypeList, setProjectDepworkTypeList] = useState([])
     const [projectByUserList, setProjectByUserList] = useState([])
+    const [createTime, setCreateTime] = useState('')
+    const [workOrderUserGuid, setWorkOrderUserGuid] = useState('')
 
     useEffect(() => {
+        setCreateTime(workorderDetailList[0] ? workorderDetailList[0].createTime : dayjs().format('YYYY-MM-DD'))
+        setWorkOrderUserGuid(workorderDetailList[0] ? workorderDetailList[0].createGuid : userInfo.user.userGuid)
         listWorkOrderTypeApi().then(res => setWorkTypeList(res.data))
         listWorkOrderCategoryApi().then(res => setWorkCategoryList(res.data))
         listWorkOrderItemApi().then(res => setWorkItemList(res.data))
@@ -48,8 +51,8 @@ const WorkOrderDetail = ({
         workList.filter(item => status.includes(item.status)).map(item => total = total + item.workDuration)
         return total
     }
-    // 获取工单详情
-    const openSheetInfo = async () => {
+    // 新增工单详情
+    const addSheetInfo = async () => {
         let obj = initWorkOrder();
         setWorkorderDetailList([obj, ...deepCopy(workorderDetailList)])
     }
@@ -58,17 +61,17 @@ const WorkOrderDetail = ({
         let temp_workOrderObj = localStorage.getItem('temp_workOrder_Obj') && JSON.parse(localStorage.getItem('temp_workOrder_Obj')) || {}
         let nowObj = {
             // 每个小报单
-            createName: userInfo.user.nickName,
             createGuid: userInfo.user.userGuid,
-            departmentName: userInfo.user.dept.deptName,
             departmentGuid: userInfo.user.deptGuid,
+            departmentName: userInfo.user.dept.deptName,
+            createName: userInfo.user.userName,
             workDuration: 0,
             workTypeGuid: '',
             projectGuid: '',
             workCategoryGuid: '',
             workItemGuid: '',
             demandItemGuid: '',
-            createTime: moment().format('YYYY-MM-DD'),  // 报单日期
+            createTime: createTime,  // 报单日期
             content: '',  // 工作内容
             status: 1,
             projectDepWorkType: '',// 项目部工作
@@ -79,7 +82,6 @@ const WorkOrderDetail = ({
         }
         return nowObj
     }
-
     // 超八小时提醒
     const workLengthMessage = (workList) => {
         return new Promise((resolve, reject) => {
@@ -181,18 +183,35 @@ const WorkOrderDetail = ({
         if (!confirm('确认审核通过？')) return
         // 退单
         await updateWorkOrderStatusApi({
-            createGuid: workorderDetailList[0].createGuid,
-            createTime: workorderDetailList[0].createTime,
+            createTime: createTime,
             status: workOrderEnum.CHECKEN,
             reason: '',
             guids: workList.map(item => item.guid).join(','),
             reviewGuid: userInfo.user.userGuid,
-            reviewName: userInfo.user.nickName//审核人
         })
         if (type === 'pass') message.success('审核通过')
         setWorkorderDetailVisible(false)
     }
-
+    //获取工单
+    const getWorkOrderDetail = async (obj) => {
+        let res = await getWorkOrderApi(obj)
+        setWorkorderDetailList(res.data)
+        setCreateTime(obj.createTime)
+    }
+    //工单移动，需要移动内容
+    const moveWorkOrder = async (oldWorkList, warningModal, value) => {
+        localStorage.setItem('temp_oldWorkList', JSON.stringify(oldWorkList))
+        // 获取工单并且将新的加进去
+        await getWorkOrderDetail({
+            createTime: value,
+            createGuid: workOrderUserGuid
+        })
+        for (let element of oldWorkList) {
+            element.guid = ''
+        }
+        setWorkorderDetailList([...oldWorkList], [...workorderDetailList])
+        warningModal.destroy()
+    }
     return <div id="edit-page">
         <div className="head-title">
             <img src={back} style={{width: '1.5vw', verticalAlign: 'text-bottom'}}/>
@@ -213,7 +232,7 @@ const WorkOrderDetail = ({
                 <span>报单日期：
                     <DatePicker
                         id="createTime"
-                        value={workorderDetailList[0] ? moment(workorderDetailList[0].createTime) : moment()}
+                        value={createTime ? dayjs(createTime,"YYYY-MM-dd") : dayjs()}
                         format={'YYYY-MM-DD'}
                         disabled={isReview}
                         onChange={async (e, value) => {
@@ -223,35 +242,29 @@ const WorkOrderDetail = ({
                                     return item
                                 })
                                 if (!oldWorkList[0]) {
-                                    openSheetInfo({createGuid: createGuid, createTime: value})
+                                    //获取工单详情
+                                    getWorkOrderDetail({
+                                        createTime: value,
+                                        createGuid: workOrderUserGuid
+                                    })
                                     return
                                 }
-                                let warningModal = oldWorkList[0] && Modal.warning({
+                                let warningModal = Modal.warning({
                                     title: '存在待提交报单且工作内容不为空，是否将本页的待提交报单移动到指定日期',
                                     content: <div style={{
                                         display: 'flex',
                                         justifyContent: 'space-around',
                                         margin: '1.5rem auto 0'
                                     }}>
-                                        <Button
-                                            type='primary'
-                                            onClick={async () => {
-                                                localStorage.setItem('temp_oldWorkList', JSON.stringify(oldWorkList))
-                                                await openSheetInfo({
-                                                    createGuid: createGuid, createTime: value
-                                                })
-                                                warningModal.destroy()
-                                            }}
-                                        >移动</Button>
-                                        <Button
-                                            type='primary'
-                                            danger
-                                            onClick={async () => {
-                                                await openSheetInfo({
-                                                    createGuid: createGuid, createTime: value
-                                                })
-                                                warningModal.destroy()
-                                            }}
+                                        <Button type='primary'
+                                                onClick={() => moveWorkOrder(oldWorkList, warningModal, value)}>移动</Button>
+                                        <Button type='primary' danger onClick={() => {
+                                            getWorkOrderDetail({
+                                                createTime: value,
+                                                createGuid: workOrderUserGuid
+                                            })
+                                            warningModal.destroy()
+                                        }}
                                         >不需要</Button>
                                     </div>,
                                     closable: 'true',
@@ -264,7 +277,7 @@ const WorkOrderDetail = ({
             </div>
         </div>
         {(createGuid === workorderDetailList[0]?.createGuid || !isReview) &&
-            <Button type={'link'} icon={<FileAddOutlined/>} onClick={openSheetInfo}>新增工作内容</Button>
+            <Button type={'link'} icon={<FileAddOutlined/>} onClick={addSheetInfo}>新增工作内容</Button>
         }
 
         {workorderDetailList.filter(item => !(isSearch && item.createGuid !== createGuid && item.status !== workOrderEnum.CHECKEN))
@@ -282,32 +295,36 @@ const WorkOrderDetail = ({
                     projectByUserList={projectByUserList}
                     workorderDetailList={workorderDetailList}
                     setWorkorderDetailList={setWorkorderDetailList}
+                    createTime={createTime}
+                    setCreateTime={setCreateTime}
+                    workOrderUserGuid={workOrderUserGuid}
                 />
             })
         }
         {/* 新建报单 按钮区域 */}
-        {<div className="bottom-btn">
-            {/* 自己的报单显示 保存为草稿/提交 按钮 */}
-            {workorderDetailList[0]?.createGuid === createGuid && <>
-                {workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT)[0] &&
-                    <Button onClick={() => {
-                        saveWorkOrder()
-                    }} style={{background: 'rgb(123, 123, 220)'}}>保存为草稿</Button>
-                }
-                {workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT)[0] &&
+        {
+            <div className="bottom-btn">
+                {/* 自己的报单显示 保存为草稿/提交 按钮 */}
+                {workorderDetailList[0]?.createGuid === createGuid && <>
+                    {workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT)[0] &&
+                        <Button onClick={() => {
+                            saveWorkOrder()
+                        }} style={{background: 'rgb(123, 123, 220)'}}>保存为草稿</Button>
+                    }
+                    {workorderDetailList.filter(i => i.status === workOrderEnum.DRAFT)[0] &&
+                        <Button onClick={async () => {
+                            await workLengthMessage(workorderDetailList)
+                            handleSubmit(workorderDetailList)
+                        }} style={{background: 'rgb(1, 167, 240)'}}>提交</Button>
+                    }
+                </>}
+                {/* 评审页面 按钮 */}
+                {isReview && workorderDetailList.filter(i => i.status === workOrderEnum.SUBMIT)[0] &&
                     <Button onClick={async () => {
-                        await workLengthMessage(workorderDetailList)
-                        handleSubmit(workorderDetailList)
-                    }} style={{background: 'rgb(1, 167, 240)'}}>提交</Button>
+                        changeWorkOrderStatus('pass', workorderDetailList.filter(item => item.status === workOrderEnum.SUBMIT))
+                    }} style={{background: 'green', color: '#fff', margin: '0 0 0 1vw'}}>全部通过</Button>
                 }
-            </>}
-            {/* 评审页面 按钮 */}
-            {isReview && workorderDetailList.filter(i => i.status === workOrderEnum.SUBMIT)[0] &&
-                <Button onClick={async () => {
-                    changeWorkOrderStatus('pass', workorderDetailList.filter(item => item.status === workOrderEnum.SUBMIT))
-                }} style={{background: 'green', color: '#fff', margin: '0 0 0 1vw'}}>全部通过</Button>
-            }
-        </div>
+            </div>
         }
     </div>
 }
