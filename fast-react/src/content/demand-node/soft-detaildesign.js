@@ -35,7 +35,15 @@ const SoftDetaildesign = ({softDesignDetail, setSoftDesignDetail, softDesignForm
                     span: 2,
                 }}
                 form={softDesignForm}
-                initialValues={{...softDesignDetail}}
+                initialValues={{
+                    configurationRequirements: '',
+                    classDesign: '',
+                    dbOperate: '',
+                    communicationDesignDescription: '',
+                    complexLogic: '',
+                    notes: '',
+                    ...softDesignDetail
+                }}
                 clearOnDestroy={true}
             >
                 <Form.Item>

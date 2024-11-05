@@ -119,10 +119,11 @@
         group by t1.produceGuid
     </select>
     <select id="listCheckFeedback" resultType="com.example.fastboot.server.producems.model.Checkfeedback">
-        SELECT t1.*,
+        SELECT t1.*,t3.name projectName,
         t2.`name` nodeName
         FROM checkfeedback t1
         left join nodes t2 on t2.guid = t1.nodeGuid
+        left  join project t3 on t3.guid = t1.projectGuid
         WHERE t1.deleteFlag = 0
         AND t1.produceGuid = #{produceGuid}
         <if test="questionDescription!=null and questionDescription!=''">

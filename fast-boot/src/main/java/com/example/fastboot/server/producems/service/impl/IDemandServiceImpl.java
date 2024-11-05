@@ -151,6 +151,7 @@ public class IDemandServiceImpl implements IDemandService {
 
     @Override
     public DemandItem getNodes(String guid) {
+        DemandItem nodes = demandMapper.getNodes(guid);
         return demandMapper.getNodes(guid);
     }
 
@@ -441,7 +442,8 @@ public class IDemandServiceImpl implements IDemandService {
 
     @Override
     public void addOrEditDemandItem(DemandItem demanditem) {
-        if ("".equals(demanditem.getGuid())) {
+        String guid = demanditem.getGuid();
+        if (guid == null || "".equals(guid)) {
             String uuid = UUID.randomUUID().toString();
             demanditem.setGuid(uuid);
             demandMapper.insertDemandItem(demanditem);
@@ -467,7 +469,7 @@ public class IDemandServiceImpl implements IDemandService {
             //将需求变更为需求变更
             demandMapper.updateDealState(demanditem.getNodeGuid(), DemandItemDealStateEnum.CONFIRMED.getCode());
         }
-        if(demandTraceGuids != null){
+        if (demandTraceGuids != null) {
             demandMapper.clearNodeGuid(demandTraceGuids, demanditem.getNodeGuid());
             demandMapper.updateNodeGuid(demandTraceGuids, demanditem.getNodeGuid(), creatUserName);
         }
@@ -499,6 +501,23 @@ public class IDemandServiceImpl implements IDemandService {
     @Override
     public List<Nodes> listNodesByProject(String projectGuid) {
         return demandMapper.listNodesByProject(projectGuid);
+    }
+
+    @Override
+    public void addNodes(Nodes nodes) {
+        nodes.setGuid(UUID.randomUUID().toString());
+        demandMapper.addNodes(nodes);
+    }
+
+    @Override
+    public void editNodes(String guid, String nodeName) {
+        demandMapper.updateNotes(guid, nodeName);
+
+    }
+
+    @Override
+    public void deleteNodes(String guid) {
+        demandMapper.deleteNodeByGuid(guid);
     }
 
     private void sendMessage(Demandtrace demandtrace) {

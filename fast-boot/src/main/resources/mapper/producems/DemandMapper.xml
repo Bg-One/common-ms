@@ -72,6 +72,10 @@
         values (#{demandchangerecord.guid}, #{demandchangerecord.demandGuid}, #{demandchangerecord.changeName},
                 #{demandchangerecord.nodeGuid})
     </insert>
+    <insert id="addNodes">
+        insert into nodes  (guid,moduleGuid,classType,`name`,nodeType,parentNodeGuid,nodeOrder)
+        values (#{nodes.guid},#{nodes.moduleGuid},#{nodes.classType},#{nodes.name},#{nodes.nodeType},#{nodes.parentNodeGuid},#{nodes.nodeOrder})
+    </insert>
     <update id="updateDemandConfirmDetail">
         update demanditem
         set demandConfiemedState=#{demandConfiemedState},
@@ -204,6 +208,9 @@
         </foreach>
         )
     </update>
+    <update id="updateNotes">
+        update nodes set `name`=#{nodeName} where guid=#{guid}
+    </update>
     <delete id="deleteteDemandTrace">
         update demandtrace
         set deleteFlag=1
@@ -226,6 +233,9 @@
         update issuestobeconfirmed
         set deleteFlag=1
         where guid = #{guid}
+    </delete>
+    <delete id="deleteNodeByGuid">
+        update nodes set deleteFlag=1 where guid=#{guid}
     </delete>
     <select id="getDemand" resultType="com.example.fastboot.server.producems.model.Demandmanage">
         select * from demandmanage

@@ -352,4 +352,23 @@ public interface DemandMapper {
      * @return
      */
     List<Nodes> listNodesByProject(String projectGuid);
+
+    /**
+     * 新增节点
+     * @param nodes
+     */
+    void addNodes(@Param("nodes") Nodes nodes);
+
+    /**
+     * 更新需求节点
+     * @param guid
+     * @param nodeName
+     */
+    void updateNotes(String guid, String nodeName);
+
+    /**
+     * 删除需求节点
+     * @param guid
+     */
+    void deleteNodeByGuid(String guid);
 }

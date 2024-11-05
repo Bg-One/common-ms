@@ -55,6 +55,18 @@ export let updateDemandConfirmDetailApi = (obj = {}) => {
     return http.post('demandConfirm/updateDemandConfirmDetail', obj)
 }
 
+
+export let deleteNodesApi = (obj = {}) => {
+    return http.post('demandItem/deleteNodes', obj)
+}
+export let editNodesApi = (obj = {}) => {
+    return http.post('demandItem/editNodes', obj)
+}
+export let addNodesApi = (obj = {}) => {
+    return http.post('demandItem/addNodes', obj)
+}
+
+
 export let listNodesApi = (obj = {}) => {
     return http.post('demandItem/listNodes', obj)
 }

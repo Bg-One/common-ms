@@ -9,7 +9,7 @@ import {
     updateDemandApi
 } from "../../common/api/producems/demand";
 import {deepCopy, deepEqual} from "../../utils/table";
-import {createTreeItem, handleTree} from "../../utils/tree-data";
+import {createTreeItem, getObjByConditon, handleTree} from "../../utils/tree-data";
 import file from "../../static/images/file.png";
 import {useSearchParams} from "react-router-dom";
 import Objective from "../../content/demand-node/objective";
@@ -21,12 +21,19 @@ import RightMenu from "../../content/right-menu/right-menu";
 import DemandItemContent from "../../content/demand-node/demand-item-content";
 import SoftDetaildesign from "../../content/demand-node/soft-detaildesign";
 import {Form, message, Modal, Tabs} from "antd";
+import {useSelector} from "react-redux";
+import {hasRoleOr} from "../../utils/permi";
+import {documentEnum} from "../../common/enmus/document-enum";
 
 const DemandEdit = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const [nodeList, setNodeList] = useState([])
     const [treeData, setTreeData] = useState([])
     const [activeNode, setActiveNode] = useState('')
+    const [classType, setClassType] = useState(documentEnum.DEMAND)
+    const [nodeOrder, setNodeOrder] = useState(0)
+    const [parentNodeGuid, setParentNodeGuid] = useState('')
+
     const [pageX, setPageX] = useState(0);
     const [pageY, setPageY] = useState(0);
     const [showMenu, setShowMenu] = useState(false);
@@ -37,6 +44,7 @@ const DemandEdit = () => {
     const [softDesignDetail, setSoftDesignDetail] = useState({})
     const [demandItemForm] = Form.useForm()
     const [softDesignForm] = Form.useForm()
+    let userInfo = useSelector(state => state.user.userInfo);
 
 
     // beforeunload 事件处理函数
@@ -143,7 +151,19 @@ const DemandEdit = () => {
         setPageX(event.pageX);
         setPageY(event.pageY);
         setShowMenu(true);
+        let demandFlag = (node.key === 'func-demand' || node.key === 'nofunc-demand')
+        setParentNodeGuid(demandFlag ? '' : node.key);
+        setNodeOrder(demandFlag ? 1 : getNodeOrder(nodeList, node) + 1)
+        setClassType(demandFlag || getObjByConditon(nodeList, item => item.guid === node.key).classType === documentEnum.DEMAND ?
+            documentEnum.DEMAND : documentEnum.NO_FUNC_DEMAND)
     };
+    //获取该节点下子节点最后的顺序编号
+    const getNodeOrder = (data, node) => {
+        let obj = getObjByConditon(nodeList, item => item.guid === node.key)
+        let lastArr = obj.child[obj.child.length - 1]
+        return lastArr ? lastArr.nodeOrder : 0
+    }
+
     //聚焦
     const focusDropdown = () => {
         if (dropdownElement.current) {
@@ -168,7 +188,8 @@ const DemandEdit = () => {
                         setShowMenu(false);
                     }}
                 >
-                    <RightMenu/>
+                    <RightMenu nodeGuid={activeNode} classType={classType} parentNodeGuid={parentNodeGuid}
+                               moduleGuid={searchParams.get('demandGuid')} nodeOrder={nodeOrder} listNodes={listNodes}/>
                 </div>
             );
         }
@@ -195,7 +216,7 @@ const DemandEdit = () => {
                 dataList={nodeList}
                 handleRightClick={handleRightClick}
             />
-            {renderMenu()}
+            {hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager']) ? renderMenu() : ''}
         </div>
         <div className={'demand-content-container'}>
             {

@@ -97,4 +97,28 @@ public class DemandItemController {
         demandService.addOrEditDemandItem(demanditem);
         return success("成功");
     }
+
+    @PostMapping("addNodes")
+    @SysLog(title = "需求描述管理", businessType = BusinessType.INSERT)
+    @PreAuthorize("@permission.hasAnyRoles('rd:dept:user,rd:dept:manager')")
+    public Object addNodes(Nodes nodes) {
+        demandService.addNodes(nodes);
+        return success("成功");
+    }
+
+    @PostMapping("editNodes")
+    @SysLog(title = "需求描述管理", businessType = BusinessType.UPDATE)
+    @PreAuthorize("@permission.hasAnyRoles('rd:dept:user,rd:dept:manager')")
+    public Object editNodes(String guid, String nodeName) {
+        demandService.editNodes(guid, nodeName);
+        return success("成功");
+    }
+
+    @PreAuthorize("@permission.hasAnyRoles('rd:dept:user,rd:dept:manager')")
+    @PostMapping("deleteNodes")
+    @SysLog(title = "需求描述管理", businessType = BusinessType.DELETE)
+    public Object deleteNodes(String guid) {
+        demandService.deleteNodes(guid);
+        return success("成功");
+    }
 }

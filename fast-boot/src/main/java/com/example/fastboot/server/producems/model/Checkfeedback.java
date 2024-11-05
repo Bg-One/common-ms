@@ -52,6 +52,8 @@ public class Checkfeedback {
     private Integer saveImageFlag;
 
     private String produceName;
+
+    private String projectName;
     private String nodeName;
 
     private int currentPage;

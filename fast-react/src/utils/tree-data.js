@@ -79,3 +79,11 @@ export const createFuncDemandNode = (item, classType) => {
     })
     return newNodeList;
 }
+// 递归查找负荷条件的对象
+export const getObjByConditon = (dataList, condition) => {
+    for (let item of dataList || []) {
+        if (condition(item)) return item
+        const newItem = getObjByConditon(item.child, condition)
+        if (newItem) return newItem
+    }
+}

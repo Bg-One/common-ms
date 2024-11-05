@@ -245,4 +245,23 @@ public interface IDemandService {
      * @return
      */
     List<Nodes> listNodesByProject(String projectGuid);
+
+    /**
+     * 新增需求节点
+     * @param nodes
+     */
+    void addNodes(Nodes nodes);
+
+    /**
+     * 编辑需求节点
+     * @param guid
+     * @param nodeName
+     */
+    void editNodes(String guid, String nodeName);
+
+    /**
+     * 删除需求节点
+     * @param guid
+     */
+    void deleteNodes(String guid);
 }

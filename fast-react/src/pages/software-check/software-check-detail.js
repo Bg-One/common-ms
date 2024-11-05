@@ -37,6 +37,7 @@ import {createFuncDemandNode, createTreeItem, handleTree} from "../../utils/tree
 import AddSoftCheckModal from "../../content/soft-check-detail/soft-check-add-modal";
 import {paseImageFile} from "../../utils/upload";
 import {hasRoleOr} from "../../utils/permi";
+import {severityEnum} from "../../common/enmus/severity-enum";
 
 
 const {TextArea} = Input;
@@ -273,8 +274,8 @@ const SoftwareCheckDetail = () => {
             }
         }, {
             title: '所属项目',
-            dataIndex: 'projectGuid',
-            key: 'projectGuid',
+            dataIndex: 'projectName',
+            key: 'projectName',
             fixed: 'left',
             width: '10vw',
             filters: projectList.map((item) => {
@@ -287,53 +288,53 @@ const SoftwareCheckDetail = () => {
                 return record.projectGuid === value
             },
             filteredValue: filterRules.filterProjectList,
-            render: (text, record, index) => {
-                return <Select
-                    style={{width: '8vw'}}
-                    value={record.projectGuid}
-                    onChange={(v) => {
-                        handleSave(index, 'projectGuid', v, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                    options={projectList.map((item) => {
-                        return {
-                            value: item.guid,
-                            label: item.name,
-                        }
-                    })}
-                />
-            }
+            // render: (text, record, index) => {
+            //     return <Select
+            //         style={{width: '8vw'}}
+            //         value={record.projectGuid}
+            //         onChange={(v) => {
+            //             handleSave(index, 'projectGuid', v, checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //         options={projectList.map((item) => {
+            //             return {
+            //                 value: item.guid,
+            //                 label: item.name,
+            //             }
+            //         })}
+            //     />
+            // }
         }, {
             title: '所属需求',
             dataIndex: 'nodeName',
             key: 'nodeName',
             width: '8vw',
             fixed: 'left',
-            render: (text, record, index) => {
-                return <TextArea
-                    autoSize={{minRows: 1, maxRows: 6}}
-                    bordered={false}
-                    value={record.nodeName}
-                    onClick={() => {
-                        setSelectIndex(index)
-                        setNodeVisible(true)
-                    }}/>
-            }
+            // render: (text, record, index) => {
+            //     return <TextArea
+            //         autoSize={{minRows: 1, maxRows: 6}}
+            //         bordered={false}
+            //         value={record.nodeName}
+            //         onClick={() => {
+            //             setSelectIndex(index)
+            //             setNodeVisible(true)
+            //         }}/>
+            // }
         }, {
             title: '问题描述',
             width: '15vw',
             dataIndex: 'questionDescription',
             key: 'questionDescription',
             fixed: 'left',
-            render: (text, record, index) => {
-                return <TextArea
-                    autoSize={{minRows: 1, maxRows: 6}}
-                    style={{width: '15vw'}}
-                    value={record.questionDescription}
-                    onChange={(e) => {
-                        handleSave(index, 'questionDescription', e.target.value, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                />
-            }
+            // render: (text, record, index) => {
+            //     return <TextArea
+            //         autoSize={{minRows: 1, maxRows: 6}}
+            //         style={{width: '15vw'}}
+            //         value={record.questionDescription}
+            //         onChange={(e) => {
+            //             handleSave(index, 'questionDescription', e.target.value, checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //     />
+            // }
         }, {
             title: '附图',
             dataIndex: 'imageLink',
@@ -341,9 +342,7 @@ const SoftwareCheckDetail = () => {
             width: '5vw',
             fixed: 'left',
             render: (text, record, index) => {
-                return <div onPaste={sendFile} suppressContentEditableWarning
-                            contentEditable="true"
-                            style={{height: '5vh', overflow: 'hidden', display: 'flex', cursor: 'pointer'}}
+                return <img style={{overflow: 'hidden'}} src={record.imageLink}
                             onDoubleClick={(e) => {
                                 setWetherLargeObj({
                                     open: true,
@@ -351,126 +350,144 @@ const SoftwareCheckDetail = () => {
                                     index: index
                                 })
                             }}
-                            onClick={(e) => {
-                                setWetherLargeObj({
-                                    ...wetherLargeObj,
-                                    index: index
-                                })
-                            }}
-                >{record.imageLink ? <img style={{overflow: 'hidden'}} src={record.imageLink}/> : null}
-                </div>
+                />
             }
+            // render: (text, record, index) => {
+            //     return <div onPaste={sendFile} suppressContentEditableWarning
+            //                 contentEditable="true"
+            //                 style={{height: '5vh', overflow: 'hidden', display: 'flex', cursor: 'pointer'}}
+            //                 onDoubleClick={(e) => {
+            //                     setWetherLargeObj({
+            //                         open: true,
+            //                         imageUrl: record.imageLink,
+            //                         index: index
+            //                     })
+            //                 }}
+            //                 onClick={(e) => {
+            //                     setWetherLargeObj({
+            //                         ...wetherLargeObj,
+            //                         index: index
+            //                     })
+            //                 }}
+            //     >{record.imageLink ? <img style={{overflow: 'hidden'}} src={record.imageLink}/> : null}
+            //     </div>
+            // }
         }, {
             title: '反馈时间',
             dataIndex: 'feedbackTime',
             key: 'feedbackTime',
             width: '6.5vw',
-            render: (text, record, index) => {
-                return <Input
-                    bordered={false}
-                    value={record.feedbackTime}
-                    onClick={() => {
-                        handleSave(index, 'feedbackTime', moment().format("YYYY-MM-DD"), checkFeedbackList, setCheckFeedbackList)
-                    }}
-                    onChange={(e) => {
-                        handleSave(index, 'feedbackTime', e.target.value, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                />
-            }
+            // render: (text, record, index) => {
+            //     return <Input
+            //         bordered={false}
+            //         value={record.feedbackTime}
+            //         onClick={() => {
+            //             handleSave(index, 'feedbackTime', moment().format("YYYY-MM-DD"), checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //         onChange={(e) => {
+            //             handleSave(index, 'feedbackTime', e.target.value, checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //     />
+            // }
         }, {
             title: '优先级',
             dataIndex: 'severity',
             key: 'severity',
             width: '5vw',
             render: (text, record, index) => {
-                return <Select
-                    style={{width: '5vw'}}
-                    value={record.severity}
-                    onChange={(v) => {
-                        handleSave(index, 'severity', v, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                    options={[
-                        {
-                            value: 0,
-                            label: '紧急',
-                        }, {
-                            value: 1,
-                            label: '一般'
-                        }
-                    ]}
-                />
+                return <span>{severityEnum.getName(text)}</span>
             }
+            // render: (text, record, index) => {
+            //     return <Select
+            //         style={{width: '5vw'}}
+            //         value={record.severity}
+            //         onChange={(v) => {
+            //             handleSave(index, 'severity', v, checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //         options={[
+            //             {
+            //                 value: 0,
+            //                 label: '紧急',
+            //             }, {
+            //                 value: 1,
+            //                 label: '一般'
+            //             }
+            //         ]}
+            //     />
+            // }
         }, {
             title: '提交人',
             dataIndex: 'submitName',
             key: 'submitName',
             width: '5vw',
-            render: (text, record, index) => {
-                return <Input
-                    bordered={false}
-                    value={record.submitName}
-                    onClick={() => {
-                        handleSave(index, 'submitName', userInfo.user.nickName, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                    onChange={(e) => {
-                        handleSave(index, 'submitName', e.target.value, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                />
-            }
-        }, {
-            title: '测试确认',
-            dataIndex: 'checkConfirmName',
-            key: 'checkConfirmName',
-            width: '5.5vw',
-            render: (text, record, index) => {
-                return <Input
-                    // disabled={getItem('checkUserFlag') === 'false'}
-                    bordered={false}
-                    value={record.checkConfirmName}
-                    onClick={() => {
-                        handleSave(index, 'checkConfirmName', userInfo.user.nickName, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                    onChange={(e) => {
-                        handleSave(index, 'checkConfirmName', e.target.value, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                />
-            }
-        }, {
+            // render: (text, record, index) => {
+            //     return <Input
+            //         bordered={false}
+            //         value={record.submitName}
+            //         onClick={() => {
+            //             handleSave(index, 'submitName', userInfo.user.nickName, checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //         onChange={(e) => {
+            //             handleSave(index, 'submitName', e.target.value, checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //     />
+            // }
+        },
+        // {
+        //     title: '测试确认',
+        //     dataIndex: 'checkConfirmName',
+        //     key: 'checkConfirmName',
+        //     width: '5.5vw',
+        //     render: (text, record, index) => {
+        //         return <Input
+        //             // disabled={getItem('checkUserFlag') === 'false'}
+        //             bordered={false}
+        //             value={record.checkConfirmName}
+        //             onClick={() => {
+        //                 handleSave(index, 'checkConfirmName', userInfo.user.nickName, checkFeedbackList, setCheckFeedbackList)
+        //             }}
+        //             onChange={(e) => {
+        //                 handleSave(index, 'checkConfirmName', e.target.value, checkFeedbackList, setCheckFeedbackList)
+        //             }}
+        //         />
+        //     }
+        // },
+        {
             title: '处理人',
             dataIndex: 'dealName',
             key: 'dealName',
             width: '5vw',
-            render: (text, record, index) => {
-                return <Input
-                    // disabled={getItem('devUserFlag') === 'false'}
-                    value={record.dealName}
-                    onClick={() => {
-                        handleSave(index, 'dealName', userInfo.user.nickName, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                    onChange={(e) => {
-                        handleSave(index, 'dealName', e.target.value, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                    bordered={false}
-                />
-            }
+            // render: (text, record, index) => {
+            //     return <Input
+            //         // disabled={getItem('devUserFlag') === 'false'}
+            //         value={record.dealName}
+            //         onClick={() => {
+            //             handleSave(index, 'dealName', userInfo.user.nickName, checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //         onChange={(e) => {
+            //             handleSave(index, 'dealName', e.target.value, checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //         bordered={false}
+            //     />
+            // }
         }, {
             title: '处理完成时间',
             dataIndex: 'dealFinishTime',
             key: 'dealFinishTime',
             width: '7vw',
-            render: (text, record, index) => {
-                return <Input
-                    // disabled={getItem('checkUserFlag') === 'false'}
-                    bordered={false}
-                    value={record.dealFinishTime}
-                    onClick={() => {
-                        handleSave(index, 'dealFinishTime', moment().format("YYYY-MM-DD"), checkFeedbackList, setCheckFeedbackList)
-                    }}
-                    onChange={(e) => {
-                        handleSave(index, 'dealFinishTime', e.target.value, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                />
-            }
+            // render: (text, record, index) => {
+            //     return <Input
+            //         // disabled={getItem('checkUserFlag') === 'false'}
+            //         bordered={false}
+            //         value={record.dealFinishTime}
+            //         onClick={() => {
+            //             handleSave(index, 'dealFinishTime', moment().format("YYYY-MM-DD"), checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //         onChange={(e) => {
+            //             handleSave(index, 'dealFinishTime', e.target.value, checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //     />
+            // }
         }, {
             title: '处理状态',
             dataIndex: 'status',
@@ -537,40 +554,42 @@ const SoftwareCheckDetail = () => {
                     ]}
                 />
             }
-        }, {
-            title: '处理办法',
-            dataIndex: 'dealMethod',
-            width: '6vw',
-            key: 'dealMethod',
-            render: (text, record, index) => {
-                return <TextArea
-                    autoSize={{minRows: 1, maxRows: 6}}
-                    // disabled={getItem('devUserFlag') === 'false'}
-                    bordered={false}
-                    value={record.dealMethod}
-                    onChange={(e) => {
-                        handleSave(index, 'dealMethod', e.target.value, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                />
-            }
-        }, {
+        },
+        // {
+        //     title: '处理办法',
+        //     dataIndex: 'dealMethod',
+        //     width: '6vw',
+        //     key: 'dealMethod',
+        //     render: (text, record, index) => {
+        //         return <TextArea
+        //             autoSize={{minRows: 1, maxRows: 6}}
+        //             // disabled={getItem('devUserFlag') === 'false'}
+        //             bordered={false}
+        //             value={record.dealMethod}
+        //             onChange={(e) => {
+        //                 handleSave(index, 'dealMethod', e.target.value, checkFeedbackList, setCheckFeedbackList)
+        //             }}
+        //         />
+        //     }
+        // },
+        {
             title: '发布/更新时间',
             dataIndex: 'publishTime',
             width: '7.5vw',
             key: 'publishTime',
-            render: (text, record, index) => {
-                return <Input
-                    // disabled={getItem('checkUserFlag') === 'false'}
-                    bordered={false}
-                    value={record.publishTime}
-                    onClick={() => {
-                        handleSave(index, 'publishTime', moment().format("YYYY-MM-DD"), checkFeedbackList, setCheckFeedbackList)
-                    }}
-                    onChange={(e) => {
-                        handleSave(index, 'publishTime', e.target.value, checkFeedbackList, setCheckFeedbackList)
-                    }}
-                />
-            }
+            // render: (text, record, index) => {
+            //     return <Input
+            //         // disabled={getItem('checkUserFlag') === 'false'}
+            //         bordered={false}
+            //         value={record.publishTime}
+            //         onClick={() => {
+            //             handleSave(index, 'publishTime', moment().format("YYYY-MM-DD"), checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //         onChange={(e) => {
+            //             handleSave(index, 'publishTime', e.target.value, checkFeedbackList, setCheckFeedbackList)
+            //         }}
+            //     />
+            // }
         }, {
             title: '备注',
             dataIndex: 'notes',
@@ -579,7 +598,6 @@ const SoftwareCheckDetail = () => {
             render: (text, record, index) => {
                 return <TextArea
                     autoSize={{minRows: 1, maxRows: 6}}
-                    // disabled={getItem('checkUserFlag') === 'false' && getItem('devUserFlag') === 'false'}
                     value={record.notes}
                     onChange={(e) => {
                         handleSave(index, 'notes', e.target.value, checkFeedbackList, setCheckFeedbackList)
@@ -609,13 +627,13 @@ const SoftwareCheckDetail = () => {
                             getCheckChangNote(record.guid)
                         }}
                     >变更说明</Button>
-                    <Popconfirm
-                        title={`您确认删除${record.questionDescription ? record.questionDescription : ''}问题吗？`}
-                        onConfirm={(e) => deleteCheckFeedback(record.guid, index)}
-                        okText="确定"
-                        cancelText="取消"
-                    ><Button type={'link'}>删除</Button>
-                    </Popconfirm>
+                    {/*<Popconfirm*/}
+                    {/*    title={`您确认删除${record.questionDescription ? record.questionDescription : ''}问题吗？`}*/}
+                    {/*    onConfirm={(e) => deleteCheckFeedback(record.guid, index)}*/}
+                    {/*    okText="确定"*/}
+                    {/*    cancelText="取消"*/}
+                    {/*><Button type={'link'}>删除</Button>*/}
+                    {/*</Popconfirm>*/}
                 </div>
             }
         }]
@@ -645,10 +663,10 @@ const SoftwareCheckDetail = () => {
                     }}>
                     <Space>
                         <Button type="primary" htmlType="submit" icon={<SearchOutlined/>}>查询</Button>
-                        <Button type="primary" icon={<AppstoreAddOutlined/>} onClick={() => {
-                            setAddCheckFeedbackModalVisible(true)
-                        }
-                        }>新增</Button>
+                        {/*<Button type="primary" icon={<AppstoreAddOutlined/>} onClick={() => {*/}
+                        {/*    setAddCheckFeedbackModalVisible(true)*/}
+                        {/*}*/}
+                        {/*}>新增</Button>*/}
                         <Button type="primary" icon={<SaveOutlined/>} onClick={editCheckfeedback}>保存</Button>
                         <img src={wenhao} style={{width: '1.5vw', verticalAlign: 'text-bottom', cursor: 'pointer'}}
                              onClick={() => {

@@ -11,8 +11,6 @@ import {
 } from "../../common/api/producems/demand";
 import {listNoDemandProduceApi} from "../../common/api/producems/produce";
 import {documentStatusEnum} from "../../common/enmus/document-status-enum";
-import {componentMap} from "../../common/config/menu-config";
-import {addTab} from "../../redux/tab/tab-slice";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {hasRoleOr} from "../../utils/permi";
@@ -264,9 +262,9 @@ const DemandDevelop = () => {
                                 style={{display: record.staus === documentStatusEnum.EDIT ? 'block' : 'none'}}
                                 type={'link'}>送审</Button>
                     </Popconfirm>
-                    <Button type={'link'}
-                            disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}
-                            style={{display: record.staus === 3 ? 'block' : 'none'}}>需求变更</Button>
+                    {/*<Button type={'link'}*/}
+                    {/*        disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}*/}
+                    {/*        style={{display: record.staus === 3 ? 'block' : 'none'}}>需求变更</Button>*/}
                     <Button type={'link'} style={{display: record.staus === 2 ? 'block' : 'none'}}
                             onClick={() => {
                                 setReviewCommentsModalInfo({
