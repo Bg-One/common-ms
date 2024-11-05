@@ -20,7 +20,7 @@ import static com.example.fastboot.common.constant.SysConfigConstant.CAPTCHA_ENA
 /**
  * 参数配置 服务层实现
  *
- * @author ruoyi
+ * @author
  */
 @Service
 public class SysConfigServiceImpl implements ISysConfigService {

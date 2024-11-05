@@ -23,7 +23,7 @@ import org.springframework.web.filter.CorsFilter;
 /**
  * spring security配置
  *
- * @author ruoyi
+ * @author
  */
 //@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -115,7 +115,7 @@ public class SecurityConfig {
                             // 除上面外的所有请求全部需要鉴权认证
                             .anyRequest().authenticated();
                 })
-                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler))
+                .logout(logout -> logout.logoutUrl("/sys/logout").logoutSuccessHandler(logoutSuccessHandler))
                 // 添加JWT filter
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 // 添加CORS filter

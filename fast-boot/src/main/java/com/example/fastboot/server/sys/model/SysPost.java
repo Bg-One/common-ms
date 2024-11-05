@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * 岗位表 sys_post
  *
- * @author ruoyi
+ * @author
  */
 @Data
 @AllArgsConstructor

@@ -58,19 +58,6 @@ public class SysLoginController {
         return CommonResult.success(jsonObject);
     }
 
-    @PostMapping("/logout")
-    public Object login(HttpServletRequest request) {
-        LoginUser loginUser = tokenService.getLoginUser(request);
-        if (loginUser != null) {
-            String userName = loginUser.getUsername();
-            // 删除用户缓存记录
-            tokenService.delLoginUser(loginUser.getToken());
-            // 记录用户退出日志
-            iSysLoginService.insertLoginInfo(userName, "用户退出成功", Constants.LOGIN_FAIL);
-        }
-        return CommonResult.success();
-    }
-
     /**
      * 获取用户信息
      *

@@ -2,16 +2,13 @@ package com.example.fastboot.common.security.handle;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.example.fastboot.common.aspectj.manager.AsyncManager;
+import com.example.fastboot.common.aspectj.manager.factory.AsyncFactory;
 import com.example.fastboot.common.constant.Constants;
 import com.example.fastboot.common.enums.CommonResultEnum;
 import com.example.fastboot.common.security.LoginUser;
 import com.example.fastboot.common.security.service.TokenService;
 import com.example.fastboot.common.utils.WebUtils;
-import com.example.fastboot.server.sys.service.ISysLoginService;
-import com.example.fastboot.server.sys.service.ISysLogininforService;
-import com.example.fastboot.server.sys.service.impl.SysLoginServiceImpl;
-import liquibase.pro.packaged.A;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
@@ -30,8 +27,7 @@ import java.io.IOException;
 public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
     @Autowired
     private TokenService tokenService;
-    @Autowired
-    private ISysLoginService sysLoginService;
+
     /**
      * 退出处理
      *
@@ -46,7 +42,7 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
             // 删除用户缓存记录
             tokenService.delLoginUser(loginUser.getToken());
             // 记录用户退出日志
-            sysLoginService.insertLoginInfo(userName, "用户退出成功", Constants.LOGOUT); ;
+            AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGOUT, "退出成功"));
         }
         JSONObject result = new JSONObject();
         result.put("code", CommonResultEnum.SUCCESS.code);

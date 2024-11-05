@@ -3,6 +3,8 @@ package com.example.fastboot.common.aspectj;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.filter.PropertyFilter;
 import com.example.fastboot.common.aspectj.annotation.SysLog;
+import com.example.fastboot.common.aspectj.manager.AsyncManager;
+import com.example.fastboot.common.aspectj.manager.factory.AsyncFactory;
 import com.example.fastboot.common.enums.CommonResultEnum;
 import com.example.fastboot.common.security.LoginUser;
 import com.example.fastboot.common.utils.ip.AddressUtils;
@@ -34,7 +36,7 @@ import java.util.*;
 /**
  * 操作日志记录处理
  *
- * @author ruoyi
+ * @author
  */
 @Aspect
 @Component
@@ -96,7 +98,6 @@ public class LogAspect {
             // 请求的地址
             String ip = IpUtils.getIpAddr();
             operLog.setOperIp(ip);
-            operLog.setOperLocation(AddressUtils.getRealAddressByIP(ip));
             operLog.setOperUrl(StringUtils.substring(request.getRequestURI(), 0, 255));
             if (loginUser != null) {
                 operLog.setOperName(loginUser.getUsername());
@@ -122,7 +123,7 @@ public class LogAspect {
             operLog.setCostTime(System.currentTimeMillis() - TIME_THREADLOCAL.get());
             operLog.setOperGuid(UUID.randomUUID().toString());
             // 保存数据库
-            ISysOperLogService.insertOperlog(operLog);
+            AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
         } catch (Exception exp) {
             // 记录本地异常日志
             log.error("异常信息:{}", exp.getMessage());

@@ -1,6 +1,8 @@
 package com.example.fastboot.server.sys.service.impl;
 
 
+import com.example.fastboot.common.aspectj.manager.AsyncManager;
+import com.example.fastboot.common.aspectj.manager.factory.AsyncFactory;
 import com.example.fastboot.common.config.FastCommonConfig;
 import com.example.fastboot.common.constant.CacheConstants;
 import com.example.fastboot.common.constant.Constants;
@@ -13,10 +15,7 @@ import com.example.fastboot.common.utils.ip.AddressUtils;
 import com.example.fastboot.common.utils.ip.IpUtils;
 import com.example.fastboot.server.sys.model.SysLogininfor;
 import com.example.fastboot.server.sys.model.SysUser;
-import com.example.fastboot.server.sys.service.ISysConfigService;
-import com.example.fastboot.server.sys.service.ISysLoginService;
-import com.example.fastboot.server.sys.service.ISysLogininforService;
-import com.example.fastboot.server.sys.service.ISysUserService;
+import com.example.fastboot.server.sys.service.*;
 import com.example.fastboot.server.sys.vo.LoginVo;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.commons.lang3.StringUtils;
@@ -60,8 +59,7 @@ public class SysLoginServiceImpl implements ISysLoginService {
     private FastCommonConfig fastCommonConfig;
     @Autowired
     private TokenService tokenService;
-    @Autowired
-    private ISysLogininforService iSysLogininforService;
+
 
     @Override
     public String login(LoginVo loginVo) {
@@ -87,20 +85,20 @@ public class SysLoginServiceImpl implements ISysLoginService {
                 }
                 retryCount = retryCount + 1;
                 redisCache.setCacheObject(getCacheKey(userName), retryCount, fastCommonConfig.getLockTime(), TimeUnit.MINUTES);
-                insertLoginInfo(userName, "密码错误", Constants.LOGIN_FAIL);
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGIN_FAIL, "密码错误"));
                 throw new ServiceException(CommonResultEnum.PASSWORD_ERROR);
             } else if (e.getCause() instanceof ServiceException) {
-                insertLoginInfo(userName, "账号错误", Constants.LOGIN_FAIL);
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGIN_FAIL, "账号错误"));
                 throw ((ServiceException) e.getCause());
             } else {
-                insertLoginInfo(userName, "登陆失败", Constants.LOGIN_FAIL);
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGIN_FAIL, "登陆失败"));
                 throw new ServiceException(CommonResultEnum.FAILED);
             }
 
         }
         clearLoginRecordCache(userName);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        insertLoginInfo(userName, "登陆成功", Constants.LOGIN_SUCCESS);
+        AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGIN_SUCCESS, "登陆成功"));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         recordLoginInfo(loginUser.getUserGuid());
         // 生成token
@@ -121,12 +119,12 @@ public class SysLoginServiceImpl implements ISysLoginService {
             String verifyKey = CAPTCHA_CODE_KEY + uuid;
             String captcha = redisCache.getCacheObject(verifyKey);
             if (captcha == null) {
-                insertLoginInfo(username, "验证码失效", Constants.LOGIN_FAIL);
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, "验证码失效"));
                 throw new ServiceException(CommonResultEnum.CAPTCHA_EXPIRED);
             }
             redisCache.deleteObject(verifyKey);
             if (!code.equalsIgnoreCase(captcha)) {
-                insertLoginInfo(username, "验证码错误", Constants.LOGIN_FAIL);
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, "验证码错误"));
                 throw new ServiceException(CommonResultEnum.CAPTCHA_ERROR);
             }
         }
@@ -139,7 +137,7 @@ public class SysLoginServiceImpl implements ISysLoginService {
         // IP黑名单校验
         String blackStr = iSysConfigService.getValueByName(BLACK_IP_LIST);
         if (IpUtils.isMatchedIp(blackStr, IpUtils.getIpAddr())) {
-            insertLoginInfo(userName, "该ip封禁", Constants.LOGIN_FAIL);
+            AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGIN_FAIL, "该ip封禁"));
             throw new ServiceException(CommonResultEnum.CAPTCHA_ERROR);
         }
     }
@@ -176,36 +174,5 @@ public class SysLoginServiceImpl implements ISysLoginService {
         if (redisCache.hasKey(getCacheKey(loginName))) {
             redisCache.deleteObject(getCacheKey(loginName));
         }
-    }
-
-    @Async
-    @Override
-    public void insertLoginInfo(String userName, String message, String status) {
-        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = servletRequestAttributes.getRequest();
-        UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
-        String ip = IpUtils.getIpAddr();
-        String address = AddressUtils.getRealAddressByIP(ip);
-        // 获取客户端操作系统
-        String os = userAgent.getOperatingSystem().getName();
-        // 获取客户端浏览器
-        String browser = userAgent.getBrowser().getName();
-        // 封装对象
-        SysLogininfor logininfor = new SysLogininfor();
-        logininfor.setInfoGuid(UUID.randomUUID().toString());
-        logininfor.setUserName(userName);
-        logininfor.setIpaddr(ip);
-        logininfor.setLoginLocation(address);
-        logininfor.setBrowser(browser);
-        logininfor.setOs(os);
-        logininfor.setMsg(message);
-        // 日志状态
-        if (StringUtils.equalsAny(status, Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER)) {
-            logininfor.setStatus(String.valueOf(CommonResultEnum.SUCCESS.getCode()));
-        } else if (Constants.LOGIN_FAIL.equals(status)) {
-            logininfor.setStatus(String.valueOf(CommonResultEnum.FAILED.getCode()));
-        }
-        // 插入数据
-        iSysLogininforService.insertLogininfor(logininfor);
     }
 }

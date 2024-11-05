@@ -16,12 +16,5 @@ public interface ISysLoginService {
      */
     String login(LoginVo loginVo);
 
-    /**
-     * 新增登录信息
-     *
-     * @param userName
-     * @param message
-     * @param status
-     */
-    void insertLoginInfo(String userName, String message, String status);
+
 }
