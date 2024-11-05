@@ -450,46 +450,46 @@ public class IDemandServiceImpl implements IDemandService {
         } else {
             demandMapper.updateDemandItem(demanditem);
         }
-        String[] demandTraceGuids = demanditem.getDemandTraceGuids();
-        String creatUserName = Base.getCreatUserName();
-        //表示需求变更进来的
-        if (demandTraceGuids != null && demandTraceGuids.length != 0) {
-            //首次变更
-            int count = demandMapper.countDemandTrcaeByNodeGuid(demanditem.getNodeGuid());
-            if (count != 0) {
-                return;
-            }
-            //变更记录入库
-            Demandchangerecord demandchangerecord = new Demandchangerecord();
-            demandchangerecord.setChangeName(creatUserName);
-            demandchangerecord.setDemandGuid(demanditem.getDemandGuid());
-            demandchangerecord.setGuid(UUID.randomUUID().toString());
-            demandchangerecord.setNodeGuid(demanditem.getNodeGuid());
-            addDemandChangeRecord(demandchangerecord);
-            //将需求变更为需求变更
-            demandMapper.updateDealState(demanditem.getNodeGuid(), DemandItemDealStateEnum.CONFIRMED.getCode());
-        }
-        if (demandTraceGuids != null) {
-            demandMapper.clearNodeGuid(demandTraceGuids, demanditem.getNodeGuid());
-            demandMapper.updateNodeGuid(demandTraceGuids, demanditem.getNodeGuid(), creatUserName);
-        }
+//        String[] demandTraceGuids = demanditem.getDemandTraceGuids();
+//        String creatUserName = Base.getCreatUserName();
+//        //表示需求变更进来的
+//        if (demandTraceGuids != null && demandTraceGuids.length != 0) {
+//            //首次变更
+//            int count = demandMapper.countDemandTrcaeByNodeGuid(demanditem.getNodeGuid());
+//            if (count != 0) {
+//                return;
+//            }
+//            //变更记录入库
+//            Demandchangerecord demandchangerecord = new Demandchangerecord();
+//            demandchangerecord.setChangeName(creatUserName);
+//            demandchangerecord.setDemandGuid(demanditem.getDemandGuid());
+//            demandchangerecord.setGuid(UUID.randomUUID().toString());
+//            demandchangerecord.setNodeGuid(demanditem.getNodeGuid());
+//            addDemandChangeRecord(demandchangerecord);
+//            //将需求变更为需求变更
+//            demandMapper.updateDealState(demanditem.getNodeGuid(), DemandItemDealStateEnum.CONFIRMED.getCode());
+//        }
+//        if (demandTraceGuids != null) {
+//            demandMapper.clearNodeGuid(demandTraceGuids, demanditem.getNodeGuid());
+//            demandMapper.updateNodeGuid(demandTraceGuids, demanditem.getNodeGuid(), creatUserName);
+//        }
 
 
-        //查询有关的项目组成员
-        ArrayList<Integer> typeList = new ArrayList<>();
-        typeList.add(TeamResourceEnum.RD_GROUP.getCode());
-        String produceGuid = demanditem.getProduceGuid();
-        Producemanage queryProducemanage = new Producemanage();
-        queryProducemanage.setGuid(produceGuid);
-        Producemanage producemanage = producemanageMapper.getProduce(queryProducemanage);
-        String contentDescription = producemanage.getName() + "开发待确认";
-        List<Producemember> producememberList = producemanageMapper.listProduceMemberByType(produceGuid, typeList);
-        if (producememberList.size() == 0) {
-            return;
-        }
-        String[] managerGuids = producememberList.stream().map(Producemember::getManagerGuid).toArray(String[]::new);
-        //消息存库
-        alertService.saveMessage(producemanage, contentDescription, managerGuids, MessageTypeEnum.DEV_WAIT_CONFIRM.getCode());
+//        //查询有关的项目组成员
+//        ArrayList<Integer> typeList = new ArrayList<>();
+//        typeList.add(TeamResourceEnum.RD_GROUP.getCode());
+//        String produceGuid = demanditem.getProduceGuid();
+//        Producemanage queryProducemanage = new Producemanage();
+//        queryProducemanage.setGuid(produceGuid);
+//        Producemanage producemanage = producemanageMapper.getProduce(queryProducemanage);
+//        String contentDescription = producemanage.getName() + "开发待确认";
+//        List<Producemember> producememberList = producemanageMapper.listProduceMemberByType(produceGuid, typeList);
+//        if (producememberList.size() == 0) {
+//            return;
+//        }
+//        String[] managerGuids = producememberList.stream().map(Producemember::getManagerGuid).toArray(String[]::new);
+//        //消息存库
+//        alertService.saveMessage(producemanage, contentDescription, managerGuids, MessageTypeEnum.DEV_WAIT_CONFIRM.getCode());
     }
 
     @Override

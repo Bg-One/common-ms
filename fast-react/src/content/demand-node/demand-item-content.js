@@ -10,8 +10,29 @@ const {TextArea} = Input;
 const DemandItemContent = ({demandItem, setDemandItem, demandItemForm}) => {
     const [searchParams, setSearchParams] = useSearchParams()
     let userInfo = useSelector(state => state.user.userInfo);
+    const [demandTraceList, setDemandTraceList] = useState([])
+    // useEffect(() => {
+    //     return () => {
+    //         addOrEditDemandItemApi({
+    //             ...demandItem,
+    //             ...demandItemForm.getFieldsValue(),
+    //         })
+    //     }
+    // }, [])
 
+    //获取需求跟踪列表
+    const listDemandItemTrace = async () => {
+        let res = await listDemandTraceApi({
+            produceGuid: searchParams.get('produceGuid')
+        })
+        setDemandTraceList(res.data)
+    }
     const addOrEditDemandItem = async () => {
+
+        // if (this.state.demandTraceGuid === '') {
+        //     message.error('需求跟踪为必填项!', 1)
+        //     return
+        // }
         await addOrEditDemandItemApi({
             ...demandItemForm.getFieldsValue(),
             degreeOfImportance: demandItem.degreeOfImportance,
@@ -120,6 +141,14 @@ const DemandItemContent = ({demandItem, setDemandItem, demandItemForm}) => {
                             }
                         ]}
                     />
+                    {/*<span>关联跟踪:</span>*/}
+                    {/*<Select*/}
+                    {/*    mode="multiple"*/}
+                    {/*    // options={demandTraceList.map(item => ({*/}
+                    {/*    //     label: item.name,*/}
+                    {/*    //     value: item.guid*/}
+                    {/*    // }))}*/}
+                    {/*/>*/}
                 </div>
             </Form.Item>
             <Form.Item label="功能描述" name={'funDescription'}>
@@ -161,6 +190,10 @@ const DemandItemContent = ({demandItem, setDemandItem, demandItemForm}) => {
             </Form.Item>
             <Form.Item>
                 <div style={{textAlign: 'center'}}>
+                    {/*<Button type={'primary'}*/}
+                    {/*        disabled={!hasRoleOr(userInfo, ['rd:dept:user', 'rd:dept:manager'])}>研发明确</Button>*/}
+                    {/*<Button type={'primary'}*/}
+                    {/*        disabled={!hasRoleOr(userInfo, ['rd:dept:user', 'rd:dept:manager'])}>研发完成</Button>*/}
                     <Button type={'primary'} onClick={addOrEditDemandItem}
                             disabled={!hasRoleOr(userInfo, ['pro:dept:user', 'pro:dept:manager'])}>保存</Button>
                 </div>

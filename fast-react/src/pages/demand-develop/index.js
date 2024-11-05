@@ -388,9 +388,9 @@ const DemandDevelop = () => {
                                 style={{display: documentStatus === documentStatusEnum.REVIEW ? 'block' : 'none'}}
                                 type={'primary'}>定版</Button>
                         </Popconfirm>
-                        <Button type={'primary'}
-                                style={{display: documentStatus === documentStatusEnum.FINISH ? 'block' : 'none'}}
-                                onClick={listDemandChangeRecord}>变更记录</Button>
+                        {/*<Button type={'primary'}*/}
+                        {/*        style={{display: documentStatus === documentStatusEnum.FINISH ? 'block' : 'none'}}*/}
+                        {/*        onClick={listDemandChangeRecord}>变更记录</Button>*/}
                     </Space>
                 </Form.Item>
             </Form>
