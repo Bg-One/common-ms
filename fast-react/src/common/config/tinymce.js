@@ -13,7 +13,7 @@ export const iniOption = (selector, data, func) => {
         paste_data_images: true,// 默认是false的，记得要改为true才能粘贴
         powerpaste_allow_local_images: true,
         images_file_types: 'jpeg,jpg,png,gif,bmp,webp',
-        images_upload_url: 'http://' + url + 'common/sendFile',//后端接口地址
+        // images_upload_url: '',//后端接口地址
         relative_urls: false,
         file_picker_types: 'image',
         automatic_uploads: false,//避免展示图片后自动上传

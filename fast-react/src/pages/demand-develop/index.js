@@ -89,10 +89,9 @@ const DemandDevelop = () => {
     }
     const onSearch = () => {
         listDemand({
-            currentPage: pageInfo.currentPage,
-            pageSize: pageInfo.pageSize,
+            currentPage:1,
+            pageSize: 10,
             ...searchForm.getFieldsValue(),
-            staus: documentStatus
         })
     }
 
@@ -318,7 +317,7 @@ const DemandDevelop = () => {
             >
                 <Form.Item
                     label="产品名称"
-                    name="name"
+                    name="produceName"
                 >
                     <Input placeholder="请输入产品名称"/>
                 </Form.Item>
@@ -418,7 +417,6 @@ const DemandDevelop = () => {
                         currentPage: page,
                         pageSize: pageSize,
                         ...searchForm.getFieldsValue(),
-                        staus: documentStatus
                     })
                 }
             }}

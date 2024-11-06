@@ -50,13 +50,14 @@ const SoftwareCheck = () => {
     //获取软件测试统计列表
     const countCheckFeedbackByProduce = (values) => {
         countCheckFeedbackByProduceApi({...values}).then(res => {
-            setCountSoftwareCheckList(res.data.list)
             setPageInfo({
                 currentPage: res.data.currentPage,
                 pageSize: res.data.pageSize,
                 total: res.data.total,
                 totalPages: res.data.totalPages
             })
+            setCountSoftwareCheckList(res.data.list)
+
         })
     }
 
@@ -101,8 +102,8 @@ const SoftwareCheck = () => {
                         <Button type={'primary'}
                                 disabled={!hasRoleOr(userInfo, ['qa:dept:user', 'qa:dept:manager'])}
                                 onClick={() => {
-                            setRelatedVisiBleFlag(true)
-                        }}>关联产品</Button>
+                                    setRelatedVisiBleFlag(true)
+                                }}>关联产品</Button>
                     </Space>
                 </Form.Item>
             </Form>
@@ -111,7 +112,8 @@ const SoftwareCheck = () => {
         <Table
             className={'soft-check-table'}
             dataSource={countSoftwareCheckList}
-            columns={[{
+            columns={[
+                {
                 title: '序号',
                 render: (text, record, index) => {
                     return <div>{index + 1}</div>
@@ -195,6 +197,7 @@ const SoftwareCheck = () => {
                 pageSize: pageInfo.pageSize,
                 pageNumber: pageInfo.currentPage,
                 total: pageInfo.total,
+                current: pageInfo.currentPage,
                 showSizeChanger: true,
                 onChange: (page, pageSize) => {
                     countCheckFeedbackByProduce({

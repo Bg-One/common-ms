@@ -37,5 +37,22 @@ class FastBootApplicationTests {
             sysUserService.insertUser(sysUser);
         }
     }
-
+    /**
+     * 测试倒库
+     */
+    @Test
+    void contextLoadsOne() {
+        List<DepUser> depUsers = depUserMapper.listDepUser();
+        for (DepUser depUser : depUsers) {
+            SysUser sysUser = new SysUser();
+            sysUser.setUserGuid(depUser.getGuid());
+            sysUser.setUserName(depUser.getTrueName());
+            sysUser.setNickName(depUser.getName());
+            sysUser.setPassword(depUser.getPassword());
+            sysUser.setDeptGuid(depUser.getDepGuid());
+            sysUser.setSex("1");
+            sysUser.setStatus("1");
+            sysUserService.insertUser(sysUser);
+        }
+    }
 }
