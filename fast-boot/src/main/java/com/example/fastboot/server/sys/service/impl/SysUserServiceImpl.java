@@ -61,6 +61,7 @@ public class SysUserServiceImpl implements ISysUserService {
                     postNames[i] = post.getPostName();
                 }
                 sysUser.setRoleGuids(roleGuids);
+                sysUser.setPostGuids(postGuids);
                 sysUser.setPostNames(postNames);
             }
         }

@@ -194,7 +194,7 @@
     </select>
     <select id="listProduceByInProduceGuid"
             resultType="com.example.fastboot.server.producems.model.Producemanage">
-        select * from producemanage t1 INNER JOIN demandmanage t2 on t1.guid=t2.produceGuid where t1.deleteFlag = 0
+        select * from producemanage t1 INNER JOIN demandmanage t2 on t1.guid=t2.produceGuid where t1.deleteFlag = 0 and t2.deleteFlag=0
         <if test="produceGuids.length!=0">
             and t1.guid in
             <foreach collection="produceGuids" separator="," item="item" index="index" open="(" close=")">

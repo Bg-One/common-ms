@@ -85,7 +85,6 @@ const WorkingHourStatistics = () => {
             <Form
                 className={'search-form'}
                 form={searchForm}
-                name="basic"
                 layout="horizontal"
                 labelCol={{
                     span: 7,

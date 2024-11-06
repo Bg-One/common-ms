@@ -1,15 +1,16 @@
 import {Button, Checkbox, Form, Image, Input, message} from 'antd';
 import {useEffect, useState} from 'react';
 import {sm3} from "sm-crypto";
-import {loginApi, captchaImageApi} from '../../common/api/sys/sys-api';
+import {loginApi, captchaImageApi, logoutApi} from '../../common/api/sys/sys-api';
 import './index.scss'
 import {useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
-import {setAuthentication} from "../../redux/user/user-slice";
-import {setToken} from "../../utils/auth";
+import {clearUserInfo, setAuthentication} from "../../redux/user/user-slice";
+import {removeToken, setToken} from "../../utils/auth";
 import loginsign from '../../static/images/login-sign.png'
 import loginUser from '../../static/images/login-user.png'
 import loginpassword from '../../static/images/login-password.png'
+import {cleanTab} from "../../redux/tab/tab-slice";
 
 const Login = (props) => {
     let navigate = useNavigate();
@@ -17,12 +18,21 @@ const Login = (props) => {
     const [loading, setLoadings] = useState(false);
     useEffect(() => {
         getCaptchaImage()
+        clearLoginInfo()
     }, [])
     //图文验证码
     const [captchaImage, setCaptchaImage] = useState('')
     //图文唯一标识
     const [uuid, setUuid] = useState('')
 
+    //清除登录信息
+    const clearLoginInfo = () => {
+        logoutApi().then(res => {
+            removeToken()
+            dispatch(clearUserInfo())
+            dispatch(cleanTab())
+        })
+    }
     //获取验证码
     const getCaptchaImage = async () => {
         let res = await captchaImageApi()
@@ -42,7 +52,6 @@ const Login = (props) => {
             getCaptchaImage()
             setLoadings(false)
         });
-
     }
 
     return <div id='login'>
@@ -50,7 +59,6 @@ const Login = (props) => {
             <img className="login-item" src={loginsign}/>
             <div className="login-item login-title">生产管控平台</div>
             <Form
-                name="basic"
                 initialValues={{remember: true}}
                 onFinish={onFinish}
                 autoComplete="off"

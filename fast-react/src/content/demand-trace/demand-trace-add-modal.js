@@ -20,7 +20,6 @@ const DemandTraceAddModal = ({addModalFlag, setAddModalFlag, projectList, addDem
     >
         <Form
             className={'search-form'}
-            name="basic"
             labelCol={{
                 span: 7,
             }}

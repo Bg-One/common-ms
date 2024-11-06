@@ -151,7 +151,6 @@ public class IDemandServiceImpl implements IDemandService {
 
     @Override
     public DemandItem getNodes(String guid) {
-        DemandItem nodes = demandMapper.getNodes(guid);
         return demandMapper.getNodes(guid);
     }
 
@@ -189,12 +188,6 @@ public class IDemandServiceImpl implements IDemandService {
 
     @Override
     public PageResponse listDemandTrace(Demandtrace demandtrace) {
-//        if (demandtrace.getProgressStatuss() == null) {
-//            List<Demandtrace> demandtraceList = new ArrayList<>();
-//            PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);
-//            return new PageResponse<>(demandtracePageInfo);
-//        }
-//        List<String> progressStatusList = Arrays.asList(demandtrace.getProgressStatuss());
         PageHelper.startPage(demandtrace.getCurrentPage(), demandtrace.getPageSize());
         List<Demandtrace> demandtraceList = demandMapper.listDemandTrace(demandtrace);
         PageInfo<Demandtrace> demandtracePageInfo = new PageInfo<>(demandtraceList);

@@ -141,7 +141,6 @@ const OperateLog = () => {
             <Form
                 className={'search-form'}
                 form={searchForm}
-                name="basic"
                 layout="inline"
                 onFinish={onSearch}
                 autoComplete="off"

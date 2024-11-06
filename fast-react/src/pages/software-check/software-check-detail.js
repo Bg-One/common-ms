@@ -342,7 +342,7 @@ const SoftwareCheckDetail = () => {
             width: '5vw',
             fixed: 'left',
             render: (text, record, index) => {
-                return <img style={{overflow: 'hidden'}} src={record.imageLink}
+                return <img style={{overflow: 'hidden', width: '5vw', height: '5vh'}} src={record.imageLink}
                             onDoubleClick={(e) => {
                                 setWetherLargeObj({
                                     open: true,
@@ -642,7 +642,6 @@ const SoftwareCheckDetail = () => {
             <Form
                 className={'search-form'}
                 form={searchForm}
-                name="basic"
                 layout="inline"
                 labelCol={{
                     span: 7,

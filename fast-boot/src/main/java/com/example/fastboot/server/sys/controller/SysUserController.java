@@ -50,7 +50,6 @@ public class SysUserController {
             throw new ServiceException(CommonResultEnum.EMAIL_EXIT_DISABLE);
         }
         user.setCreateBy(Base.getCreatUserName());
-        user.setPassword(user.getPassword());
         iSysUserService.insertUser(user);
         return CommonResult.success();
     }

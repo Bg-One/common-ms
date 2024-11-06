@@ -70,7 +70,6 @@ const Post = (props) => {
             <Form
                 className={'search-form'}
                 form={searchForm}
-                name="basic"
                 layout="inline"
                 labelCol={{
                     span: 6,

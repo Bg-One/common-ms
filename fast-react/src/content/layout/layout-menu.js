@@ -14,7 +14,6 @@ const LayoutMenu = ({collapsed}) => {
     const location = useLocation()
     const dispatch = useDispatch();
 
-
     useEffect(() => {
         addTabAction(location.pathname, location.pathname + location.search)
     }, [navigator])
@@ -44,7 +43,6 @@ const LayoutMenu = ({collapsed}) => {
             defaultOpenKeys={findLabelsByKey(finalMenuConfig, location.pathname).map(item => item.key)}
             mode="inline"
             theme="dark"
-            inlineCollapsed={collapsed}
             items={finalMenuConfig}
             onClick={(record) => {
                 navigator(record.key)

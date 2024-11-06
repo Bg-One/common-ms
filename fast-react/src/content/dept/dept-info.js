@@ -7,7 +7,6 @@ const DeptInfoForm = ({deptForm, selectTreeData, submit}) => {
 
     return (
         <Form
-            name="basic"
             form={deptForm}
             labelCol={{
                 span: 3,

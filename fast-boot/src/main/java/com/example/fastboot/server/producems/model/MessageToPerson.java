@@ -9,12 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MessageToPerson {
 
-  private long id;
-  private String messageGuid;
-  private String responsiblePerson;
-  private String responsiblePersonGuid;
-  private String readFlag;
+    private long id;
+    private String messageGuid;
+    private String responsiblePerson;
+    private String responsiblePersonGuid;
+    private int readFlag;
 
+    private String produceName;
+    private int currentPage;
 
+    private int pageSize;
 
 }

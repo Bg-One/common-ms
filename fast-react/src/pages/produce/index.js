@@ -147,7 +147,6 @@ const Produce = (props) => {
             <Form
                 className={'search-form'}
                 form={searchForm}
-                name="basic"
                 layout="inline"
                 labelCol={{
                     span: 7,
@@ -280,9 +279,8 @@ const Produce = (props) => {
                         </>
                     }
                 }]}
-            rowKey={(record) => {
-                return record.guid
-            }}
+            rowKey={(record) => {return record.guid}}
+            title={()=>'绑定：勾选实现绑定，绑定后优先显示绑定产品下的资源'}
             pagination={{
                 pageSize: pageInfo.pageSize,
                 pageNumber: pageInfo.currentPage,
@@ -315,7 +313,6 @@ const Produce = (props) => {
         >
             <Form
                 form={formInstance}
-                name="basic"
                 labelCol={{
                     span: 4,
                 }}

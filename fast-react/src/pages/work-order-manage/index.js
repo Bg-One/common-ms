@@ -228,7 +228,6 @@ const workOrderManage = () => {
                 <Form
                     className={'search-form'}
                     form={form}
-                    name="basic"
                     layout='horizontal'
                     labelCol={{
                         span: 7,

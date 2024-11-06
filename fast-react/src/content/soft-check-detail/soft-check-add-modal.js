@@ -34,7 +34,6 @@ const AddSoftCheckModal = ({
     >
         <Form
             className={'search-form'}
-            name="basic"
             form={form}
             labelCol={{
                 span: 7,

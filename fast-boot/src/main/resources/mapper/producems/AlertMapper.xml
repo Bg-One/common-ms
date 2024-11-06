@@ -14,4 +14,33 @@
         values (#{messageToPerson.messageGuid},
                 #{messageToPerson.responsiblePersonGuid})
     </insert>
+    <update id="updateMessageReadFlag">
+        update messagetoperson
+        set readFlag = 1
+        where messageGuid = #{messageGuid}
+          and responsiblePersonGuid = #{userGuid}
+    </update>
+    <select id="listMessageAlerts" resultType="com.example.fastboot.server.producems.model.MessageToPerson">
+        select mc.guid,
+               mc.produceGuid,
+               mc.produceNo,
+               mc.createTime,
+               mc.alertType,
+               mc.contentDescription,
+               mp.responsiblePerson,
+               mp.responsiblePersonGuid,
+               mp.readFlag,
+               t1.name as produceName
+        from messagerecord mc
+                 inner join messagetoperson mp on mc.guid = mp.messageGuid
+                 left join producemanage t1 on mc.produceGuid = t1.guid
+        where mp.messageGuid = mc.guid
+          and mc.deleteFlag = 0
+          and mp.responsiblePersonGuid = #{userGuid}
+          <if test="readFlag==1">
+              and mp.readFlag = 0
+          </if>
+        ORDER BY mp.id desc
+
+    </select>
 </mapper>

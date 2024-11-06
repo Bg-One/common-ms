@@ -5,7 +5,6 @@ import {listUserApi} from "../../common/api/sys/user-api";
 import {listDeptApi} from "../../common/api/sys/deptinfo-api";
 import {listAllProjectApi} from "../../common/api/producems/project";
 import {useSelector} from "react-redux";
-import withdraw from '../../static/images/withdraw.png'
 import {getWorkOrderApi, listWorkOrderApi} from "../../common/api/producems/workorder";
 import moment from "moment";
 import WorkOrderDetail from "./work-order-detail";
@@ -20,10 +19,11 @@ const WorkOrderQuery = () => {
     const [deptList, setDeptGuid] = useState([])
     const [projectList, setProjectList] = useState([])
     const userInfo = useSelector(state => state.user.userInfo)
-    const [selectDepGuid, setSelectDepGuid] = useState([])
     const [dataSource, setDataSource] = useState([])
     const [workorderDetailVisible, setWorkorderDetailVisible] = useState(false)
     const [workorderDetailList, setWorkorderDetailList] = useState([])
+    const createGuid = Form.useWatch('createGuid', searchForm);
+    const [searchWorkStatusDisable, setSearchWorkStatusDisable] = useState(false)
     useEffect(() => {
         listUserApi().then(userRes => {
             setUserList(userRes.data)
@@ -38,6 +38,15 @@ const WorkOrderQuery = () => {
     useEffect(() => {
         !workorderDetailVisible && listWorkOrder()
     }, [workorderDetailVisible])
+    useEffect(() => {
+        if (createGuid !== userInfo.user.userGuid) {
+            searchForm.setFieldValue("workStatus", workOrderEnum.CHECKEN + '')
+            setSearchWorkStatusDisable(true)
+        } else {
+            setSearchWorkStatusDisable(false)
+            searchForm.setFieldValue("workStatus", '100')
+        }
+    }, [createGuid])
     const listWorkOrder = async () => {
         let values = searchForm.getFieldsValue();
         let res = await listWorkOrderApi({
@@ -76,7 +85,7 @@ const WorkOrderQuery = () => {
                     form={searchForm}
                     initialValues={{
                         departmentGuid: userInfo.user.deptGuid,
-                        createGuid: '100',
+                        createGuid: userInfo.user.userGuid,
                         projectGuid: '100',
                         workStatus: '100',
                         timerange: [dayjs(moment().startOf('month').format('YYYY-MM-DD')), dayjs(moment().format('YYYY-MM-DD'))]
@@ -88,9 +97,6 @@ const WorkOrderQuery = () => {
                             style={{width: '8vw'}}
                             showSearch
                             mode="multiple"
-                            onChange={(v) => {
-                                setSelectDepGuid(v)
-                            }}
                             options={deptList.map(item => ({label: item.deptName, value: item.deptGuid}))}
                         />
                     </Form.Item>
@@ -101,7 +107,7 @@ const WorkOrderQuery = () => {
                             options={[{
                                 label: '全部',
                                 value: '100'
-                            }].concat(userList.filter(item => selectDepGuid.includes(item.deptGuid)).map(i => ({
+                            }].concat(userList.filter(item => searchForm.getFieldValue("departmentGuid").includes(item.deptGuid)).map(i => ({
                                 label: i.nickName,
                                 value: i.userGuid
                             })))}
@@ -125,12 +131,12 @@ const WorkOrderQuery = () => {
                     </Form.Item>
                     <Form.Item label={'工单状态'} name={'workStatus'}>
                         <Select
+                            disabled={searchWorkStatusDisable}
                             style={{width: '5vw'}}
                             options={[{value: '100', label: '全选'}, {value: '1', label: '待提交'}, {
                                 value: '2',
                                 label: '待审核'
                             }, {value: '3', label: '已审核'}]}
-
                         />
                     </Form.Item>
                     <Form.Item>

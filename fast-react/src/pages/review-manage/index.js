@@ -72,7 +72,7 @@ const ReviewManage = () => {
                     key: '',
                     width: '30vw',
                     render: (text, record, index) => <div>
-                        {record.userName}
+                        {record.nickName}
                     </div>
                 }, {
                     title: '审核人',

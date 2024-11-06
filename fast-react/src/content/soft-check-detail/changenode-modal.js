@@ -30,7 +30,6 @@ const ChangenodeModal = ({
                 layout={'horizontal'}
                 className={'search-form'}
                 form={changeNodeForm}
-                name="basic"
                 labelCol={{span: 7}}
                 initialValues={{...checkChangNotesObj}}
                 onFinish={addOrEditCheckChangNote}

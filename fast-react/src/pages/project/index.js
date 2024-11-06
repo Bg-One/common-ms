@@ -141,7 +141,6 @@ const Project = (props) => {
             <Form
                 className={'search-form'}
                 form={searchForm}
-                name="basic"
                 layout="inline"
                 labelCol={{
                     span: 7,
@@ -314,7 +313,6 @@ const Project = (props) => {
             className='project-add-moadl'
         ><Form
             form={formInstance}
-            name="basic"
             labelCol={{
                 span: 4,
             }}

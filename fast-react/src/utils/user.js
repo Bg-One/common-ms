@@ -8,7 +8,6 @@ export const getUserTreeData = (depList, userList, depDisabled) => {
             title: i.nickName,
         }))
     }))
-    console.log(data)
     return data
 }
 //根据单位唯一标识获取用户唯一标识

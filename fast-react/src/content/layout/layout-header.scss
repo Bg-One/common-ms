@@ -10,10 +10,30 @@
   }
 
   .layout-header-user {
-    width: 10vw;
     align-items: center;
     display: flex;
     justify-content: space-between;
     margin-right: 1vw;
+  }
+
+  .bell {
+    width: 2.0vw;
+    margin: 0 1vw;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+
+  .bell-active {
+    width: 2.0vw;
+    margin: 0 1vw;
+    vertical-align: middle;
+    animation: rotate 0.4s linear infinite;
+    cursor: pointer;
+  }
+}
+
+.message-alert {
+  .ant-table-cell {
+    text-align: center;
   }
 }

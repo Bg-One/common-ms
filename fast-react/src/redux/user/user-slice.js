@@ -11,7 +11,7 @@ export const fetchDataAndDoSomething = () => async (dispatch) => {
     let userRes = await getUserInfoApi();
     await dispatch(setUserInfo(userRes.data))
     //获取菜单信息
-    let routersRes = await getRoutersApi();
+    let routersRes = await getRoutersApi({});
     let routersConfig = []
     let routerResData = routersRes.data;
     let userGuid = userRes.data.user.userGuid;

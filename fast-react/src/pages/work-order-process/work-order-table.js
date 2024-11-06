@@ -125,7 +125,7 @@ const WorkOrderTable = ({
             onCell: (record, index) => mergesFilter(dataSource, record, ['createTime', 'createName']),
             render: (text, record, index) => {
                 return <div className="option-btn">
-                    {record.status === workOrderEnum.DRAFT ? <>
+                    {record.status === workOrderEnum.DRAFT && record.createGuid === userInfo.user.userGuid ? <>
                         <Button type={'link'} onClick={() => {
                             editWorkOrder(record)
                         }}>编辑</Button>
@@ -133,15 +133,13 @@ const WorkOrderTable = ({
                             deleteWorkOrder(record)
                         }}>删除</Button>
                     </> : null}
-                    {record.status === workOrderEnum.SUBMIT && !isReview ? <Button type={'link'} onClick={() => {
-                        editWorkOrder(record)
-                    }}>查看</Button> : null}
+                    {((record.status === workOrderEnum.SUBMIT && !isReview) || record.status === workOrderEnum.CHECKEN) ?
+                        <Button type={'link'} onClick={() => {
+                            editWorkOrder(record)
+                        }}>查看</Button> : null}
                     {record.status === workOrderEnum.SUBMIT && isReview ? <Button type={'link'} onClick={() => {
                         editWorkOrder(record)
                     }}>评审</Button> : null}
-                    {record.status === workOrderEnum.CHECKEN ? <Button type={'link'} onClick={() => {
-                        editWorkOrder(record)
-                    }}>查看</Button> : null}
                 </div>
             },
         }].filter(Boolean)
