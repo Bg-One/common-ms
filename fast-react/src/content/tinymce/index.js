@@ -1,10 +1,10 @@
 import {useEffect} from "react";
 import {iniOption} from "../../common/config/tinymce";
 
-const TinymceEditor = ({id, data, func}) => {
+const TinymceEditor = ({id, data, func, height}) => {
 
     useEffect(() => {
-        tinymce.init(iniOption("#" + id, data, func))
+        tinymce.init(iniOption("#" + id, data, func, height))
         return () => {
             destroyTinymce()
         }

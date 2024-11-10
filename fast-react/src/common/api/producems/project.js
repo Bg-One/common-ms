@@ -22,7 +22,7 @@ export const onsiteaAccepttApi = (data) => {
 }
 
 /**
- * 删除产品
+ * 删除项目
  * @returns {*}
  */
 export const delProjectApi = (data) => {

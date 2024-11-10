@@ -1,0 +1,96 @@
+#dept-weekly-report {
+  .content {
+    display: flex;
+    flex-flow: row;
+
+    .direct {
+      width: 15vw;
+      height: 79.5vh;
+      margin: 0 1vw 0 0;
+      box-shadow: 1px 2px 5px 2px #9996;
+      overflow: auto;
+
+      .direct-title {
+        text-align: center;
+        color: #ffffff;
+        background-color: #01A7F0;
+      }
+
+      .add-workset {
+        background-color: #01A7F0;
+        text-align: center;
+        color: #ffffff;
+        cursor: pointer;
+
+        > img {
+          width: 1vw;
+          margin-right: 0.5vw;
+          vertical-align: text-bottom;
+        }
+      }
+
+      .workset {
+        height: 71vh;
+        overflow: auto;
+        padding: 1vh 0;
+
+        .workset-item {
+          height: 4vh;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          box-shadow: 1px 2px 5px 2px #9996;
+          padding-left: 0.5vw;
+
+          > img {
+            width: 2vw;
+          }
+        }
+      }
+    }
+
+    .direct-content {
+      width: 100%;
+      height: 79.5vh;
+      overflow: auto;
+
+      .weekly-title-span {
+        background-color: #01A7F0;
+        color: #ffffff;
+        width: 6vw;
+        display: block;
+        margin: 0.5vh 0;
+        text-align: center;
+
+        > img {
+          width: 1vw;
+          margin-left: 0.5vw;
+          vertical-align: text-bottom;
+        }
+      }
+    }
+  }
+}
+
+.weekly-modal {
+  .ant-modal-content {
+    padding: 0;
+  }
+
+  .ant-modal-title {
+    text-align: center;
+    background-color: #01A7F0;
+    color: #ffffff;
+    height: 5vh;
+    line-height: 5vh;
+  }
+
+  .ant-modal-body {
+    margin: 0 1vw;
+    padding-bottom: 0.5vh
+  }
+
+  .ant-modal-close {
+    color: #ffffff;
+  }
+}

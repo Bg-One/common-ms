@@ -48,7 +48,7 @@ const ReviewManage = () => {
             message.error('没有数据需要更新')
             return
         }
-        let result = await saveReviewRelationshipApi({relationshipList: JSON.stringify(data)})
+      await saveReviewRelationshipApi({relationshipList: JSON.stringify(data)})
         message.success('保存成功')
         // 处理本地数据
         getRelaList()

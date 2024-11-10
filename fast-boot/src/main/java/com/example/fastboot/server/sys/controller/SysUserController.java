@@ -35,6 +35,15 @@ public class SysUserController {
         return CommonResult.success(list);
     }
 
+
+    /**
+     * 根据单位获取用户列表
+     */
+    @PostMapping("/listUserByDept")
+    public Object listUserByDept(String deptGuid) {
+        List<SysUser> list = iSysUserService.listUserByDept(deptGuid);
+        return CommonResult.success(list);
+    }
     /**
      * 新增用户
      */

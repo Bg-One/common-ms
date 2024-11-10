@@ -214,4 +214,9 @@ public class SysUserServiceImpl implements ISysUserService {
     public List<SysUser> selectUnallocatedList(SysUser user) {
         return sysUserMapper.selectUnallocatedList(user);
     }
+
+    @Override
+    public List<SysUser> listUserByDept(String deptGuid) {
+        return sysUserMapper.listUserByDept(deptGuid);
+    }
 }

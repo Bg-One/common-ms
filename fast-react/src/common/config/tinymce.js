@@ -1,8 +1,8 @@
 //tinymce初始化配置
-export const iniOption = (selector, data, func) => {
-    let url =  ip + port
+export const iniOption = (selector, data, func,height) => {
     let initOption = {
         selector,//id选择器
+        height:height?height:'50vh',
         language: 'zh-Hans', //调用放在langs文件夹内的语言包
         branding: false, // 关闭底部官网提示 默认true
         menubar: false,//关闭菜单

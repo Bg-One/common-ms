@@ -117,4 +117,11 @@ public interface SysUserMapper {
      * @param userGuid
      */
     void deleteUserPostByUserGuid(String userGuid);
+
+    /**
+     * 根据部门guid查询用户
+     * @param deptGuid
+     * @return
+     */
+    List<SysUser> listUserByDept(String deptGuid);
 }

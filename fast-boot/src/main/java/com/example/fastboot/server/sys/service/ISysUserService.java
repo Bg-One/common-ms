@@ -110,4 +110,11 @@ public interface ISysUserService {
      * @return 未授权用户
      */
     List<SysUser> selectUnallocatedList(SysUser user);
+
+    /**
+     * 根据部门查询用户
+     * @param deptGuid
+     * @return
+     */
+    List<SysUser> listUserByDept(String deptGuid);
 }

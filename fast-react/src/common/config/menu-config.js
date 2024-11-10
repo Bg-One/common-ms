@@ -41,7 +41,9 @@ export const componentMap = {
     WaitSubmit: React.lazy(() => import('../../pages/work-order-process/wait-submit')),
     WaitChecked: React.lazy(() => import('../../pages/work-order-process/wait-checked')),
     WaitChecking: React.lazy(() => import('../../pages/work-order-process/wait-checking')),
-    WorkOrderQuery: React.lazy(() => import('../../pages/work-order-process/work-order-query'))
+    WorkOrderQuery: React.lazy(() => import('../../pages/work-order-process/work-order-query')),
+    PersonWeeklyReport: React.lazy(() => import('../../pages/weekly-report/person-weekly-report')),
+    DeptWeeklyReport: React.lazy(() => import('../../pages/weekly-report/dept-weekly-report'))
 
     // 更多组件...
 };
@@ -136,6 +138,16 @@ export const menuConfig = [
             component: 'ReviewManage',
             label: '审核逻辑维护',
         }]
+    }, {
+        key: '/person-weekly-report.js',
+        icon: <MyIcon type={'icon-xianchangyanshou'}/>,
+        component: 'PersonWeeklyReport',
+        label: '个人周报',
+    }, {
+        key: '/dept-weekly-report.js',
+        icon: <MyIcon type={'icon-xianchangyanshou'}/>,
+        component: 'DeptWeeklyReport',
+        label: '部门周报',
     }, {
         key: '/sys',
         label: '系统管理',

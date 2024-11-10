@@ -160,6 +160,7 @@
         select *
         from project
         where deleteFlag = 0
+          and executionStatus > 0
     </select>
     <select id="listProjectByUser" resultType="com.example.fastboot.server.producems.model.Project">
 

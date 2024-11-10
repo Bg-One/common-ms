@@ -247,4 +247,9 @@
         from sys_user_post
         where post_guid = #{postGuid}
     </select>
+    <select id="listUserByDept" resultType="com.example.fastboot.server.sys.model.SysUser">
+        select *
+        from sys_user
+        where dept_guid = #{deptGuid}
+    </select>
 </mapper>

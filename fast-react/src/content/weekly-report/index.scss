@@ -1,0 +1,100 @@
+#week-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1vh 1vw;
+  box-shadow: 1px 2px 5px 2px #9996;
+  height: 5vh;
+  margin-bottom: 1vh;
+
+  .page-title {
+    font-weight: bold;
+  }
+
+  .time-select {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .week-jump {
+      padding: 0.5rem 0.5vw;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .select-week {
+      text-align: center;
+
+      .timerange {
+        border: 0px;
+        width: 8vw;
+        padding: 0px;
+        background: transparent;
+
+        .ant-picker-input {
+          > input {
+            display: none;
+          }
+        }
+      }
+
+      .range {
+        font-size: 1rem;
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+#weekly-report-content {
+  .weekly-title-span {
+    background-color: #01A7F0;
+    color: #ffffff;
+    width: 6vw;
+    display: block;
+    margin: 0.5vh 0;
+    text-align: center;
+
+    > img {
+      width: 1vw;
+      margin-left: 0.5vw;
+      vertical-align: text-bottom;
+    }
+  }
+
+  .ant-table {
+    thead {
+      tr {
+        th {
+          background: #01A7F0;
+          text-align: center;
+          color: #fff;
+          height: 5vh;
+          margin: 0 !important;
+          padding: 0 !important;
+
+        }
+      }
+    }
+
+    .ant-table-tbody > tr > td {
+      padding: 0.5vh 0;
+      text-align: center;
+    }
+
+    .ant-table-cell {
+      text-align: center;
+      line-height: 1vw;
+      font-size: 0.8vw;
+      font-weight: bold;
+    }
+
+    .cell-span {
+      width: 100%;
+      display: block;
+      height: 5vh;
+    }
+  }
+
+
+}
